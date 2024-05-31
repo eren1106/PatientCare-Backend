@@ -28,6 +28,7 @@ const apiResponseWrapper = (
     status,
     extra,
   };
+  console.log(response);
   return res.status(statusCode).json(response);
 };
 
