@@ -7,81 +7,100 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
-  userId             Int       @id @default(autoincrement())
-  username           String    @unique
-  email              String    @unique
-  password           String
-  signinMethod       String
-  role               String
-  profileImageUrl    String?
-  assignedDoctors    String?
-  lastLoginDatetime  DateTime?
-  createdDatetime    DateTime  @default(now())
-  updatedDatetime    DateTime?
+// ENUMS
+enum UserRole {
+  PATIENT
+  DOCTOR
+  ADMIN
+}
 
-  callTo             Call[]            @relation("CallTo")
-  callFrom           Call[]            @relation("CallFrom")
-  messageFrom        Message[]         @relation("MessageFrom")
-  messageTo          Message[]         @relation("MessageTo")
-  notification       Notification[]
-  assessment         Assessment[]
-  patientExercise    PatientExercise[]
-  appointmentDoctor  Appointment[]     @relation("AppointmentDoctor")
-  appointmentPatient Appointment[]     @relation("AppointmentPatient")
-  doctorValidation   DoctorValidation?
+enum SignInMethod {
+  EMAILPASSWORD
+  GOOGLE
+}
+
+enum ExerciseDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+// MODELS
+model User {
+  id                Int       @id @default(autoincrement())
+  username          String    @unique
+  email             String    @unique
+  password          String
+  signinMethod      SignInMethod
+  role              UserRole
+  profileImageUrl   String?
+  // assignedDoctors   User[]
+  lastLoginDatetime DateTime?
+  createdDatetime   DateTime  @default(now())
+  updatedDatetime   DateTime?
+
+  callTo               Call[]            @relation("CallTo")
+  callFrom             Call[]            @relation("CallFrom")
+  messageFrom          Message[]         @relation("MessageFrom")
+  messageTo            Message[]         @relation("MessageTo")
+  notification         Notification[]
+  assessment           Assessment[]
+  patientExercise      PatientExercise[]
+  appointmentDoctor    Appointment[]     @relation("AppointmentDoctor")
+  appointmentPatient   Appointment[]     @relation("AppointmentPatient")
+  doctorValidation     DoctorValidation?
   patientRecordDoctor  PatientRecord[]   @relation("Doctor")
   patientRecordPatient PatientRecord[]   @relation("Patient")
 }
 
 model Call {
-  callId          Int      @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   toUserId        Int
   fromUserId      Int
   status          String
   createdDatetime DateTime @default(now())
 
-  userTo   User @relation("CallTo", fields: [toUserId], references: [userId])
-  userFrom User @relation("CallFrom", fields: [fromUserId], references: [userId])
+  userTo   User @relation("CallTo", fields: [toUserId], references: [id])
+  userFrom User @relation("CallFrom", fields: [fromUserId], references: [id])
 }
 
 model Message {
-  messageId       Int      @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   message         String
   fromUserId      Int
   toUserId        Int
   createdDatetime DateTime @default(now())
 
-  userFrom User @relation("MessageFrom", fields: [fromUserId], references: [userId])
-  userTo   User @relation("MessageTo", fields: [toUserId], references: [userId])
+  userFrom User @relation("MessageFrom", fields: [fromUserId], references: [id])
+  userTo   User @relation("MessageTo", fields: [toUserId], references: [id])
 }
 
 model Notification {
-  notificationId  Int      @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   userId          Int
   title           String
   message         String
   redirectUrl     String?
   createdDatetime DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [userId])
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Assessment {
-  assessmentId    Int      @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   userId          Int
   questionnaireId Int
   createdDatetime DateTime @default(now())
   responseId      Int
 
-  user           User            @relation(fields: [userId], references: [userId])
-  questionnaire  Questionnaire   @relation(fields: [questionnaireId], references: [questionnaireId])
-  response       Response        @relation(fields: [responseId], references: [responseId])
-  patientRecord  PatientRecord[] @relation("PatientRecordAssessment")
+  user          User            @relation(fields: [userId], references: [id])
+  questionnaire Questionnaire   @relation(fields: [questionnaireId], references: [id])
+  response      Response        @relation(fields: [responseId], references: [id])
+  patientRecord PatientRecord[] @relation("PatientRecordAssessment")
 }
 
 model Questionnaire {
-  questionnaireId Int       @id @default(autoincrement())
+  id              Int       @id @default(autoincrement())
   title           String
   description     String
   type            String
@@ -90,110 +109,110 @@ model Questionnaire {
   createdDatetime DateTime  @default(now())
   updatedDatetime DateTime?
 
-  question        Question[]   @relation("QuestionnaireQuestion")
-  assessment      Assessment[]
+  question   Question[]   @relation("QuestionnaireQuestion")
+  assessment Assessment[]
 }
 
 model Question {
-  questionId      Int    @id @default(autoincrement())
-  title           String
-  fieldTypeId     Int
+  id          Int    @id @default(autoincrement())
+  title       String
+  fieldTypeId Int
 
-  fieldType       FieldType       @relation(fields: [fieldTypeId], references: [fieldTypeId])
-  response        Response[]
-  questionnaire   Questionnaire[] @relation("QuestionnaireQuestion")
+  fieldType     FieldType       @relation(fields: [fieldTypeId], references: [id])
+  response      Response[]
+  questionnaire Questionnaire[] @relation("QuestionnaireQuestion")
 }
 
 model Response {
-  responseId      Int    @id @default(autoincrement())
-  questionId      Int
-  response        String
+  id         Int    @id @default(autoincrement())
+  questionId Int
+  response   String
 
-  question        Question     @relation(fields: [questionId], references: [questionId])
-  assessment      Assessment[]
+  question   Question     @relation(fields: [questionId], references: [id])
+  assessment Assessment[]
 }
 
 model FieldType {
-  fieldTypeId     Int    @id @default(autoincrement())
-  name            String
+  id   Int    @id @default(autoincrement())
+  name String
 
-  question        Question[]
+  question Question[]
 }
 
 model DoctorValidation {
-  doctorValidationId Int     @id @default(autoincrement())
+  id                 Int     @id @default(autoincrement())
   doctorId           Int     @unique
   registrationNumber String
   identityImageUrl   String?
 
-  user User @relation(fields: [doctorId], references: [userId])
+  user User @relation(fields: [doctorId], references: [id])
 }
 
 model PatientRecord {
-  patientRecordId Int       @id @default(autoincrement())
+  id              Int       @id @default(autoincrement())
   doctorId        Int
   patientId       Int
   createdDatetime DateTime  @default(now())
   updatedDatetime DateTime?
 
-  doctor         User          @relation("Doctor", fields: [doctorId], references: [userId])
-  patient        User          @relation("Patient", fields: [patientId], references: [userId])
-  appointment    Appointment[] @relation("PatientRecordAppointment")
-  assessment     Assessment[]  @relation("PatientRecordAssessment")
-  exercise       Exercise[]
+  doctor      User          @relation("Doctor", fields: [doctorId], references: [id])
+  patient     User          @relation("Patient", fields: [patientId], references: [id])
+  appointment Appointment[] @relation("PatientRecordAppointment")
+  assessment  Assessment[]  @relation("PatientRecordAssessment")
+  exercise    Exercise[]
 
   @@unique([doctorId, patientId])
 }
 
 model Appointment {
-  appointmentId      Int       @id @default(autoincrement())
-  title              String
-  description        String
-  scheduledDatetime  DateTime
-  doctorId           Int
-  patientId          Int
-  createdDatetime    DateTime  @default(now())
-  updatedDatetime    DateTime?
+  id                Int       @id @default(autoincrement())
+  title             String
+  description       String
+  scheduledDatetime DateTime
+  doctorId          Int
+  patientId         Int
+  createdDatetime   DateTime  @default(now())
+  updatedDatetime   DateTime?
 
-  userDoctor     User           @relation("AppointmentDoctor", fields: [doctorId], references: [userId])
-  userPatient    User           @relation("AppointmentPatient", fields: [patientId], references: [userId])
-  patientRecord  PatientRecord? @relation("PatientRecordAppointment", fields: [doctorId, patientId], references: [doctorId, patientId])
+  userDoctor    User           @relation("AppointmentDoctor", fields: [doctorId], references: [id])
+  userPatient   User           @relation("AppointmentPatient", fields: [patientId], references: [id])
+  patientRecord PatientRecord? @relation("PatientRecordAppointment", fields: [doctorId, patientId], references: [doctorId, patientId])
 }
 
 model ExerciseCategory {
-  exerciseCategoryId Int     @id @default(autoincrement())
-  title              String
-  description        String
-  categoryImg        String?
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String
+  categoryImg String?
 
   exercise Exercise[]
 }
 
 model Exercise {
-  exerciseId          Int       @id @default(autoincrement())
-  exerciseCategoryId  Int
-  thumbnail           String?
-  title               String
-  description         String
-  duration            Int
-  difficulty          String
-  content             String
-  videoUrl            String?
-  createdDatetime     DateTime  @default(now())
-  updatedDatetime     DateTime?
+  id                 Int       @id @default(autoincrement())
+  exerciseCategoryId Int
+  thumbnail          String?
+  title              String
+  description        String
+  duration           Int
+  difficulty         ExerciseDifficulty
+  content            String
+  videoUrl           String?
+  createdDatetime    DateTime  @default(now())
+  updatedDatetime    DateTime?
 
-  exerciseCategory ExerciseCategory  @relation(fields: [exerciseCategoryId], references: [exerciseCategoryId])
+  exerciseCategory ExerciseCategory  @relation(fields: [exerciseCategoryId], references: [id])
   patientExercise  PatientExercise[]
   patientRecord    PatientRecord[]
 }
 
 model PatientExercise {
-  patientExerciseId Int       @id @default(autoincrement())
+  id                Int       @id @default(autoincrement())
   userId            Int
   exerciseId        Int
   isCompleted       Boolean   @default(false)
   completedDatetime DateTime?
 
-  user     User     @relation(fields: [userId], references: [userId])
-  exercise Exercise @relation(fields: [exerciseId], references: [exerciseId])
+  user     User     @relation(fields: [userId], references: [id])
+  exercise Exercise @relation(fields: [exerciseId], references: [id])
 }
