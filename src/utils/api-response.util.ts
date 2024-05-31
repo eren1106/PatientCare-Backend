@@ -17,8 +17,8 @@ const apiResponseWrapper = (
     data,
     status = 'SUCCESS',
     statusCode = STATUS_CODES.OK,
-    extra = '',
-    count = 0
+    extra,
+    count,
   }: IApiResponse
 ) => {
   const response = {
@@ -31,18 +31,18 @@ const apiResponseWrapper = (
   return res.status(statusCode).json(response);
 };
 
-export const apiResponse = ({ res, result, message }: { res: Response; result: any; message?: string }) => {
+export const apiResponse = ({ res, result, message, extra }: { res: Response; result: any; message?: string; extra?: any }) => {
   if (Array.isArray(result) && result.length === 0) {
     return noResultArrayResponse(res);
   }
   if (result === null || result === undefined) return noResultResponse(res);
 
-  const response: { message: string; data: any; count?: number } = {
+  const response = {
     message: message || 'Success',
     data: result,
+    count: Array.isArray(result) ? result.length : undefined,
+    extra,
   };
-
-  if (Array.isArray(result)) response.count = result.length;
 
   return apiResponseWrapper(res, response);
 };
