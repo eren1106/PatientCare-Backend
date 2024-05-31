@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { apiResponse, errorResponse } from '../utils/api-response.util';
-
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 export const getExercises = async (req: Request, res: Response) => {
   try {
