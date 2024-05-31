@@ -9,6 +9,14 @@ import {
 
 const router = Router();
 
+router.get('/', getExercises);
+router.get('/:id', getExerciseById);
+router.post('/', createExercise);
+router.put('/:id', updateExercise);
+router.delete('/:id', deleteExercise);
+
+export { router as exerciseRoutes };
+
 /**
  * @swagger
  * /exercises:
@@ -81,13 +89,3 @@ const router = Router();
  *       404:
  *         description: Exercise not found
  */
-
-
-
-router.get('/', getExercises);
-router.get('/:id', getExerciseById);
-router.post('/', createExercise);
-router.put('/:id', updateExercise);
-router.delete('/:id', deleteExercise);
-
-export { router as exerciseRoutes };

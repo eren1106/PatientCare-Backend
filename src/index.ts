@@ -3,16 +3,17 @@ import bodyParser from 'body-parser';
 import routes from './routes';
 import errorHandler from './middleware/errorHandler';
 import swaggerDocs from './utils/swagger';
-import log from './utils/logger';
+import cors from 'cors';
 
 const app = express();
 
 app.use(bodyParser.json());
-app.use('/api', routes);
+app.use(cors());
 app.use(errorHandler);
+app.use('/api', routes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-  swaggerDocs(app, PORT as number)
+  swaggerDocs(app, PORT as number);
 });
