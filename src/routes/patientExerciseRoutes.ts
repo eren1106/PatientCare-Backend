@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import { getPatientExerciseById, getPatientExercises } from '../controllers/patientExerciseController';
+import { completePatientExercise, getPatientExerciseById, getPatientExercises } from '../controllers/patientExerciseController';
 
 const router = Router();
 
 router.get('/', getPatientExercises);
 router.get('/:id', getPatientExerciseById);
+router.put('/:id/complete-exercise', completePatientExercise);
 
 export { router as patientExerciseRoutes };

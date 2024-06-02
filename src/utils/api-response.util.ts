@@ -48,7 +48,7 @@ export const apiResponse = ({ res, result, message, extra }: { res: Response; re
   return apiResponseWrapper(res, response);
 };
 
-export const errorResponse = ({ res, error, result }: { res: Response; error: any; result?: any }) => {
+export const errorResponse = ({ res, error, result, statusCode }: { res: Response; error: any; result?: any; statusCode?: number }) => {
   return apiResponseWrapper(res, {
     message: error,
     extra: result,
