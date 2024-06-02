@@ -51,6 +51,7 @@ model User {
   doctorValidation     DoctorValidation?
   patientRecordDoctor  PatientRecord[]   @relation("Doctor")
   patientRecordPatient PatientRecord[]   @relation("Patient")
+  questionnaire        Questionnaire[]
 }
 
 model Call {
@@ -104,11 +105,11 @@ model Questionnaire {
   title           String
   description     String
   type            String
-  respondentId    Int
-  authorId        Int
+  authorId        String
   createdDatetime DateTime  @default(now())
   updatedDatetime DateTime?
 
+  author     User         @relation(fields: [authorId], references: [id])
   question   Question[]   @relation("QuestionnaireQuestion")
   assessment Assessment[]
 }
@@ -196,7 +197,7 @@ model Exercise {
   description        String
   duration           Int
   difficulty         ExerciseDifficulty
-  content            String
+  content            String?
   videoUrl           String?
   createdDatetime    DateTime           @default(now())
   updatedDatetime    DateTime?
