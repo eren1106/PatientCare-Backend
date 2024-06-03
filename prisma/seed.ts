@@ -76,18 +76,11 @@ async function main() {
     },
   });
 
-  // Create Responses
-  const response1 = await prisma.response.create({
+  // Create Patient Records
+  const patientRecord1 = await prisma.patientRecord.create({
     data: {
-      questionId: question1.id,
-      response: '3 times a week',
-    },
-  });
-
-  const response2 = await prisma.response.create({
-    data: {
-      questionId: question2.id,
-      response: 'No',
+      doctorId: user2.id,
+      patientId: user1.id,
     },
   });
 
@@ -96,7 +89,7 @@ async function main() {
     data: {
       userId: user1.id,
       questionnaireId: questionnaire1.id,
-      responseId: response1.id,
+      patientRecordId: patientRecord1.id,
     },
   });
 
@@ -104,7 +97,24 @@ async function main() {
     data: {
       userId: user2.id,
       questionnaireId: questionnaire2.id,
-      responseId: response2.id,
+      patientRecordId: patientRecord1.id,
+    },
+  });
+
+  // Create Responses
+  const response1 = await prisma.response.create({
+    data: {
+      questionId: question1.id,
+      assessmentId: assessment1.id,
+      response: '3 times a week',
+    },
+  });
+
+  const response2 = await prisma.response.create({
+    data: {
+      questionId: question2.id,
+      assessmentId: assessment2.id,
+      response: 'No',
     },
   });
 
@@ -113,14 +123,6 @@ async function main() {
     data: {
       doctorId: user2.id,
       registrationNumber: 'DOC123456',
-    },
-  });
-
-  // Create Patient Records
-  const patientRecord1 = await prisma.patientRecord.create({
-    data: {
-      doctorId: user2.id,
-      patientId: user1.id,
     },
   });
 
@@ -160,6 +162,36 @@ async function main() {
     },
   });
 
+  const exercise3 = await prisma.exercise.create({
+    data: {
+      exerciseCategoryId: exerciseCategory1.id,
+      title: 'Cycling',
+      description: 'Cycling exercise',
+      duration: 40,
+      difficulty: 'EASY',
+    },
+  });
+
+  const exercise4 = await prisma.exercise.create({
+    data: {
+      exerciseCategoryId: exerciseCategory2.id,
+      title: 'Push-Ups',
+      description: 'Push-ups exercise',
+      duration: 20,
+      difficulty: 'MEDIUM',
+    },
+  });
+
+  const exercise5 = await prisma.exercise.create({
+    data: {
+      exerciseCategoryId: exerciseCategory2.id,
+      title: 'Deadlifts',
+      description: 'Deadlift exercise',
+      duration: 50,
+      difficulty: 'HARD',
+    },
+  });
+
   // Create Patient Exercises
   const patientExercise1 = await prisma.patientExercise.create({
     data: {
@@ -172,6 +204,27 @@ async function main() {
     data: {
       patientId: user1.id,
       exerciseId: exercise2.id,
+    },
+  });
+
+  const patientExercise3 = await prisma.patientExercise.create({
+    data: {
+      patientId: user1.id,
+      exerciseId: exercise3.id,
+    },
+  });
+
+  const patientExercise4 = await prisma.patientExercise.create({
+    data: {
+      patientId: user1.id,
+      exerciseId: exercise4.id,
+    },
+  });
+
+  const patientExercise5 = await prisma.patientExercise.create({
+    data: {
+      patientId: user1.id,
+      exerciseId: exercise5.id,
     },
   });
 

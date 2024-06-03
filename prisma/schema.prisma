@@ -44,7 +44,6 @@ model User {
   messageFrom          Message[]         @relation("MessageFrom")
   messageTo            Message[]         @relation("MessageTo")
   notification         Notification[]
-  assessment           Assessment[]
   patientExercise      PatientExercise[]
   appointmentDoctor    Appointment[]     @relation("AppointmentDoctor")
   appointmentPatient   Appointment[]     @relation("AppointmentPatient")
@@ -92,12 +91,11 @@ model Assessment {
   userId          String
   questionnaireId Int
   createdDatetime DateTime @default(now())
-  responseId      Int
+  patientRecordId Int
 
-  user          User            @relation(fields: [userId], references: [id])
-  questionnaire Questionnaire   @relation(fields: [questionnaireId], references: [id])
-  response      Response        @relation(fields: [responseId], references: [id])
-  patientRecord PatientRecord[] @relation("PatientRecordAssessment")
+  questionnaire Questionnaire @relation(fields: [questionnaireId], references: [id])
+  response      Response[]    @relation("AssessmentResponse")
+  patientRecord PatientRecord @relation("PatientRecordAssessment", fields: [patientRecordId], references: [id])
 }
 
 model Questionnaire {
@@ -125,12 +123,13 @@ model Question {
 }
 
 model Response {
-  id         Int    @id @default(autoincrement())
-  questionId Int
-  response   String
+  id           Int    @id @default(autoincrement())
+  assessmentId Int
+  questionId   Int
+  response     String
 
-  question   Question     @relation(fields: [questionId], references: [id])
-  assessment Assessment[]
+  question   Question   @relation(fields: [questionId], references: [id])
+  assessment Assessment @relation("AssessmentResponse", fields: [assessmentId], references: [id])
 }
 
 model FieldType {
@@ -212,6 +211,7 @@ model PatientExercise {
   patientId         String
   exerciseId        Int
   isCompleted       Boolean   @default(false)
+  createdDatetime   DateTime  @default(now())
   completedDatetime DateTime?
 
   user     User     @relation(fields: [patientId], references: [id])
