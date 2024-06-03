@@ -30,7 +30,7 @@ export const getPatientExerciseById = async (req: Request, res: Response) => {
     const patientExercise = await prisma.patientExercise.findUnique({
       where: {
         // patientId: patientId,
-        id: Number(id)
+        id: id
       },
       include: {
         exercise: true,
@@ -49,26 +49,26 @@ export const completePatientExercise = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const patientExercise = await prisma.patientExercise.findUnique({
+    const dailyPatientExercise = await prisma.dailyPatientExercise.findUnique({
       where: {
-        id: Number(id)
+        id: id
       },
     });
 
-    if (!patientExercise) return errorResponse({
+    if (!dailyPatientExercise) return errorResponse({
       res,
       error: "No Patient Exercise found!",
       statusCode: STATUS_CODES.NOT_FOUND,
     })
 
-    if (patientExercise?.isCompleted) return apiResponse({
+    if (dailyPatientExercise?.isCompleted) return apiResponse({
       res,
       result: "Exercise already completed",
     });
 
-    const updatedPatientExercise = await prisma.patientExercise.update({
+    const updatedPatientExercise = await prisma.dailyPatientExercise.update({
       where: {
-        id: Number(id)
+        id: id
       },
       data: {
         isCompleted: true,
@@ -78,6 +78,36 @@ export const completePatientExercise = async (req: Request, res: Response) => {
     return apiResponse({
       res,
       result: updatedPatientExercise,
+    });
+  } catch (error) {
+    return errorResponse({ res, error });
+  }
+};
+
+export const getTodayPatientExercises = async (req: Request, res: Response) => {
+  const { patientId } = req.params;
+
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set time to the start of the day
+    const dailyPatientExercises = await prisma.dailyPatientExercise.findMany({
+      where: {
+        patientId,
+        createdDatetime: {
+          gte: today,
+        }
+      },
+      include: {
+        patientExercise: {
+          include: {
+            exercise: true,
+          }
+        },
+      }
+    });
+    return apiResponse({
+      res,
+      result: dailyPatientExercises
     });
   } catch (error) {
     return errorResponse({ res, error });

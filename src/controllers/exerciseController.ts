@@ -18,7 +18,7 @@ export const getExerciseById = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const exercise = await prisma.exercise.findUnique({
-      where: { id: Number(id) },
+      where: { id: id },
     });
     return apiResponse({
       res,
@@ -77,7 +77,7 @@ export const updateExercise = async (req: Request, res: Response) => {
   } = req.body;
   try {
     const updatedExercise = await prisma.exercise.update({
-      where: { id: Number(id) },
+      where: { id: id },
       data: {
         exerciseCategoryId,
         thumbnail,
@@ -103,7 +103,7 @@ export const deleteExercise = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const deletedExercise = await prisma.exercise.delete({
-      where: { id: Number(id) },
+      where: { id: id },
     });
     return apiResponse({
       res,
