@@ -26,6 +26,11 @@ const options: swaggerJsdoc.Options = {
     //   },
     // ],
   },
+  servers: [
+    {
+      url: 'http://localhost:3000/api', // Update base URL for the API
+    },
+  ],
   apis: ["./src/routes/*.ts", "./src/schema/*.ts"], 
 };
 

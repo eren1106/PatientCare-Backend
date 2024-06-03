@@ -3,7 +3,6 @@ import bodyParser from 'body-parser';
 import routes from './routes';
 import errorHandler from './middleware/errorHandler';
 import swaggerDocs from './utils/swagger';
-import log from './utils/logger';
 
 const app = express();
 
