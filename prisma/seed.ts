@@ -197,6 +197,7 @@ async function main() {
     data: {
       patientId: user1.id,
       exerciseId: exercise1.id,
+      sets: 3,
     },
   });
 
@@ -204,6 +205,7 @@ async function main() {
     data: {
       patientId: user1.id,
       exerciseId: exercise2.id,
+      sets: 4,
     },
   });
 
@@ -211,6 +213,7 @@ async function main() {
     data: {
       patientId: user1.id,
       exerciseId: exercise3.id,
+      sets: 2,
     },
   });
 
@@ -218,6 +221,7 @@ async function main() {
     data: {
       patientId: user1.id,
       exerciseId: exercise4.id,
+      sets: 3,
     },
   });
 
@@ -225,6 +229,43 @@ async function main() {
     data: {
       patientId: user1.id,
       exerciseId: exercise5.id,
+      sets: 5,
+    },
+  });
+
+  // Create Daily Patient Exercises
+  const dailyPatientExercise1 = await prisma.dailyPatientExercise.create({
+    data: {
+      patientId: user1.id,
+      patientExerciseId: patientExercise1.id,
+    },
+  });
+
+  const dailyPatientExercise2 = await prisma.dailyPatientExercise.create({
+    data: {
+      patientId: user1.id,
+      patientExerciseId: patientExercise2.id,
+    },
+  });
+
+  const dailyPatientExercise3 = await prisma.dailyPatientExercise.create({
+    data: {
+      patientId: user1.id,
+      patientExerciseId: patientExercise3.id,
+    },
+  });
+
+  const dailyPatientExercise4 = await prisma.dailyPatientExercise.create({
+    data: {
+      patientId: user1.id,
+      patientExerciseId: patientExercise4.id,
+    },
+  });
+
+  const dailyPatientExercise5 = await prisma.dailyPatientExercise.create({
+    data: {
+      patientId: user1.id,
+      patientExerciseId: patientExercise5.id,
     },
   });
 
