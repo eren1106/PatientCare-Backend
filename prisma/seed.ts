@@ -2,6 +2,23 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
+
+  // Clean the database
+  await prisma.injury.deleteMany();
+  await prisma.patientRecord.deleteMany();
+  await prisma.call.deleteMany();
+  await prisma.message.deleteMany();
+  await prisma.notification.deleteMany();
+  await prisma.patientExercise.deleteMany();
+  await prisma.dailyPatientExercise.deleteMany();
+  await prisma.appointment.deleteMany();
+  await prisma.doctorValidation.deleteMany();
+  await prisma.question.deleteMany();
+  await prisma.questionnaire.deleteMany();
+  await prisma.fieldType.deleteMany();
+  await prisma.user.deleteMany();
+
+  
   // Create FieldTypes
   const fieldType1 = await prisma.fieldType.create({
     data: {
@@ -18,7 +35,7 @@ async function main() {
   // Create Users
   const user1 = await prisma.user.create({
     data: {
-      username: 'john_doe',
+      username: 'john_doe_123',
       email: 'john@example.com',
       password: 'securepassword',
       signinMethod: 'EMAILPASSWORD',
@@ -33,6 +50,36 @@ async function main() {
       password: 'securepassword',
       signinMethod: 'GOOGLE',
       role: 'DOCTOR',
+    },
+  });
+
+  const user3 = await prisma.user.create({
+    data: {
+      username: 'wubang',
+      email: 'wubang1232@example.com',
+      password: 'securepassword',
+      signinMethod: 'GOOGLE',
+      role: 'PATIENT',
+    },
+  });
+
+  const user4 = await prisma.user.create({
+    data: {
+      username: 'zhenen',
+      email: 'wubang@example.com',
+      password: 'securepassword',
+      signinMethod: 'GOOGLE',
+      role: 'PATIENT',
+    },
+  });
+
+  const user5 = await prisma.user.create({
+    data: {
+      username: 'wubang2',
+      email: 'wuban2g@example.com',
+      password: 'securepassword',
+      signinMethod: 'GOOGLE',
+      role: 'PATIENT',
     },
   });
 
@@ -81,8 +128,38 @@ async function main() {
     data: {
       doctorId: user2.id,
       patientId: user1.id,
+      ic_no: '0123456789',
+      age: 32,
+      gender: 'FEMALE',
+      weight: 50,
+      height: 1.5,
+      progressReport: 'pdf'
     },
   });
+
+
+  // Create Injury Details
+  const injury1 = await prisma.injury.create({
+    data: {
+      patientRecordId: patientRecord1.id,
+      painRegion: 'Knee',
+      duration: 'Once in a week',
+      painScore: 1,
+      is_recurrent: 'YES',
+      description: "A bit pain at ankle"
+    }
+  })
+
+  const injury2 = await prisma.injury.create({
+    data: {
+      patientRecordId: patientRecord1.id,
+      painRegion: 'Shoulder',
+      duration: 'Daily',
+      painScore: 5,
+      is_recurrent: 'YES',
+      description: 'Contusion at left shoulder'
+    }
+  })
 
   // Create Assessments
   const assessment1 = await prisma.assessment.create({

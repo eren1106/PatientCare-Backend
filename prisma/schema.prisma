@@ -25,6 +25,16 @@ enum ExerciseDifficulty {
   HARD
 }
 
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum Repeated {
+  YES
+  NO
+}
+
 // MODELS
 model User {
   id                String       @id @default(cuid())
@@ -153,17 +163,37 @@ model PatientRecord {
   id              String    @id @default(cuid())
   doctorId        String
   patientId       String
+  ic_no           String 
+  age             Int
+  gender          Gender
+  weight          Decimal
+  height          Decimal
+  isDelete        Boolean   @default(false)
+  progressReport  String?
   createdDatetime DateTime  @default(now())
   updatedDatetime DateTime?
-  isDelete        Boolean   @default(false)
 
   doctor      User          @relation("Doctor", fields: [doctorId], references: [id])
   patient     User          @relation("Patient", fields: [patientId], references: [id])
   appointment Appointment[] @relation("PatientRecordAppointment")
   assessment  Assessment[]  @relation("PatientRecordAssessment")
   exercise    Exercise[]
+  injuries    Injury[]      @relation("PatientRecordInjuries")
 
   @@unique([doctorId, patientId])
+}
+
+model Injury {
+  id              String    @id @default(cuid())
+  patientRecordId String
+  painRegion      String
+  duration        String 
+  painScore       Int
+  description     String
+  is_recurrent    Repeated
+  createdDatetime DateTime  @default(now())
+  updatedDatetime DateTime?
+  patientRecord   PatientRecord @relation("PatientRecordInjuries", fields: [patientRecordId], references: [id])
 }
 
 model Appointment {

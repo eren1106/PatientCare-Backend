@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { getAllPatientRecords, getAllPatients, insertPatientRecord } from '../controllers/dashboardController';
+import { deletePatientRecord, getAllPatientRecords, getAllPatients, insertPatientRecord } from '../controllers/dashboardController';
 const router = Router();
 
 
 /**
  * @swagger
- * /api/dashboard:
+ * /api/dashboard/{id}:
  *   get:
  *     summary: Get all users
  *     tags:
@@ -45,11 +45,17 @@ router.get('/doctors/:id', getAllPatientRecords)
 
 /**
  * @swagger
- * /api/dashboard/doctors:
+ * /api/dashboard/doctors/{id}:
  *   post:
  *     summary: Insert a new patient record
  *     tags:
  *       - dashboard
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
  *     requestBody:
  *       required: true
  *       content:
@@ -57,24 +63,60 @@ router.get('/doctors/:id', getAllPatientRecords)
  *           schema:
  *             type: object
  *             required:
- *               - doctorId
  *               - patientId
+ *               - ic_no
+ *               - age
+ *               - gender
+ *               - weight
+ *               - height
  *             properties:
- *               doctorId:
- *                 type: string
- *                 description: The ID of the doctor
  *               patientId:
  *                 type: string
  *                 description: The ID of the patient
+ *               ic_no:
+ *                 type: string
+ *                 description: The IC number of the patient
+ *               age:
+ *                 type: integer
+ *                 description: The age of the patient
+ *               gender:
+ *                 type: string
+ *                 enum: [MALE, FEMALE]
+ *                 description: The gender of the patient
+ *               weight:
+ *                 type: number
+ *                 format: float
+ *                 description: The weight of the patient
+ *               height:
+ *                 type: number
+ *                 format: float
+ *                 description: The height of the patient
  *     responses:
  *       200:
- *         description: The newly created patient record
+ *         description: New patient record created
  */
-router.post('/doctors', insertPatientRecord)
+router.post('/doctors/:id', insertPatientRecord)
 
-// Manage patient details
-router.get('/patients/:id')
-//router.put() router.edit
+
+/**
+ * @swagger
+ * /api/dashboard/doctors/{id}:
+ *   post:
+ *     summary: Delete a patient record
+ *     tags:
+ *       - dashboard
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: A list of patient records
+ */
+router.put('/doctors/deleterecords/:id', deletePatientRecord)
+
 
 
 
