@@ -155,6 +155,7 @@ model PatientRecord {
   patientId       String
   createdDatetime DateTime  @default(now())
   updatedDatetime DateTime?
+  isDelete        Boolean   @default(false)
 
   doctor      User          @relation("Doctor", fields: [doctorId], references: [id])
   patient     User          @relation("Patient", fields: [patientId], references: [id])
