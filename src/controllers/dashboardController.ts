@@ -17,7 +17,10 @@ export const getAllPatients = async (req: Request, res: Response) => {
 
       // Get all patients that is under managed by the doctor already
       const managedPatientIds = await prisma.patientRecord.findMany({
-        where: { doctorId },
+        where: { 
+          doctorId : doctorId,
+          isDelete : false
+        },
         select: { patientId: true } 
       });
 
@@ -38,14 +41,16 @@ export const getAllPatientRecords = async (req: Request, res: Response) => {
   try {
     const patients = await prisma.patientRecord.findMany({
       where: {
-        doctorId: doctorId
+        doctorId: doctorId,
+        isDelete: false,
       },
       include: {
         doctor: true,
         patient: true,
         appointment: true,
         assessment: true,
-        exercise: true
+        exercise: true,
+        injuries: true
       }
     });
     return apiResponse({
@@ -60,9 +65,15 @@ export const getAllPatientRecords = async (req: Request, res: Response) => {
 
 export const insertPatientRecord = async (req: Request, res: Response) => {
   const {
-   doctorId,
-   patientId
-  } = req.body;
+   patientId,
+   ic_no,
+   age,
+   gender,
+   weight,
+   height
+  } = req.body.patientRecord;
+
+  const doctorId = req.params.id;
   try {
     // Check if the doctor exists
     const doctor = await prisma.user.findUnique({
@@ -91,7 +102,13 @@ export const insertPatientRecord = async (req: Request, res: Response) => {
     const newRecord = await prisma.patientRecord.create({
       data: {
         doctorId,
-        patientId
+        patientId,
+        ic_no,
+        age,
+        gender,
+        weight,
+        height,
+        isDelete: false, // Ensure to set this field if required, with a default value
       },
     });
     return apiResponse({
@@ -106,16 +123,25 @@ export const insertPatientRecord = async (req: Request, res: Response) => {
 
 
 
-// export const deletePatientRecord = async (req: Request, res: Response) => {
-//   const patientRecordId  = req.params.id;
+export const deletePatientRecord = async (req: Request, res: Response) => {
+  const patientRecordId = req.params.id;
+  try {
+   
+    const deletedPatientRecord = await prisma.patientRecord.update({
+      where: {
+        id: patientRecordId
+      },
+      data: {
+        isDelete: true
+      }
+    });
 
-//   try {
-//     const patientRecord = await prisma.patientRecord.delete({
-//       where: {
-//         id: patientRecordId
-//       }
-//     })
-//   } catch (error) {
-//     return errorResponse({ res, error });
-//   }
-// }
+    return apiResponse({
+      res,
+      result: deletedPatientRecord,
+      message: "Patient record deleted"
+    });
+  } catch (error) {
+    return errorResponse({ res, error });
+  }
+};
