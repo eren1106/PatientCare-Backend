@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { apiResponse, errorResponse } from '../utils/api-response.util';
 import prisma from '../lib/prisma';
+import { getYouTubeThumbnail } from '../utils/utils';
 
 export const getExercises = async (req: Request, res: Response) => {
   try {
@@ -31,23 +32,25 @@ export const getExerciseById = async (req: Request, res: Response) => {
 
 export const createExercise = async (req: Request, res: Response) => {
   const {
-    exerciseCategoryId,
-    thumbnail,
+    // exerciseCategoryId,
+    // thumbnail,
     title,
     description,
-    duration,
+    // duration,
     difficulty,
     content,
     videoUrl,
   } = req.body;
   try {
+    const MOCK_EXERCISE_CATEGORY = await prisma.exerciseCategory.findFirst();
+    const thumbnail = getYouTubeThumbnail(videoUrl);
     const newExercise = await prisma.exercise.create({
       data: {
-        exerciseCategoryId,
+        exerciseCategoryId: MOCK_EXERCISE_CATEGORY!.id,
         thumbnail,
         title,
         description,
-        duration,
+        duration: 666,
         difficulty,
         content,
         videoUrl,
@@ -102,6 +105,16 @@ export const updateExercise = async (req: Request, res: Response) => {
 export const deleteExercise = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
+    // check whether got patient exercise refer to this exercise
+    const findPatientExercise = await prisma.patientExercise.findFirst({
+      where: {
+        exerciseId: id,
+      }
+    });
+    if (findPatientExercise) return errorResponse({
+      res,
+      error: "Unable to delete this exercise because got patient exercise referring to this exercise",
+    })
     const deletedExercise = await prisma.exercise.delete({
       where: { id: id },
     });
