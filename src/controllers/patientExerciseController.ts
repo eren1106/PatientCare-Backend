@@ -45,6 +45,57 @@ export const getPatientExerciseById = async (req: Request, res: Response) => {
   }
 };
 
+export const createPatientExercise = async (req: Request, res: Response) => {
+  const {patientId} = req.params;
+  const {
+    // patientId,
+    exerciseId,
+    sets
+  } = req.body;
+  try {
+    const newPatientExercise = await prisma.patientExercise.create({
+      data: {
+        patientId,
+        exerciseId,
+        sets
+      },
+    });
+    return apiResponse({
+      res,
+      result: newPatientExercise,
+      message: "Assigned the exercise to the patient successfully"
+    });
+  } catch (error) {
+    return errorResponse({ res, error });
+  }
+};
+
+export const updatePatientExerciseById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const {
+    exerciseId,
+    sets
+  } = req.body;
+  try {
+    const updatedPatientExercise = await prisma.patientExercise.update({
+      where: {
+        id,
+      },
+      data: {
+        exerciseId,
+        sets
+      },
+    });
+    return apiResponse({
+      res,
+      result: updatedPatientExercise,
+      message: "Update the exercise successfully"
+    });
+  } catch (error) {
+    return errorResponse({ res, error });
+  }
+};
+
 export const completePatientExercise = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -108,6 +159,30 @@ export const getTodayPatientExercises = async (req: Request, res: Response) => {
     return apiResponse({
       res,
       result: dailyPatientExercises
+    });
+  } catch (error) {
+    return errorResponse({ res, error });
+  }
+};
+
+export const deletePatientExerciseById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    // delete all daily patient exercises
+    await prisma.dailyPatientExercise.deleteMany({
+      where: {
+        patientExerciseId: id,
+      }
+    });
+    const deletedPatientExercise = await prisma.patientExercise.delete({
+      where: { id: id },
+    });
+
+    return apiResponse({
+      res,
+      result: deletedPatientExercise,
+      message: "Patient exercise removed successfully"
     });
   } catch (error) {
     return errorResponse({ res, error });
