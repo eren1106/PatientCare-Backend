@@ -43,11 +43,11 @@ export const createExercise = async (req: Request, res: Response) => {
   } = req.body;
   try {
     const MOCK_EXERCISE_CATEGORY = await prisma.exerciseCategory.findFirst();
-    const thumbnail = getYouTubeThumbnail(videoUrl);
+    const thumbnailUrl = getYouTubeThumbnail(videoUrl);
     const newExercise = await prisma.exercise.create({
       data: {
         exerciseCategoryId: MOCK_EXERCISE_CATEGORY!.id,
-        thumbnail,
+        thumbnailUrl,
         title,
         description,
         duration: 666,
@@ -70,7 +70,7 @@ export const updateExercise = async (req: Request, res: Response) => {
   const { id } = req.params;
   const {
     exerciseCategoryId,
-    thumbnail,
+    thumbnailUrl,
     title,
     description,
     duration,
@@ -83,7 +83,7 @@ export const updateExercise = async (req: Request, res: Response) => {
       where: { id: id },
       data: {
         exerciseCategoryId,
-        thumbnail,
+        thumbnailUrl,
         title,
         description,
         duration,
