@@ -5,18 +5,23 @@ async function main() {
 
   // Clean the database
   await prisma.injury.deleteMany();
-  await prisma.patientRecord.deleteMany();
+  
+  await prisma.response.deleteMany();
   await prisma.call.deleteMany();
   await prisma.message.deleteMany();
   await prisma.notification.deleteMany();
-  await prisma.patientExercise.deleteMany();
   await prisma.dailyPatientExercise.deleteMany();
+  await prisma.patientExercise.deleteMany();
   await prisma.appointment.deleteMany();
   await prisma.doctorValidation.deleteMany();
   await prisma.question.deleteMany();
+  await prisma.assessment.deleteMany();
   await prisma.questionnaire.deleteMany();
   await prisma.fieldType.deleteMany();
+  await prisma.patientRecord.deleteMany();
   await prisma.user.deleteMany();
+
+
 
   
   // Create FieldTypes
