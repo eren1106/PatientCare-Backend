@@ -5,19 +5,24 @@ async function main() {
   // npx prisma db push --force-reset  <= CLEAN ALL TABLE DATA WITH THIS COMMENT
 
   // Clean the database
-  // await prisma.injury.deleteMany();
-  // await prisma.patientRecord.deleteMany();
-  // await prisma.call.deleteMany();
-  // await prisma.message.deleteMany();
-  // await prisma.notification.deleteMany();
-  // await prisma.patientExercise.deleteMany();
-  // await prisma.dailyPatientExercise.deleteMany();
-  // await prisma.appointment.deleteMany();
-  // await prisma.doctorValidation.deleteMany();
-  // await prisma.question.deleteMany();
-  // await prisma.questionnaire.deleteMany();
-  // await prisma.fieldType.deleteMany();
-  // await prisma.user.deleteMany();
+  await prisma.injury.deleteMany();
+  
+  await prisma.response.deleteMany();
+  await prisma.call.deleteMany();
+  await prisma.message.deleteMany();
+  await prisma.notification.deleteMany();
+  await prisma.dailyPatientExercise.deleteMany();
+  await prisma.patientExercise.deleteMany();
+  await prisma.appointment.deleteMany();
+  await prisma.doctorValidation.deleteMany();
+  await prisma.question.deleteMany();
+  await prisma.assessment.deleteMany();
+  await prisma.questionnaire.deleteMany();
+  await prisma.fieldType.deleteMany();
+  await prisma.patientRecord.deleteMany();
+  await prisma.user.deleteMany();
+
+
 
   
   // Create FieldTypes

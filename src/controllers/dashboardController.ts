@@ -108,19 +108,48 @@ export const insertPatientRecord = async (req: Request, res: Response) => {
       statusCode: STATUS_CODES.NOT_FOUND,
     });
     
-
-    const newRecord = await prisma.patientRecord.create({
-      data: {
-        doctorId,
-        patientId,
-        ic_no,
-        age,
-        gender,
-        weight,
-        height,
-        isDelete: false, // Ensure to set this field if required, with a default value
+    // Check if the patient record already exists
+    const existingRecord = await prisma.patientRecord.findUnique({
+      where: {
+        doctorId_patientId: {
+          doctorId: doctorId,
+          patientId: patientId,
+        },
       },
     });
+
+    let newRecord;
+
+    if (existingRecord) {
+      // Update the existing record's isDelete field to false
+      newRecord = await prisma.patientRecord.update({
+        where: { id: existingRecord.id },
+        data: {
+          isDelete: false,
+          // Optionally update other fields if necessary
+          ic_no,
+          age,
+          gender,
+          weight,
+          height,
+          doctorId,
+        },
+      });
+    } else {
+      // Create a new patient record
+      newRecord = await prisma.patientRecord.create({
+        data: {
+          doctorId,
+          patientId,
+          ic_no,
+          age,
+          gender,
+          weight,
+          height,
+          isDelete: false, // Ensure to set this field if required, with a default value
+        },
+      });
+    }
     return apiResponse({
       res,
       result: newRecord,
