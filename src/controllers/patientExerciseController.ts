@@ -145,7 +145,7 @@ export const getTodayPatientExercises = async (req: Request, res: Response) => {
       where: {
         patientId,
         createdDatetime: {
-          gte: today,
+          gte: today.toISOString(),
         }
       },
       include: {
@@ -159,6 +159,33 @@ export const getTodayPatientExercises = async (req: Request, res: Response) => {
     return apiResponse({
       res,
       result: dailyPatientExercises
+    });
+  } catch (error) {
+    return errorResponse({ res, error });
+  }
+};
+
+export const getTodayPatientExerciseById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set time to the start of the day
+    const dailyPatientExercise = await prisma.dailyPatientExercise.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        patientExercise: {
+          include: {
+            exercise: true,
+          }
+        },
+      }
+    });
+    return apiResponse({
+      res,
+      result: dailyPatientExercise
     });
   } catch (error) {
     return errorResponse({ res, error });
