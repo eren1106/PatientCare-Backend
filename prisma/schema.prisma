@@ -163,7 +163,7 @@ model PatientRecord {
   id              String    @id @default(cuid())
   doctorId        String
   patientId       String
-  ic_no           String 
+  ic_no           String
   age             Int
   gender          Gender
   weight          Decimal
@@ -184,14 +184,14 @@ model PatientRecord {
 }
 
 model Injury {
-  id              String    @id @default(cuid())
+  id              String        @id @default(cuid())
   patientRecordId String
   painRegion      String
-  duration        String 
+  duration        String
   painScore       Int
   description     String
   is_recurrent    Repeated
-  createdDatetime DateTime  @default(now())
+  createdDatetime DateTime      @default(now())
   updatedDatetime DateTime?
   patientRecord   PatientRecord @relation("PatientRecordInjuries", fields: [patientRecordId], references: [id])
 }
@@ -223,7 +223,7 @@ model ExerciseCategory {
 model Exercise {
   id                 String             @id @default(cuid())
   exerciseCategoryId String
-  thumbnail          String?
+  thumbnailUrl       String?
   title              String
   description        String
   duration           Int
@@ -258,6 +258,6 @@ model DailyPatientExercise {
   createdDatetime   DateTime  @default(now())
   completedDatetime DateTime?
 
-  user     User            @relation(fields: [patientId], references: [id])
+  user            User            @relation(fields: [patientId], references: [id])
   patientExercise PatientExercise @relation(fields: [patientExerciseId], references: [id])
 }
