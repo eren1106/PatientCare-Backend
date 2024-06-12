@@ -46,9 +46,9 @@ export const getPatientExerciseById = async (req: Request, res: Response) => {
 };
 
 export const createPatientExercise = async (req: Request, res: Response) => {
-  const {patientId} = req.params;
+  // const {patientId} = req.params;
   const {
-    // patientId,
+    patientId,
     exerciseId,
     sets
   } = req.body;
@@ -59,6 +59,12 @@ export const createPatientExercise = async (req: Request, res: Response) => {
         exerciseId,
         sets
       },
+    });
+    const newDailyPatientExercise = await prisma.dailyPatientExercise.create({
+      data: {
+        patientExerciseId: newPatientExercise.id,
+        patientId
+      }
     });
     return apiResponse({
       res,
@@ -144,9 +150,10 @@ export const getTodayPatientExercises = async (req: Request, res: Response) => {
     const dailyPatientExercises = await prisma.dailyPatientExercise.findMany({
       where: {
         patientId,
-        createdDatetime: {
-          gte: today.toISOString(),
-        }
+        // TODO: uncomment this when want to deploy to cloud
+        // createdDatetime: {
+        //   gte: today.toISOString(),
+        // }
       },
       include: {
         patientExercise: {
