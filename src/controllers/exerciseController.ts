@@ -69,11 +69,11 @@ export const createExercise = async (req: Request, res: Response) => {
 export const updateExercise = async (req: Request, res: Response) => {
   const { id } = req.params;
   const {
-    exerciseCategoryId,
+    // exerciseCategoryId,
     thumbnailUrl,
     title,
     description,
-    duration,
+    // duration,
     difficulty,
     content,
     videoUrl,
@@ -82,11 +82,11 @@ export const updateExercise = async (req: Request, res: Response) => {
     const updatedExercise = await prisma.exercise.update({
       where: { id: id },
       data: {
-        exerciseCategoryId,
+        // exerciseCategoryId,
         thumbnailUrl,
         title,
         description,
-        duration,
+        // duration,
         difficulty,
         content,
         videoUrl,
