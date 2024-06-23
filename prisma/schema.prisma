@@ -52,6 +52,7 @@ model User {
   lastLoginDatetime DateTime?
   createdDatetime   DateTime     @default(now())
   updatedDatetime   DateTime?
+  isDelete          Boolean      @default(false)
 
   callTo               Call[]                 @relation("CallTo")
   callFrom             Call[]                 @relation("CallFrom")
@@ -122,7 +123,7 @@ model Questionnaire {
   createdDatetime DateTime  @default(now())
   updatedDatetime DateTime?
   isDelete        Boolean   @default(false)
-  
+
   author     User         @relation(fields: [authorId], references: [id])
   question   Question[]   @relation("QuestionnaireQuestion")
   assessment Assessment[]
