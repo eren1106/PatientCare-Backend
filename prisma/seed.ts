@@ -1,3 +1,5 @@
+import { Gender } from "@prisma/client";
+
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
@@ -25,6 +27,10 @@ async function main() {
       password: 'securepassword',
       signinMethod: 'EMAILPASSWORD',
       role: 'PATIENT',
+      fullname: 'John Doe',
+      age: 22,
+      gender: Gender.MALE,
+      ic: "020203023456",
     },
   });
 
@@ -35,6 +41,10 @@ async function main() {
       password: 'securepassword',
       signinMethod: 'GOOGLE',
       role: 'DOCTOR',
+      fullname: 'Jane Doe',
+      age: 26,
+      gender: Gender.MALE,
+      ic: "980304067891",
     },
   });
 
@@ -45,28 +55,48 @@ async function main() {
       password: 'securepassword',
       signinMethod: 'GOOGLE',
       role: 'PATIENT',
+      fullname: 'Wu Bang',
+      age: 22,
+      gender: Gender.MALE,
+      ic: "020203027897",
     },
   });
 
   const user4 = await prisma.user.create({
     data: {
-      username: 'zhenen',
-      email: 'wubang@example.com',
+      username: 'zilii',
+      email: 'zilii@example.com',
       password: 'securepassword',
-      signinMethod: 'GOOGLE',
+      signinMethod: 'EMAILPASSWORD',
       role: 'PATIENT',
+      fullname: 'Zi Lii',
+      age: 22,
+      gender: Gender.MALE,
+      ic: "021212025555",
     },
   });
 
-  const user5 = await prisma.user.create({
-    data: {
-      username: 'wubang2',
-      email: 'wuban2g@example.com',
-      password: 'securepassword',
-      signinMethod: 'GOOGLE',
-      role: 'PATIENT',
-    },
-  });
+  // const user4 = await prisma.user.create({
+  //   data: {
+  //     username: 'zhenen',
+  //     email: 'zhenen@example.com',
+  //     password: 'securepassword',
+  //     signinMethod: 'GOOGLE',
+  //     role: 'PATIENT',
+  //     fullname: 'Zhen En',
+  //   },
+  // });
+
+  // const user5 = await prisma.user.create({
+  //   data: {
+  //     username: 'wubang2',
+  //     email: 'wuban2g@example.com',
+  //     password: 'securepassword',
+  //     signinMethod: 'GOOGLE',
+  //     role: 'PATIENT',
+  //     fullname: 'Zheng Wu Bang',
+  //   },
+  // });
 
   // Create Questionnaires
   const questionnaire1 = await prisma.questionnaire.create({
