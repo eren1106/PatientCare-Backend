@@ -40,6 +40,10 @@ model User {
   id                String       @id @default(cuid())
   username          String       @unique
   email             String       @unique
+  ic                String       @unique
+  fullname          String
+  age               Int
+  gender            Gender
   password          String
   signinMethod      SignInMethod
   role              UserRole
