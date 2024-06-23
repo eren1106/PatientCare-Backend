@@ -19,6 +19,27 @@ export const getAllQuestionnaires = async (req: Request, res: Response) => {
     }
 };
 
+export const getAllAssessmentByPatientId = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const assessment = await prisma.assessment.findMany({
+      where : {
+        // isDelete : false
+        userId : id
+      },
+      include : {
+        questionnaire : true
+      }
+    });
+    return apiResponse({
+      res,
+      result: assessment
+    });
+  } catch (error) {
+    return errorResponse({ res, error });
+  }
+};
+
 export const getQuestionnaireById = async (req: Request, res: Response) => {
   const { id } = req.params;
   
@@ -44,6 +65,49 @@ export const getQuestionnaireById = async (req: Request, res: Response) => {
     return errorResponse({ res, error });
   }
 };
+
+export const createAssessment = async (req: Request, res: Response) => {
+  try {
+    const { userId, questionnaireId, recordId } = req.body.assessment;
+    const assessmentData = {
+      userId,
+      questionnaire: {
+        connect: { id: questionnaireId }
+      },
+      patientRecord: {
+        connect: { id: recordId }
+      }
+    };
+
+
+    const assessment = await prisma.assessment.create({
+      data: assessmentData
+    });
+    return apiResponse({
+      res,
+      result: assessment
+    });
+  } catch (error) {
+    return errorResponse({ res, error });
+  }
+};
+
+export const deleteAssessment = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const assessment = await prisma.assessment.delete({
+      where : {
+        id : id
+      }
+    });
+    return apiResponse({
+      res,
+      result: assessment
+    });
+  } catch (error) {
+    return errorResponse({ res, error });
+  }
+}
 
 export const createQuestionnaire = async (req: Request, res: Response) => {
   const { title, description, type, questions} = req.body.questionnaire;

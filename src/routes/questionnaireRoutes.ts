@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createQuestionnaire, deleteQuestionnaire, getAllQuestionnaires, getQuestionnaireById } from '../controllers/questionnaireController';
+import { createAssessment, createQuestionnaire, deleteAssessment, deleteQuestionnaire, getAllAssessmentByPatientId, getAllQuestionnaires, getQuestionnaireById } from '../controllers/questionnaireController';
 
 const router = Router();
 
@@ -35,6 +35,24 @@ router.get('/', getAllQuestionnaires);
  */
 router.get('/:id', getQuestionnaireById);
 
+/**
+ * @swagger
+ * /api/questionnaire/patient/{id}:
+ *   get:
+ *     summary: Get questionnaires assgined to patient
+ *     tags:
+ *       - questionnaires
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: A list of questionnaires
+ */
+router.get('/patient/:id', getAllAssessmentByPatientId);
 
 /**
  * @swagger
@@ -89,6 +107,10 @@ router.get('/:id', getQuestionnaireById);
  */
 router.post('/create', createQuestionnaire);
 
+router.post('/assessment', createAssessment);
+
 router.put('/:id', deleteQuestionnaire);
+
+router.delete('/assessment/:id', deleteAssessment);
 
 export { router as questionnaireRoutes };
