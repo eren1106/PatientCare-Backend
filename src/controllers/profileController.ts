@@ -18,7 +18,7 @@ export const getProfileById = async (req: Request, res: Response) => {
         patientExercise: true,
       }
     });
-    if (!user) return errorResponse({ res, error: "No Result Found", statusCode: STATUS_CODES.NOT_FOUND });
+    if (!user || user.isDelete) return errorResponse({ res, error: "No Result Found", statusCode: STATUS_CODES.NOT_FOUND });
     if (user.role === UserRole.PATIENT) {
       const { patientRecordPatient, ...patient } = user;
       const patientResult: any = patient;
@@ -61,6 +61,29 @@ export const updateProfile = async (req: Request, res: Response) => {
       res,
       result: updatedProfile,
       message: "Profile updated"
+    });
+  } catch (error) {
+    return errorResponse({ res, error });
+  }
+};
+
+export const deleteProfile = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const deletedUser = await prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        isDelete: true,
+      }
+    });
+
+    return apiResponse({
+      res,
+      result: deletedUser,
+      message: "Deleted Account Successfully"
     });
   } catch (error) {
     return errorResponse({ res, error });
