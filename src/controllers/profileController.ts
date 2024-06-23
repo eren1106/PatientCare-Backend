@@ -38,3 +38,31 @@ export const getProfileById = async (req: Request, res: Response) => {
     return errorResponse({ res, error });
   }
 };
+
+export const updateProfile = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const {
+    fullname,
+    gender,
+    age,
+    ic,
+  } = req.body;
+  try {
+    const updatedProfile = await prisma.user.update({
+      where: { id: id },
+      data: {
+        fullname,
+        gender,
+        age,
+        ic,
+      },
+    });
+    return apiResponse({
+      res,
+      result: updatedProfile,
+      message: "Profile updated"
+    });
+  } catch (error) {
+    return errorResponse({ res, error });
+  }
+};
