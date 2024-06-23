@@ -6,27 +6,6 @@ const prisma = new PrismaClient();
 async function main() {
   // npx prisma db push --force-reset  <= CLEAN ALL TABLE DATA WITH THIS COMMENT
 
-  // Clean the database
-  // await prisma.injury.deleteMany();
-  
-  // await prisma.response.deleteMany();
-  // await prisma.call.deleteMany();
-  // await prisma.message.deleteMany();
-  // await prisma.notification.deleteMany();
-  // await prisma.dailyPatientExercise.deleteMany();
-  // await prisma.patientExercise.deleteMany();
-  // await prisma.appointment.deleteMany();
-  // await prisma.doctorValidation.deleteMany();
-  // await prisma.question.deleteMany();
-  // await prisma.assessment.deleteMany();
-  // await prisma.questionnaire.deleteMany();
-  // await prisma.fieldType.deleteMany();
-  // await prisma.patientRecord.deleteMany();
-  // await prisma.user.deleteMany();
-
-
-
-  
   // Create FieldTypes
   const fieldType1 = await prisma.fieldType.create({
     data: {
@@ -122,9 +101,9 @@ async function main() {
   // Create Questionnaires
   const questionnaire1 = await prisma.questionnaire.create({
     data: {
-      title: 'Health Check',
-      description: 'Basic health check questionnaire',
-      type: 'General',
+      title: 'Shoulder Pain and Disability Index (SPADI)',
+      description: 'The Shoulder Pain and Disability Index (SPADI) is a self-administered questionnaire that consists of two dimensions, one for pain and the other for functional activities. The pain dimension consists of five questions regarding the severity of an individuals pain. Functional activities are assessed with eight questionsdesigned to measure the degree of difficulty an individual has with various activities of daily living that require upper-extremity use. The SPADI takes 5 to 10 minutes for a patient to complete and is the only reliable and valid region-specific measure for the shoulder.',
+      type: 'Shoulder',
       authorId: user1.id,
     },
   });
@@ -149,6 +128,44 @@ async function main() {
     },
   });
 
+  const question3 = await prisma.question.create({
+    data: {
+      title: 'How severe is your pain? Choose the number that best describes your pain',
+      fieldTypeId: fieldType2.id,
+      questionnaire: {
+        connect: { id: questionnaire1.id },
+      },
+    },
+  });
+
+  const option4 = await prisma.option.create({
+    data : {
+      content: '0 - No pain', 
+      questionId: question3.id
+    }
+  });
+
+  const option5 = await prisma.option.create({
+    data : {
+      content: '1 - Less pain', 
+      questionId: question3.id
+    }
+  });
+
+  const option6 = await prisma.option.create({
+    data : {
+      content: '2 - Pain', 
+      questionId: question3.id
+    }
+  });
+
+  const option7 = await prisma.option.create({
+    data : {
+      content: '3 - Very Pain', 
+      questionId: question3.id
+    }
+  });
+  
   const question2 = await prisma.question.create({
     data: {
       title: 'Do you have any chronic diseases?',
@@ -157,6 +174,28 @@ async function main() {
         connect: { id: questionnaire2.id },
       },
     },
+  });
+
+
+  const option1 = await prisma.option.create({
+    data: {
+      content: 'Daily', 
+      questionId: question1.id
+    },
+  });
+
+  const option2 = await prisma.option.create({
+    data : {
+      content: 'Weekly', 
+      questionId: question1.id
+    }
+  });
+
+  const option3 = await prisma.option.create({
+    data : {
+      content: 'Monthly', 
+      questionId: question1.id
+    }
   });
 
   // Create Patient Records

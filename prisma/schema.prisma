@@ -121,7 +121,8 @@ model Questionnaire {
   authorId        String
   createdDatetime DateTime  @default(now())
   updatedDatetime DateTime?
-
+  isDelete        Boolean   @default(false)
+  
   author     User         @relation(fields: [authorId], references: [id])
   question   Question[]   @relation("QuestionnaireQuestion")
   assessment Assessment[]
@@ -135,6 +136,14 @@ model Question {
   fieldType     FieldType       @relation(fields: [fieldTypeId], references: [id])
   response      Response[]
   questionnaire Questionnaire[] @relation("QuestionnaireQuestion")
+  option        Option[]
+}
+
+model Option {
+  id         String   @id @default(cuid())
+  content    String
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id])
 }
 
 model Response {
