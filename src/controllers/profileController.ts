@@ -15,12 +15,14 @@ export const getProfileById = async (req: Request, res: Response) => {
             doctor: true,
           }
         },
+        patientRecordDoctor: true,
         patientExercise: true,
+        doctorValidation: true,
       }
     });
     if (!user || user.isDelete) return errorResponse({ res, error: "No Result Found", statusCode: STATUS_CODES.NOT_FOUND });
     if (user.role === UserRole.PATIENT) {
-      const { patientRecordPatient, ...patient } = user;
+      const { patientRecordPatient, patientRecordDoctor, doctorValidation, ...patient } = user;
       const patientResult: any = patient;
       patientResult.patientRecord = patientRecordPatient[0];
       return apiResponse({
@@ -30,9 +32,12 @@ export const getProfileById = async (req: Request, res: Response) => {
     }
 
     // USER ROLE IS DOCTOR
+    const { patientRecordPatient, patientRecordDoctor, patientExercise, ...doctor } = user;
+    const doctorResult: any = doctor;
+    doctorResult.patientRecord = patientRecordDoctor;
     return apiResponse({
       res,
-      result: user,
+      result: doctorResult,
     });
   } catch (error) {
     return errorResponse({ res, error });

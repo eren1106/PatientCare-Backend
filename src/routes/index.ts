@@ -5,12 +5,14 @@ import { patientExerciseRoutes } from './patientExerciseRoutes';
 import { dashboardRoutes } from './dashboardRoutes'
 import { profileRoutes } from './profileRoutes';
 import { questionnaireRoutes } from './questionnaireRoutes';
+import { authRoutes } from './authRoutes';
 const router = Router();
 
 router.get('/', (req: Request, res: Response) => {
   res.send('Welcome to the API');
 });
 
+router.use('/auth', authRoutes);
 router.use('/exercises', exerciseRoutes);
 router.use('/dashboard', dashboardRoutes)
 router.use('/questionnaire', questionnaireRoutes)
