@@ -48,12 +48,17 @@ export const apiResponse = ({ res, result, message, extra }: { res: Response; re
   return apiResponseWrapper(res, response);
 };
 
-export const errorResponse = ({ res, error, result, statusCode }: { res: Response; error: any; result?: any; statusCode?: number }) => {
+export const errorResponse = ({
+  res,
+  error,
+  result,
+  statusCode = STATUS_CODES.INTERNAL_SERVER_ERROR
+}: { res: Response; error: any; result?: any; statusCode?: number }) => {
   return apiResponseWrapper(res, {
     message: error,
     extra: result,
     status: 'FAILED',
-    statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
+    statusCode: statusCode,
   });
 };
 
