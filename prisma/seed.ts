@@ -98,6 +98,79 @@ async function main() {
   //   },
   // });
 
+  const message = await prisma.message.createMany({
+    data: [
+      // Messages between user2 and user1
+      {
+        message: 'Hey, how are you?',
+        fromUserId: user2.id,
+        toUserId: user1.id,
+      },
+      {
+        message: 'I am good! How about you?',
+        fromUserId: user1.id,
+        toUserId: user2.id,
+      },
+      {
+        message: 'Just working on a new project.',
+        fromUserId: user2.id,
+        toUserId: user1.id,
+      },
+      {
+        message: 'That sounds interesting!',
+        fromUserId: user1.id,
+        toUserId: user2.id,
+      },
+  
+      // Messages between user2 and user3
+      {
+        message: 'Hey, user3, are you available this week?',
+        fromUserId: user2.id,
+        toUserId: user3.id,
+      },
+      {
+        message: 'I might be free on Friday, what’s up?',
+        fromUserId: user3.id,
+        toUserId: user2.id,
+      },
+      {
+        message: 'I wanted to discuss a project idea with you.',
+        fromUserId: user2.id,
+        toUserId: user3.id,
+      },
+      {
+        message: 'Sure, let’s meet on Friday then.',
+        fromUserId: user3.id,
+        toUserId: user2.id,
+      },
+  
+      // Messages between user2 and user4
+      {
+        message: 'Hi user4, do you have time to chat?',
+        fromUserId: user2.id,
+        toUserId: user4.id,
+      },
+      {
+        message: 'Yes, what do you want to talk about?',
+        fromUserId: user4.id,
+        toUserId: user2.id,
+      },
+      {
+        message: 'It’s about a collaboration opportunity.',
+        fromUserId: user2.id,
+        toUserId: user4.id,
+      },
+      {
+        message: 'I’m interested! Let’s discuss more.',
+        fromUserId: user4.id,
+        toUserId: user2.id,
+      },
+    ],
+  });
+
+  
+
+
   // Create Questionnaires
   const questionnaire1 = await prisma.questionnaire.create({
     data: {

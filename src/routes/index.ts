@@ -6,6 +6,7 @@ import { dashboardRoutes } from './dashboardRoutes'
 import { profileRoutes } from './profileRoutes';
 import { questionnaireRoutes } from './questionnaireRoutes';
 import { authRoutes } from './authRoutes';
+import { chatRoutes } from './chatRoutes';
 const router = Router();
 
 router.get('/', (req: Request, res: Response) => {
@@ -18,5 +19,8 @@ router.use('/dashboard', dashboardRoutes)
 router.use('/questionnaire', questionnaireRoutes)
 router.use('/patients/:patientId/exercises', patientExerciseRoutes);
 router.use('/profile', profileRoutes);
+router.use('/profile', profileRoutes);
+router.use('/chat', chatRoutes);
+
 
 export default router;
