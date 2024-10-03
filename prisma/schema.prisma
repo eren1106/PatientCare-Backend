@@ -96,6 +96,7 @@ model Notification {
   userId          String
   title           String
   message         String
+  isRead          Boolean  @default(false)
   redirectUrl     String?
   createdDatetime DateTime @default(now())
 
@@ -219,7 +220,7 @@ model Appointment {
   doctorId        String
   patientId       String
   createdDatetime DateTime  @default(now())
-  updatedDatetime DateTime?
+  updatedDatetime DateTime? @updatedAt
 
   doctor        User           @relation("AppointmentDoctor", fields: [doctorId], references: [id])
   patient       User           @relation("AppointmentPatient", fields: [patientId], references: [id])

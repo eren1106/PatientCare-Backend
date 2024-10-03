@@ -42,6 +42,31 @@ export const createAppointment = async (req: Request, res: Response) => {
   const { title, description, startTime, endTime, doctorId, patientId } = req.body;
 
   try {
+    // Check if there's any appointment that overlaps with the provided time for the same doctor
+    const overlappingAppointments = await prisma.appointment.findMany({
+      where: {
+        doctorId,
+        OR: [
+          {
+            startTime: {
+              lte: new Date(endTime),
+            },
+            endTime: {
+              gte: new Date(startTime),
+            },
+          },
+        ],
+      },
+    });
+
+    if (overlappingAppointments.length > 0) {
+      return errorResponse({
+        res,
+        error: 'Appointment time clashes with an existing appointment.',
+      });
+    }
+
+    // Proceed with appointment creation
     const newAppointment = await prisma.appointment.create({
       data: {
         title,
@@ -52,6 +77,7 @@ export const createAppointment = async (req: Request, res: Response) => {
         patientId,
       },
     });
+
     return apiResponse({
       res,
       result: newAppointment,
@@ -67,6 +93,32 @@ export const updateAppointment = async (req: Request, res: Response) => {
   const { title, description, startTime, endTime, doctorId, patientId } = req.body;
 
   try {
+    // Check if there's any other appointment that overlaps with the provided time for the same doctor
+    const overlappingAppointments = await prisma.appointment.findMany({
+      where: {
+        doctorId,
+        id: { not: id }, // Exclude the current appointment being updated
+        OR: [
+          {
+            startTime: {
+              lte: new Date(endTime),
+            },
+            endTime: {
+              gte: new Date(startTime),
+            },
+          },
+        ],
+      },
+    });
+
+    if (overlappingAppointments.length > 0) {
+      return errorResponse({
+        res,
+        error: 'Appointment time clashes with an existing appointment.',
+      });
+    }
+
+    // Proceed with appointment update
     const updatedAppointment = await prisma.appointment.update({
       where: { id },
       data: {
@@ -79,6 +131,7 @@ export const updateAppointment = async (req: Request, res: Response) => {
         updatedDatetime: new Date(),
       },
     });
+
     return apiResponse({
       res,
       result: updatedAppointment,
@@ -88,6 +141,7 @@ export const updateAppointment = async (req: Request, res: Response) => {
     return errorResponse({ res, error });
   }
 };
+
 
 export const deleteAppointment = async (req: Request, res: Response) => {
   const { id } = req.params;
