@@ -10,13 +10,6 @@ interface ChatMessage {
   name: string;
 }
 
-interface ChatUser {
-  id: string;
-  name: string;
-  profileImageUrl: string;
-  messages: ChatMessage[];
-}
-
 
 
 export const getAllChatsForUser = async (req: Request, res: Response) => {
@@ -101,6 +94,12 @@ export const getChatMessages = async (req: Request, res: Response) => {
             id: true,
             fullname: true
           }
+        },
+        userTo: {
+          select: {
+            id: true,
+            fullname: true
+          }
         }
       }
     });
@@ -110,7 +109,9 @@ export const getChatMessages = async (req: Request, res: Response) => {
       message: message.message,
       createdDatetime: message.createdDatetime,
       fromUserId: message.fromUserId,
-      fromUserName: message.userFrom.fullname
+      fromUserName: message.userFrom.fullname,
+      toUserId: message.toUserId,
+      toUserName: message.userTo.fullname
     }));
 
     return apiResponse({
@@ -139,6 +140,12 @@ export const sendMessage = async (req: Request, res: Response) => {
             id: true,
             fullname: true
           }
+        },
+        userTo: {
+          select: {
+            id: true,
+            fullname: true
+          }
         }
       }
     });
@@ -148,7 +155,7 @@ export const sendMessage = async (req: Request, res: Response) => {
       message: newMessage.message,
       createdDatetime: newMessage.createdDatetime,
       fromUserId: newMessage.fromUserId,
-      fromUserName: newMessage.userFrom.fullname
+      fromUserName: newMessage.userFrom.fullname,
     };
 
     return apiResponse({
