@@ -100,7 +100,7 @@ model Notification {
   redirectUrl     String?
   createdDatetime DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Assessment {
@@ -222,8 +222,8 @@ model Appointment {
   createdDatetime DateTime  @default(now())
   updatedDatetime DateTime? @updatedAt
 
-  doctor        User           @relation("AppointmentDoctor", fields: [doctorId], references: [id])
-  patient       User           @relation("AppointmentPatient", fields: [patientId], references: [id])
+  doctor        User           @relation("AppointmentDoctor", fields: [doctorId], references: [id], onDelete: Cascade)
+  patient       User           @relation("AppointmentPatient", fields: [patientId], references: [id], onDelete: Cascade)
   patientRecord PatientRecord? @relation("PatientRecordAppointment", fields: [doctorId, patientId], references: [doctorId, patientId])
 }
 
