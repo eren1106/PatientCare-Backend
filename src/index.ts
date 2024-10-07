@@ -1,66 +1,54 @@
-import express from 'express';
-import { Server } from 'socket.io';
+import express from "express";
+import { Server } from "socket.io";
 import { createServer } from "http";
-import bodyParser from 'body-parser';
-import routes from './routes';
-import errorHandler from './middleware/errorHandler';
-import swaggerDocs from './utils/swagger';
-import cors from 'cors';
-import cron from 'node-cron';
-import { createNewDailyPatientExercises } from './crons/refreshExercisesCron';
+import bodyParser from "body-parser";
+import routes from "./routes";
+import errorHandler from "./middleware/errorHandler";
+import swaggerDocs from "./utils/swagger";
+import cors from "cors";
+import cron from "node-cron";
+import { createNewDailyPatientExercises } from "./crons/refreshExercisesCron";
 
 const app = express();
 const httpServer = createServer(app);
 
 const corsOptions = {
-   origin: "http://localhost:5173", 
-   methods: ["GET", "POST"],
-   credentials: true
+  origin: "http://localhost:5173",
+  methods: ["GET", "POST"],
+  credentials: true,
 };
-
 
 const io = new Server(httpServer, {
   cors: corsOptions,
-  path: '/api/socket.io' 
+  path: "/api/socket.io",
 });
 
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
 app.use(errorHandler);
-app.use('/api', routes);
+app.use("/api", routes);
 
 // CRON JOBS
-cron.schedule('0 0 * * *', createNewDailyPatientExercises); // Schedule the refresh exercises cron job to run at midnight every day
+cron.schedule("0 0 * * *", createNewDailyPatientExercises); // Schedule the refresh exercises cron job to run at midnight every day
 
 // Socket.IO connection handling
-io.on('connection', (socket) => {
-  console.log('A user connected');
+io.on("connection", (socket) => {
+  console.log('User connected:', socket.id)
 
-  // Join a room (in this case, the user's ID)
-  socket.on('join', (userId) => {
+  socket.on("join", (userId : string) => {
     socket.join(userId);
     console.log(`User ${userId} joined their room`);
   });
 
-  // Handle new messages
-  socket.on('sendMessage', async (data) => {
-    console.log('Received message:', data);
-    const { fromUserId, toUserId, message } = data;
-    
-    const newMessage = {
-      fromUserId,
-      toUserId,
-      message,
-    };
-    // Emit to both sender and recipient
- io.to(fromUserId).emit('newMessage', newMessage);
- io.to(toUserId).emit('newMessage', newMessage);
- 
-    console.log('Emitted message to:', fromUserId, 'and', toUserId);
+  socket.on('sendMessage', ({ fromUserId, toUserId, message }) => {
+    const newMessage = { fromUserId, toUserId, message };
+    io.to(fromUserId).emit('newMessage', newMessage);
+    io.to(toUserId).emit('newMessage', newMessage);
+    console.log(`Message sent from ${fromUserId} to ${toUserId}`);
   });
 
-  socket.on('disconnect', () => {
-    console.log('User disconnected');
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
   });
 });
 
