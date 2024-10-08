@@ -3,13 +3,53 @@ import { Request, Response } from "express";
 import prisma from "../lib/prisma";
 import { apiResponse } from "../utils/api-response.util";
 
-interface ChatMessage {
-  id: string;
-  message: string;
-  created_datetime: Date;
-  name: string;
-}
 
+export const findUsersForNewConversation = async (req: Request, res: Response) => {
+  const userId = req.params.userId;
+
+  try {
+    // Find all users that the current user has already chatted with
+    const existingChats = await prisma.message.findMany({
+      where: {
+        OR: [
+          { fromUserId: userId },
+          { toUserId: userId }
+        ]
+      },
+      select: {
+        fromUserId: true,
+        toUserId: true
+      }
+    });
+
+    // Create a set of user IDs to exclude (including the current user)
+    const excludeUserIds = new Set([userId, ...existingChats.flatMap(chat => [chat.fromUserId, chat.toUserId])]);
+
+    // Find all users not in the exclude set
+    const availableUsers = await prisma.user.findMany({
+      where: {
+        id: {
+          notIn: Array.from(excludeUserIds)
+        },
+        isDelete: false
+      },
+      select: {
+        id: true,
+        fullname: true,
+        profileImageUrl: true,
+        role: true
+      }
+    });
+
+    return apiResponse({
+      res,
+      result: availableUsers
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch available users for new conversation' });
+  }
+};
 
 
 export const getAllChatsForUser = async (req: Request, res: Response) => {
