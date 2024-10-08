@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllChatsForUser, getChatMessages, sendMessage } from '../controllers/chatController';
+import { findUsersForNewConversation, getAllChatsForUser, getChatMessages, sendMessage } from '../controllers/chatController';
 
 
 const router = Router();
@@ -7,6 +7,49 @@ const router = Router();
 router.get('/all/:id', getAllChatsForUser);
 router.get('/messages/:fromUserId/:toUserId', getChatMessages);
 router.post('/send', sendMessage);
+router.get('/newconversation/:userId', findUsersForNewConversation);
+
+/**
+ * @swagger
+ * /api/chat/newconversation/{userId}:
+ *   get:
+ *     summary: Find users available for new conversation
+ *     tags:
+ *       - Chats
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of the current user
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved available users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 result:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                       fullname:
+ *                         type: string
+ *                       profileImageUrl:
+ *                         type: string
+ *                         nullable: true
+ *                       role:
+ *                         type: string
+ *                         enum: [PATIENT, DOCTOR, ADMIN]
+ *       500:
+ *         description: Server error
+ */
+
 
 /**
  * @swagger
