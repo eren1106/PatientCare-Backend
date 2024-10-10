@@ -39,7 +39,7 @@ export const getAppointmentById = async (req: Request, res: Response) => {
 };
 
 export const createAppointment = async (req: Request, res: Response) => {
-  const { title, description, startTime, endTime, doctorId, patientId } = req.body;
+  const { title, description, date, startTime, endTime, doctorId, patientId } = req.body;
 
   try {
     // Check if there's any appointment that overlaps with the provided time for the same doctor
@@ -71,6 +71,7 @@ export const createAppointment = async (req: Request, res: Response) => {
       data: {
         title,
         description,
+        date: new Date(date),
         startTime: new Date(startTime),
         endTime: new Date(endTime),
         doctorId,
@@ -90,7 +91,7 @@ export const createAppointment = async (req: Request, res: Response) => {
 
 export const updateAppointment = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { title, description, startTime, endTime, doctorId, patientId } = req.body;
+  const { title, description, date, startTime, endTime, doctorId, patientId } = req.body;
 
   try {
     // Check if there's any other appointment that overlaps with the provided time for the same doctor
@@ -124,6 +125,7 @@ export const updateAppointment = async (req: Request, res: Response) => {
       data: {
         title,
         description,
+        date: new Date(date),
         startTime: new Date(startTime),
         endTime: new Date(endTime),
         doctorId,

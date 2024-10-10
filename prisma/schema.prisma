@@ -215,6 +215,7 @@ model Appointment {
   id              String    @id @default(cuid())
   title           String
   description     String
+  date            DateTime
   startTime       DateTime
   endTime         DateTime
   doctorId        String
