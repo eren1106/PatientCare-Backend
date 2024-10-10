@@ -225,7 +225,7 @@ model Appointment {
 
   doctor        User           @relation("AppointmentDoctor", fields: [doctorId], references: [id], onDelete: Cascade)
   patient       User           @relation("AppointmentPatient", fields: [patientId], references: [id], onDelete: Cascade)
-  patientRecord PatientRecord? @relation("PatientRecordAppointment", fields: [doctorId, patientId], references: [doctorId, patientId])
+  patientRecord PatientRecord @relation("PatientRecordAppointment", fields: [doctorId, patientId], references: [doctorId, patientId])
 }
 
 model ExerciseCategory {

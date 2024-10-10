@@ -3,3 +3,10 @@
   const videoId = videoIdMatch ? videoIdMatch[1] : null;
   return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null;
 }
+
+export const removeUndefinedFields = (obj: any): any => {
+  return Object.fromEntries(
+    Object.entries(obj)
+      .filter(([_, value]) => value !== undefined)
+  );
+};
