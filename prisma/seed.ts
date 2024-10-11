@@ -98,6 +98,119 @@ async function main() {
   //   },
   // });
 
+  const message = await prisma.message.createMany({
+    data: [
+      // Messages between user2 and user1
+      {
+        message: 'Hey, how are you?',
+        fromUserId: user2.id,
+        toUserId: user1.id,
+      },
+      {
+        message: 'I am good! How about you?',
+        fromUserId: user1.id,
+        toUserId: user2.id,
+      },
+      {
+        message: 'Just working on a new project.',
+        fromUserId: user2.id,
+        toUserId: user1.id,
+      },
+      {
+        message: 'That sounds interesting!',
+        fromUserId: user1.id,
+        toUserId: user2.id,
+      },
+  
+      // Messages between user2 and user3
+      {
+        message: 'Hey, user3, are you available this week?',
+        fromUserId: user2.id,
+        toUserId: user3.id,
+      },
+      {
+        message: 'I might be free on Friday, what’s up?',
+        fromUserId: user3.id,
+        toUserId: user2.id,
+      },
+      {
+        message: 'I wanted to discuss a project idea with you.',
+        fromUserId: user2.id,
+        toUserId: user3.id,
+      },
+      {
+        message: 'Sure, let’s meet on Friday then.',
+        fromUserId: user3.id,
+        toUserId: user2.id,
+      },
+  
+      // Messages between user2 and user4
+      {
+        message: 'Hi user4, do you have time to chat?',
+        fromUserId: user2.id,
+        toUserId: user4.id,
+      },
+      {
+        message: 'Yes, what do you want to talk about?',
+        fromUserId: user4.id,
+        toUserId: user2.id,
+      },
+      {
+        message: 'It’s about a collaboration opportunity.',
+        fromUserId: user2.id,
+        toUserId: user4.id,
+      },
+      {
+        message: 'I’m interested! Let’s discuss more.',
+        fromUserId: user4.id,
+        toUserId: user2.id,
+      },
+    ],
+  });
+
+  const calls = await prisma.call.createMany({
+    data: [
+      {
+        toUserId: user2.id,
+        fromUserId: user1.id,
+        status: 'ACCEPTED',
+        createdDatetime: new Date('2023-05-01T10:00:00Z'),
+        duration: 300, 
+      },
+      {
+        toUserId: user1.id,
+        fromUserId: user3.id,
+        status: 'MISSED',
+        createdDatetime: new Date('2023-05-02T14:30:00Z'),
+        duration: 0,
+      },
+      {
+        toUserId: user4.id,
+        fromUserId: user1.id,
+        status: 'ACCEPTED',
+        createdDatetime: new Date('2023-05-03T09:15:00Z'),
+        duration: 180, 
+      },
+      {
+        toUserId: user1.id,
+        fromUserId: user2.id,
+        status: 'ACCEPTED',
+        createdDatetime: new Date('2023-05-04T16:45:00Z'),
+        duration: 600, 
+      },
+      {
+        toUserId: user3.id,
+        fromUserId: user1.id,
+        status: 'REJECTED',
+        createdDatetime: new Date('2023-05-05T11:20:00Z'),
+        duration: 0,
+      },
+    ],
+  });
+
+  
+
+
   // Create Questionnaires
   const questionnaire1 = await prisma.questionnaire.create({
     data: {

@@ -8,6 +8,7 @@ import { authRoutes } from './authRoutes';
 import { appointmentRoutes } from './appointmentRoutes';
 import { notificationRoutes } from './notificationRoutes';
 import { userRoutes } from './userRoutes';
+import { chatRoutes } from './chatRoutes';
 const router = Router();
 
 router.get('/', (req: Request, res: Response) => {
@@ -23,5 +24,7 @@ router.use('/profile', profileRoutes);
 router.use('/appointments', appointmentRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/users', userRoutes);
+router.use('/chat', chatRoutes);
+
 
 export default router;
