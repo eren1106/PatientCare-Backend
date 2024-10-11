@@ -1,5 +1,6 @@
 import { Response } from "express";
 import { STATUS_CODES } from "../constants";
+import { removeUndefinedFields } from "./utils";
 
 interface IApiResponse {
   message: string;
@@ -28,11 +29,17 @@ const apiResponseWrapper = (
     status,
     extra,
   };
-  console.log(response);
-  return res.status(statusCode).json(response);
+  const cleanRes = removeUndefinedFields(response); // TODO: test if this affect performance alot, if alot then just remove
+  console.log(cleanRes);
+  return res.status(statusCode).json(cleanRes);
 };
 
-export const apiResponse = ({ res, result, message, extra }: { res: Response; result: any; message?: string; extra?: any }) => {
+export const apiResponse = ({
+  res,
+  result,
+  message,
+  extra = undefined
+}: { res: Response; result: any; message?: string; extra?: any }) => {
   if (Array.isArray(result) && result.length === 0) {
     return noResultArrayResponse(res);
   }
@@ -48,12 +55,34 @@ export const apiResponse = ({ res, result, message, extra }: { res: Response; re
   return apiResponseWrapper(res, response);
 };
 
-export const errorResponse = ({ res, error, result, statusCode }: { res: Response; error: any; result?: any; statusCode?: number }) => {
+export const errorResponse = ({
+  res,
+  error,
+  result = undefined,
+  statusCode = STATUS_CODES.INTERNAL_SERVER_ERROR
+}: { res: Response; error: any; result?: any; statusCode?: number }) => {
   return apiResponseWrapper(res, {
     message: error,
     extra: result,
     status: 'FAILED',
-    statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
+    statusCode: statusCode,
+  });
+};
+
+export const customResponse = ({
+  res,
+  message = "",
+  result = undefined,
+  status = 'SUCESS',
+  statusCode = STATUS_CODES.OK,
+  extra = undefined,
+}: { res: Response; message?: string; result?: any; status?: string; statusCode?: number, extra?: any }) => {
+  return apiResponseWrapper(res, {
+    message,
+    data: result,
+    status,
+    statusCode: statusCode || STATUS_CODES.INTERNAL_SERVER_ERROR,
+    extra,
   });
 };
 

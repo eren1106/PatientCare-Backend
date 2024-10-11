@@ -102,10 +102,11 @@ model Notification {
   userId          String
   title           String
   message         String
+  isRead          Boolean  @default(false)
   redirectUrl     String?
   createdDatetime DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Assessment {
@@ -217,18 +218,20 @@ model Injury {
 }
 
 model Appointment {
-  id                String    @id @default(cuid())
-  title             String
-  description       String
-  scheduledDatetime DateTime
-  doctorId          String
-  patientId         String
-  createdDatetime   DateTime  @default(now())
-  updatedDatetime   DateTime?
+  id              String    @id @default(cuid())
+  title           String
+  description     String
+  date            DateTime
+  startTime       DateTime
+  endTime         DateTime
+  doctorId        String
+  patientId       String
+  createdDatetime DateTime  @default(now())
+  updatedDatetime DateTime? @updatedAt
 
-  userDoctor    User           @relation("AppointmentDoctor", fields: [doctorId], references: [id])
-  userPatient   User           @relation("AppointmentPatient", fields: [patientId], references: [id])
-  patientRecord PatientRecord? @relation("PatientRecordAppointment", fields: [doctorId, patientId], references: [doctorId, patientId])
+  doctor        User           @relation("AppointmentDoctor", fields: [doctorId], references: [id], onDelete: Cascade)
+  patient       User           @relation("AppointmentPatient", fields: [patientId], references: [id], onDelete: Cascade)
+  patientRecord PatientRecord @relation("PatientRecordAppointment", fields: [doctorId, patientId], references: [doctorId, patientId])
 }
 
 model ExerciseCategory {
