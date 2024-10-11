@@ -51,6 +51,72 @@ export const findUsersForNewConversation = async (req: Request, res: Response) =
   }
 };
 
+// ... existing imports and functions ...
+
+export const createCallHistory = async (req: Request, res: Response) => {
+  const { fromUserId, toUserId, status, duration } = req.body;
+
+  try {
+    const newCall = await prisma.call.create({
+      data: {
+        fromUserId,
+        toUserId,
+        status,
+        duration: duration || 0,
+      }
+    });
+
+    const formattedCall = {
+      id: newCall.id,
+      type: 'Outgoing',
+      status: newCall.status,
+      createdDatetime: newCall.createdDatetime,
+      duration: newCall.duration
+    };
+
+    return apiResponse({
+      res,
+      result: formattedCall,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to create call history record' });
+  }
+};''
+export const getCallHistory = async (req: Request, res: Response) => {
+  const { fromUserId, toUserId } = req.params;
+
+  try {
+    const calls = await prisma.call.findMany({
+      where: {
+        OR: [
+          { fromUserId, toUserId },
+          { fromUserId: toUserId, toUserId: fromUserId }
+        ]
+      },
+      orderBy: {
+        createdDatetime: 'desc'
+      }
+    });
+
+    const formattedCalls = calls.map(call => ({
+      id: call.id,
+      type: call.fromUserId === fromUserId ? 'Outgoing' : 'Incoming',
+      status: call.status,
+      createdDatetime: call.createdDatetime,
+      duration: call.duration
+    }));
+
+    return apiResponse({
+      res,
+      result: formattedCalls
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch call history' });
+  }
+};
+
 
 export const getAllChatsForUser = async (req: Request, res: Response) => {
   const userId = req.params.id;
@@ -205,5 +271,31 @@ export const sendMessage = async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to send message' });
+  }
+};
+
+// Add this new function to the existing fil
+
+export const deleteMessage = async (req: Request, res: Response) => {
+  const { messageId } = req.params;
+
+  try {
+    const deletedMessage = await prisma.message.delete({
+      where: {
+        id: messageId
+      }
+    });
+
+    if (!deletedMessage) {
+      return res.status(404).json({ error: 'Message not found' });
+    }
+
+    return apiResponse({
+      res,
+      result: { message: 'Message deleted successfully' },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to delete message' });
   }
 };

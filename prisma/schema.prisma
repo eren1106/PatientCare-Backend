@@ -19,6 +19,12 @@ enum SignInMethod {
   GOOGLE
 }
 
+enum CallStatus {
+  MISSED
+  ACCEPTED
+  REJECTED
+}
+
 enum ExerciseDifficulty {
   EASY
   MEDIUM
@@ -73,9 +79,9 @@ model Call {
   id              String   @id @default(cuid())
   toUserId        String
   fromUserId      String
-  status          String
+  status          CallStatus
   createdDatetime DateTime @default(now())
-
+  duration        Int      @default(0)
   userTo   User @relation("CallTo", fields: [toUserId], references: [id])
   userFrom User @relation("CallFrom", fields: [fromUserId], references: [id])
 }

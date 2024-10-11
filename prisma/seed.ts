@@ -168,6 +168,46 @@ async function main() {
     ],
   });
 
+  const calls = await prisma.call.createMany({
+    data: [
+      {
+        toUserId: user2.id,
+        fromUserId: user1.id,
+        status: 'ACCEPTED',
+        createdDatetime: new Date('2023-05-01T10:00:00Z'),
+        duration: 300, 
+      },
+      {
+        toUserId: user1.id,
+        fromUserId: user3.id,
+        status: 'MISSED',
+        createdDatetime: new Date('2023-05-02T14:30:00Z'),
+        duration: 0,
+      },
+      {
+        toUserId: user4.id,
+        fromUserId: user1.id,
+        status: 'ACCEPTED',
+        createdDatetime: new Date('2023-05-03T09:15:00Z'),
+        duration: 180, 
+      },
+      {
+        toUserId: user1.id,
+        fromUserId: user2.id,
+        status: 'ACCEPTED',
+        createdDatetime: new Date('2023-05-04T16:45:00Z'),
+        duration: 600, 
+      },
+      {
+        toUserId: user3.id,
+        fromUserId: user1.id,
+        status: 'REJECTED',
+        createdDatetime: new Date('2023-05-05T11:20:00Z'),
+        duration: 0,
+      },
+    ],
+  });
+
   
 
 

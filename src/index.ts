@@ -14,7 +14,7 @@ const httpServer = createServer(app);
 
 const corsOptions = {
   origin: "http://localhost:5173",
-  methods: ["GET", "POST"],
+  methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
   credentials: true,
 };
 
@@ -45,6 +45,12 @@ io.on("connection", (socket) => {
     io.to(fromUserId).emit('newMessage', newMessage);
     io.to(toUserId).emit('newMessage', newMessage);
     console.log(`Message sent from ${fromUserId} to ${toUserId}`);
+  });
+
+  socket.on('deleteMessage', ({ messageId, fromUserId, toUserId }) => {
+    io.to(fromUserId).emit('messageDeleted', messageId);
+    io.to(toUserId).emit('messageDeleted', messageId);
+    console.log(`Message ${messageId} deleted`);
   });
 
   socket.on("disconnect", () => {
