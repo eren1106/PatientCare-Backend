@@ -1,6 +1,8 @@
 import prisma from "../lib/prisma";
 import { apiResponse, errorResponse } from "../utils/api-response.util";
 import { Request, Response } from 'express';
+import { copyDay, formatDate, formatTime } from "../utils/utils";
+import { io } from "..";
 
 export const getAppointmentsByDoctorId = async (req: Request, res: Response) => {
   const { doctorId } = req.params;
@@ -41,6 +43,9 @@ export const getAppointmentById = async (req: Request, res: Response) => {
 export const createAppointment = async (req: Request, res: Response) => {
   const { title, description, date, startTime, endTime, doctorId, patientId } = req.body;
 
+  const convertedStartTime = copyDay(startTime, date);
+  const convertedEndTime = copyDay(endTime, date);
+
   try {
     // Check if there's any appointment that overlaps with the provided time for the same doctor
     const overlappingAppointments = await prisma.appointment.findMany({
@@ -49,15 +54,15 @@ export const createAppointment = async (req: Request, res: Response) => {
         OR: [
           {
             startTime: {
-              lte: new Date(endTime),
+              lte: convertedEndTime,
             },
             endTime: {
-              gte: new Date(startTime),
+              gte: convertedStartTime,
             },
           },
         ],
       },
-    });
+    });    
 
     if (overlappingAppointments.length > 0) {
       return errorResponse({
@@ -72,12 +77,24 @@ export const createAppointment = async (req: Request, res: Response) => {
         title,
         description,
         date: new Date(date),
-        startTime: new Date(startTime),
-        endTime: new Date(endTime),
+        startTime: convertedStartTime,
+        endTime: convertedEndTime,
         doctorId,
         patientId,
       },
     });
+
+    // create notification
+    const newNotification = await prisma.notification.create({
+      data: {
+        userId: patientId,
+        title: "You have a new appointment!",
+        message: `New appointment is scheduled for ${formatDate(date)} from ${formatTime(startTime)} to ${formatTime(endTime)}.`,
+        redirectUrl: `/appointments`
+      }
+    });
+
+    io.emit(`notification-${patientId}`, newNotification); // for real time purpose
 
     return apiResponse({
       res,
