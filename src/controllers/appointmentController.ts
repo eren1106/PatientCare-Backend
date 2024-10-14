@@ -4,14 +4,24 @@ import { Request, Response } from 'express';
 import { copyDay, formatDate, formatTime } from "../utils/utils";
 import { io } from "..";
 
-export const getAppointmentsByDoctorId = async (req: Request, res: Response) => {
-  const { doctorId } = req.params;
+export const getAppointmentsByUserId = async (req: Request, res: Response) => {
+  const { id } = req.params;
 
   try {
     const appointments = await prisma.appointment.findMany({
       where: {
-        doctorId,
+        OR: [
+          { doctorId: id },
+          { patientId: id },
+        ]
       },
+      orderBy: {
+        date: 'asc'
+      },
+      include: {
+        patient: true,
+        doctor: true,
+      }
     });
     return apiResponse({
       res,
@@ -62,7 +72,7 @@ export const createAppointment = async (req: Request, res: Response) => {
           },
         ],
       },
-    });    
+    });
 
     if (overlappingAppointments.length > 0) {
       return errorResponse({
@@ -130,7 +140,7 @@ export const updateAppointment = async (req: Request, res: Response) => {
           },
         ],
       },
-    });    
+    });
 
     if (overlappingAppointments.length > 0) {
       return errorResponse({
@@ -195,7 +205,7 @@ export const deleteAppointment = async (req: Request, res: Response) => {
     });
 
     io.emit(`notification-${deletedAppointment.patientId}`, newNotification); // for real time purpose
-    
+
     return apiResponse({
       res,
       result: deletedAppointment,
