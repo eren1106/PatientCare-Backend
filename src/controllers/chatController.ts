@@ -68,7 +68,6 @@ export const createCallHistory = async (req: Request, res: Response) => {
 
     const formattedCall = {
       id: newCall.id,
-      type: 'Outgoing',
       status: newCall.status,
       createdDatetime: newCall.createdDatetime,
       duration: newCall.duration
@@ -82,7 +81,7 @@ export const createCallHistory = async (req: Request, res: Response) => {
     console.error(error);
     res.status(500).json({ error: 'Failed to create call history record' });
   }
-};''
+};
 export const getCallHistory = async (req: Request, res: Response) => {
   const { fromUserId, toUserId } = req.params;
 

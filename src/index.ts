@@ -24,6 +24,7 @@ const io = new Server(httpServer, {
 });
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors(corsOptions));
 app.use(errorHandler);
 app.use("/api", routes);

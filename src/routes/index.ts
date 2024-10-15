@@ -9,6 +9,7 @@ import { appointmentRoutes } from './appointmentRoutes';
 import { notificationRoutes } from './notificationRoutes';
 import { userRoutes } from './userRoutes';
 import { chatRoutes } from './chatRoutes';
+import { callRoutes } from './callRoutes';
 const router = Router();
 
 router.get('/', (req: Request, res: Response) => {
@@ -25,6 +26,6 @@ router.use('/appointments', appointmentRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/users', userRoutes);
 router.use('/chat', chatRoutes);
-
+router.use('/call', callRoutes);
 
 export default router;
