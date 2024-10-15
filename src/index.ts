@@ -36,7 +36,7 @@ cron.schedule("0 0 * * *", createNewDailyPatientExercises); // Schedule the refr
 io.on("connection", (socket) => {
   console.log('User connected:', socket.id)
 
-  socket.on("join", (userId : string) => {
+  socket.on("join", (userId: string) => {
     socket.join(userId);
     console.log(`User ${userId} joined their room`);
   });
@@ -64,3 +64,5 @@ httpServer.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   swaggerDocs(app, PORT as number);
 });
+
+export { io }

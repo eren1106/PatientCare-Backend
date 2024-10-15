@@ -9,6 +9,9 @@ export const getNotificationsByUserId = async (req: Request, res: Response) => {
     const notifications = await prisma.notification.findMany({
       where: {
         userId
+      },
+      orderBy: {
+        createdDatetime: 'desc'
       }
     });
     return apiResponse({
@@ -53,6 +56,7 @@ export const createNotification = async (req: Request, res: Response) => {
         redirectUrl,
       },
     });
+
     return apiResponse({
       res,
       result: newNotification,

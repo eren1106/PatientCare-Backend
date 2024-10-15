@@ -1,15 +1,27 @@
 import prisma from "../lib/prisma";
 import { apiResponse, errorResponse } from "../utils/api-response.util";
 import { Request, Response } from 'express';
+import { copyDay, formatDate, formatTime } from "../utils/utils";
+import { io } from "..";
 
-export const getAppointmentsByDoctorId = async (req: Request, res: Response) => {
-  const { doctorId } = req.params;
+export const getAppointmentsByUserId = async (req: Request, res: Response) => {
+  const { id } = req.params;
 
   try {
     const appointments = await prisma.appointment.findMany({
       where: {
-        doctorId,
+        OR: [
+          { doctorId: id },
+          { patientId: id },
+        ]
       },
+      orderBy: {
+        date: 'asc'
+      },
+      include: {
+        patient: true,
+        doctor: true,
+      }
     });
     return apiResponse({
       res,
@@ -41,6 +53,9 @@ export const getAppointmentById = async (req: Request, res: Response) => {
 export const createAppointment = async (req: Request, res: Response) => {
   const { title, description, date, startTime, endTime, doctorId, patientId } = req.body;
 
+  const convertedStartTime = copyDay(startTime, date);
+  const convertedEndTime = copyDay(endTime, date);
+
   try {
     // Check if there's any appointment that overlaps with the provided time for the same doctor
     const overlappingAppointments = await prisma.appointment.findMany({
@@ -49,10 +64,10 @@ export const createAppointment = async (req: Request, res: Response) => {
         OR: [
           {
             startTime: {
-              lte: new Date(endTime),
+              lte: convertedEndTime,
             },
             endTime: {
-              gte: new Date(startTime),
+              gte: convertedStartTime,
             },
           },
         ],
@@ -72,12 +87,24 @@ export const createAppointment = async (req: Request, res: Response) => {
         title,
         description,
         date: new Date(date),
-        startTime: new Date(startTime),
-        endTime: new Date(endTime),
+        startTime: convertedStartTime,
+        endTime: convertedEndTime,
         doctorId,
         patientId,
       },
     });
+
+    // create notification
+    const newNotification = await prisma.notification.create({
+      data: {
+        userId: patientId,
+        title: "You have a new appointment!",
+        message: `New appointment is scheduled for ${formatDate(date)} from ${formatTime(startTime)} to ${formatTime(endTime)}.`,
+        redirectUrl: `/appointments`
+      }
+    });
+
+    io.emit(`notification-${patientId}`, newNotification); // for real time purpose
 
     return apiResponse({
       res,
@@ -93,8 +120,11 @@ export const updateAppointment = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { title, description, date, startTime, endTime, doctorId, patientId } = req.body;
 
+  const convertedStartTime = copyDay(startTime, date);
+  const convertedEndTime = copyDay(endTime, date);
+
   try {
-    // Check if there's any other appointment that overlaps with the provided time for the same doctor
+    // Check if there's any appointment that overlaps with the provided time for the same doctor
     const overlappingAppointments = await prisma.appointment.findMany({
       where: {
         doctorId,
@@ -102,10 +132,10 @@ export const updateAppointment = async (req: Request, res: Response) => {
         OR: [
           {
             startTime: {
-              lte: new Date(endTime),
+              lte: convertedEndTime,
             },
             endTime: {
-              gte: new Date(startTime),
+              gte: convertedStartTime,
             },
           },
         ],
@@ -119,20 +149,31 @@ export const updateAppointment = async (req: Request, res: Response) => {
       });
     }
 
-    // Proceed with appointment update
     const updatedAppointment = await prisma.appointment.update({
       where: { id },
       data: {
         title,
         description,
         date: new Date(date),
-        startTime: new Date(startTime),
-        endTime: new Date(endTime),
+        startTime: convertedStartTime,
+        endTime: convertedEndTime,
         doctorId,
         patientId,
         updatedDatetime: new Date(),
       },
     });
+
+    // create notification
+    const newNotification = await prisma.notification.create({
+      data: {
+        userId: patientId,
+        title: "One of your appointment has been updated!",
+        message: `The updated appointment is scheduled for ${formatDate(date)} from ${formatTime(startTime)} to ${formatTime(endTime)}.`,
+        redirectUrl: `/appointments`
+      }
+    });
+
+    io.emit(`notification-${patientId}`, newNotification); // for real time purpose
 
     return apiResponse({
       res,
@@ -152,6 +193,19 @@ export const deleteAppointment = async (req: Request, res: Response) => {
     const deletedAppointment = await prisma.appointment.delete({
       where: { id },
     });
+
+    // create notification
+    const newNotification = await prisma.notification.create({
+      data: {
+        userId: deletedAppointment.patientId,
+        title: "One of your appointment has been cancelled!",
+        message: `The appointment for ${formatDate(deletedAppointment.date)} from ${formatTime(deletedAppointment.startTime)} to ${formatTime(deletedAppointment.endTime)} has been cancelled`,
+        redirectUrl: `/appointments`
+      }
+    });
+
+    io.emit(`notification-${deletedAppointment.patientId}`, newNotification); // for real time purpose
+
     return apiResponse({
       res,
       result: deletedAppointment,
