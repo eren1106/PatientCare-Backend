@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createCallHistory, deleteMessage, findUsersForNewConversation, getAllChatsForUser, getCallHistory, getChatMessages, sendMessage } from '../controllers/chatController';
+import { deleteMessage, findUsersForNewConversation, getAllChatsForUser, getCallHistory, getChatMessages, sendMessage } from '../controllers/chatController';
 
 
 const router = Router();
@@ -9,68 +9,13 @@ router.get('/messages/:fromUserId/:toUserId', getChatMessages);
 router.post('/send', sendMessage);
 router.get('/newconversation/:userId', findUsersForNewConversation);
 router.get('/callHistory/:fromUserId/:toUserId', getCallHistory);
-router.post('/callHistory', createCallHistory);
+
 router.delete('/message/:messageId', deleteMessage);
+
 
 /**
  * @swagger
- * /api/chat/callHistory:
- *   post:
- *     summary: Create a new call history record
- *     tags:
- *       - Chats
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - fromUserId
- *               - toUserId
- *               - status
- *             properties:
- *               fromUserId:
- *                 type: string
- *                 description: ID of the user initiating the call
- *               toUserId:
- *                 type: string
- *                 description: ID of the user receiving the call
- *               status:
- *                 type: string
- *                 description: Status of the call (e.g., 'COMPLETED', 'MISSED', 'REJECTED')
- *               duration:
- *                 type: integer
- *                 description: Duration of the call in seconds (default is 0)
- *     responses:
- *       201:
- *         description: Successfully created call history record
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 result:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                     type:
- *                       type: string
- *                       enum: [Outgoing]
- *                     status:
- *                       type: string
- *                     createdDatetime:
- *                       type: string
- *                       format: date-time
- *                     duration:
- *                       type: integer
- *       500:
- *         description: Server error
- */
-/**
- * @swagger
- * /api/chat/call-history/{fromUserId}/{toUserId}:
+ * /api/chat/callHistory/{fromUserId}/{toUserId}:
  *   get:
  *     summary: Get call history between two users
  *     tags:
