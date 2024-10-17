@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { apiResponse, errorResponse } from '../utils/api-response.util';
 import prisma from '../lib/prisma';
 import { STATUS_CODES } from '../constants';
+import { sendNotification } from '../services/notifications.service';
 
 export const getPatientExercises = async (req: Request, res: Response) => {
   const { patientId } = req.params;
@@ -59,6 +60,7 @@ export const createPatientExercise = async (req: Request, res: Response) => {
         exerciseId,
         sets
       },
+      include: { exercise: true }  // to display the exercise title in notification
     });
     const newDailyPatientExercise = await prisma.dailyPatientExercise.create({
       data: {
@@ -66,6 +68,15 @@ export const createPatientExercise = async (req: Request, res: Response) => {
         patientId
       }
     });
+
+    // create notification
+    await sendNotification({
+      userId: patientId,
+      title: "A new exercise has been assigned to you!",
+      message: `A new exercise (${newPatientExercise.exercise.title}) has been assigned to you`,
+      redirectUrl: `/exercises/${newPatientExercise.id}`
+    });
+
     return apiResponse({
       res,
       result: newPatientExercise,
@@ -91,7 +102,17 @@ export const updatePatientExerciseById = async (req: Request, res: Response) => 
         exerciseId,
         sets
       },
+      include: { exercise: true }  // to display the exercise title in notification
     });
+
+    // create notification
+    await sendNotification({
+      userId: updatedPatientExercise.patientId,
+      title: "One of your assigned exercise has been updated",
+      message: `Your assigned exercise (${updatedPatientExercise.exercise.title}) has been updated`,
+      redirectUrl: `/exercises/${updatedPatientExercise.id}`
+    });
+
     return apiResponse({
       res,
       result: updatedPatientExercise,
@@ -211,6 +232,15 @@ export const deletePatientExerciseById = async (req: Request, res: Response) => 
     });
     const deletedPatientExercise = await prisma.patientExercise.delete({
       where: { id: id },
+      include: { exercise: true }  // to display the exercise title in notification
+    });
+
+    // create notification
+    await sendNotification({
+      userId: deletedPatientExercise.patientId,
+      title: "One of your assigned exercise has been deleted",
+      message: `Your assigned exercise (${deletedPatientExercise.exercise.title}) has been deleted`,
+      redirectUrl: `/exercises/${deletedPatientExercise.id}`
     });
 
     return apiResponse({
