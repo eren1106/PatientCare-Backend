@@ -239,7 +239,7 @@ export const deletePatientExerciseById = async (req: Request, res: Response) => 
     await sendNotification({
       userId: deletedPatientExercise.patientId,
       title: "One of your assigned exercise has been deleted",
-      message: `Your assigned exercise (${deletedPatientExercise.exercise.title}) has been updated`,
+      message: `Your assigned exercise (${deletedPatientExercise.exercise.title}) has been deleted`,
       redirectUrl: `/exercises/${deletedPatientExercise.id}`
     });
 
