@@ -88,6 +88,52 @@ export const markNotificationAsRead = async (req: Request, res: Response) => {
   }
 };
 
+// update notifications to read by userId
+export const markNotificationsAsReadByUserId = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  try {
+    const updatedNotifications = await prisma.notification.updateMany({
+      where: { 
+        userId,
+        isRead: false,
+       },
+      data: {
+        isRead: true,
+      },
+    });
+
+    return apiResponse({
+      res,
+      result: updatedNotifications,
+      message: "Notifications updated"
+    });
+  } catch (error) {
+    return errorResponse({ res, error });
+  }
+};
+
+// update notification to clicked
+export const markNotificationAsClicked = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const updatedNotification = await prisma.notification.update({
+      where: { id },
+      data: {
+        isClicked: true,
+      },
+    });
+    return apiResponse({
+      res,
+      result: updatedNotification,
+      message: "Notification updated"
+    });
+  } catch (error) {
+    return errorResponse({ res, error });
+  }
+};
+
 // Delete a notification
 export const deleteNotification = async (req: Request, res: Response) => {
   const { id } = req.params;

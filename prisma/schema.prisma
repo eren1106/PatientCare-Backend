@@ -76,14 +76,14 @@ model User {
 }
 
 model Call {
-  id              String   @id @default(cuid())
+  id              String     @id @default(cuid())
   toUserId        String
   fromUserId      String
   status          CallStatus
-  createdDatetime DateTime @default(now())
-  duration        Int      @default(0)
-  userTo   User @relation("CallTo", fields: [toUserId], references: [id])
-  userFrom User @relation("CallFrom", fields: [fromUserId], references: [id])
+  createdDatetime DateTime   @default(now())
+  duration        Int        @default(0)
+  userTo          User       @relation("CallTo", fields: [toUserId], references: [id])
+  userFrom        User       @relation("CallFrom", fields: [fromUserId], references: [id])
 }
 
 model Message {
@@ -103,6 +103,7 @@ model Notification {
   title           String
   message         String
   isRead          Boolean  @default(false)
+  isClicked       Boolean  @default(false)
   redirectUrl     String?
   createdDatetime DateTime @default(now())
 
@@ -229,8 +230,8 @@ model Appointment {
   createdDatetime DateTime  @default(now())
   updatedDatetime DateTime? @updatedAt
 
-  doctor        User           @relation("AppointmentDoctor", fields: [doctorId], references: [id], onDelete: Cascade)
-  patient       User           @relation("AppointmentPatient", fields: [patientId], references: [id], onDelete: Cascade)
+  doctor        User          @relation("AppointmentDoctor", fields: [doctorId], references: [id], onDelete: Cascade)
+  patient       User          @relation("AppointmentPatient", fields: [patientId], references: [id], onDelete: Cascade)
   patientRecord PatientRecord @relation("PatientRecordAppointment", fields: [doctorId, patientId], references: [doctorId, patientId])
 }
 
