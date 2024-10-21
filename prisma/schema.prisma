@@ -184,9 +184,6 @@ model PatientRecord {
   id              String    @id @default(cuid())
   doctorId        String
   patientId       String
-  ic_no           String
-  age             Int
-  gender          Gender
   weight          Decimal
   height          Decimal
   isDelete        Boolean   @default(false)
