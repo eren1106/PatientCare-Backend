@@ -3,6 +3,7 @@ import { apiResponse, errorResponse } from "../utils/api-response.util";
 import { Request, Response } from 'express';
 import { copyDay, formatDate, formatTime } from "../utils/utils";
 import { io } from "..";
+import { sendNotification } from "../services/notifications.service";
 
 export const getAppointmentsByUserId = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -95,16 +96,12 @@ export const createAppointment = async (req: Request, res: Response) => {
     });
 
     // create notification
-    const newNotification = await prisma.notification.create({
-      data: {
-        userId: patientId,
-        title: "You have a new appointment!",
-        message: `New appointment is scheduled for ${formatDate(date)} from ${formatTime(startTime)} to ${formatTime(endTime)}.`,
-        redirectUrl: `/appointments`
-      }
+    await sendNotification({
+      userId: patientId,
+      title: "You have a new appointment!",
+      message: `New appointment is scheduled for ${formatDate(date)} from ${formatTime(startTime)} to ${formatTime(endTime)}.`,
+      redirectUrl: `/appointments`
     });
-
-    io.emit(`notification-${patientId}`, newNotification); // for real time purpose
 
     return apiResponse({
       res,
@@ -164,16 +161,12 @@ export const updateAppointment = async (req: Request, res: Response) => {
     });
 
     // create notification
-    const newNotification = await prisma.notification.create({
-      data: {
-        userId: patientId,
-        title: "One of your appointment has been updated!",
-        message: `The updated appointment is scheduled for ${formatDate(date)} from ${formatTime(startTime)} to ${formatTime(endTime)}.`,
-        redirectUrl: `/appointments`
-      }
+    await sendNotification({
+      userId: patientId,
+      title: "One of your appointment has been updated!",
+      message: `The updated appointment is scheduled for ${formatDate(date)} from ${formatTime(startTime)} to ${formatTime(endTime)}.`,
+      redirectUrl: `/appointments`
     });
-
-    io.emit(`notification-${patientId}`, newNotification); // for real time purpose
 
     return apiResponse({
       res,
@@ -195,16 +188,12 @@ export const deleteAppointment = async (req: Request, res: Response) => {
     });
 
     // create notification
-    const newNotification = await prisma.notification.create({
-      data: {
-        userId: deletedAppointment.patientId,
-        title: "One of your appointment has been cancelled!",
-        message: `The appointment for ${formatDate(deletedAppointment.date)} from ${formatTime(deletedAppointment.startTime)} to ${formatTime(deletedAppointment.endTime)} has been cancelled`,
-        redirectUrl: `/appointments`
-      }
+    await sendNotification({
+      userId: deletedAppointment.patientId,
+      title: "One of your appointment has been cancelled!",
+      message: `The appointment for ${formatDate(deletedAppointment.date)} from ${formatTime(deletedAppointment.startTime)} to ${formatTime(deletedAppointment.endTime)} has been cancelled`,
+      redirectUrl: `/appointments`
     });
-
-    io.emit(`notification-${deletedAppointment.patientId}`, newNotification); // for real time purpose
 
     return apiResponse({
       res,

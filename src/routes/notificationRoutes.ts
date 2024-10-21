@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createNotification, deleteNotification, getNotificationById, getNotificationsByUserId, markNotificationAsRead } from '../controllers/notificationController';
+import { createNotification, deleteNotification, getNotificationById, getNotificationsByUserId, markNotificationAsClicked, markNotificationAsRead, markNotificationsAsReadByUserId } from '../controllers/notificationController';
 
 const router = Router();
 
@@ -7,6 +7,8 @@ router.get('/user/:userId', getNotificationsByUserId);
 router.get('/:id', getNotificationById);
 router.post('/', createNotification);
 router.put('/:id/mark-as-read', markNotificationAsRead);
+router.put('/user/:userId/mark-as-read', markNotificationsAsReadByUserId);
+router.put('/:id/mark-as-clicked', markNotificationAsClicked);
 router.delete('/:id', deleteNotification);
 
 export { router as notificationRoutes };
