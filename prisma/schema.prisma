@@ -14,6 +14,13 @@ enum UserRole {
   ADMIN
 }
 
+enum ScaleType {
+  PAIN_SCALE    
+  FREQUENCY     
+  NUMERIC_SCALE 
+}
+
+
 enum SignInMethod {
   EMAILPASSWORD
   GOOGLE
@@ -127,32 +134,45 @@ model Questionnaire {
   title           String
   description     String
   type            String
+  index           String
   authorId        String
   createdDatetime DateTime  @default(now())
   updatedDatetime DateTime?
   isDelete        Boolean   @default(false)
 
   author     User         @relation(fields: [authorId], references: [id])
-  question   Question[]   @relation("QuestionnaireQuestion")
   assessment Assessment[]
+  sections    Section[]    @relation("QuestionnaireSections")
+}
+
+model Section {
+  id        String    @id @default(cuid())
+  name      String
+  description   String
+  questionnaireId  String
+
+  questionnaire Questionnaire @relation("QuestionnaireSections", fields: [questionnaireId], references: [id])
+  question   Question[]   @relation("SectionQuestion")
 }
 
 model Question {
   id          String @id @default(cuid())
   title       String
-  fieldTypeId String
+  sectionId   String
+  scale       ScaleType
 
-  fieldType     FieldType       @relation(fields: [fieldTypeId], references: [id])
-  response      Response[]
-  questionnaire Questionnaire[] @relation("QuestionnaireQuestion")
-  option        Option[]
+  response    Response[]
+  section     Section   @relation("SectionQuestion", fields: [sectionId], references: [id])
 }
 
+
+
 model Option {
-  id         String   @id @default(cuid())
-  content    String
-  questionId String
-  question   Question @relation(fields: [questionId], references: [id])
+  id          String       @id @default(cuid())
+  scaleType   ScaleType         
+  scaleValue  Int
+  content     String?      
+
 }
 
 model Response {
@@ -165,12 +185,7 @@ model Response {
   assessment Assessment @relation("AssessmentResponse", fields: [assessmentId], references: [id])
 }
 
-model FieldType {
-  id   String @id @default(cuid())
-  name String
 
-  question Question[]
-}
 
 model DoctorValidation {
   id                 String  @id @default(cuid())
