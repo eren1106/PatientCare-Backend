@@ -6,18 +6,33 @@ const prisma = new PrismaClient();
 async function main() {
   // npx prisma db push --force-reset  <= CLEAN ALL TABLE DATA WITH THIS COMMENT
 
-  // Create FieldTypes
-  const fieldType1 = await prisma.fieldType.create({
-    data: {
-      name: 'Text',
-    },
-  });
 
-  const fieldType2 = await prisma.fieldType.create({
-    data: {
-      name: 'Multiple Choice',
-    },
+  const optionTemplate = await prisma.option.createMany({
+    data: [
+      { scaleType: 'PAIN_SCALE', scaleValue: 1, content: 'None' },
+      { scaleType: 'PAIN_SCALE', scaleValue: 2, content: 'Mild' },
+      { scaleType: 'PAIN_SCALE', scaleValue: 3, content: 'Moderate' },
+      { scaleType: 'PAIN_SCALE', scaleValue: 4, content: 'Severe' },
+      { scaleType: 'PAIN_SCALE', scaleValue: 5, content: 'Extreme' },
+      { scaleType: 'NUMERIC_SCALE', scaleValue: 1, content: null },
+      { scaleType: 'NUMERIC_SCALE', scaleValue: 2, content: null },
+      { scaleType: 'NUMERIC_SCALE', scaleValue: 3, content: null },
+      { scaleType: 'NUMERIC_SCALE', scaleValue: 4, content: null },
+      { scaleType: 'NUMERIC_SCALE', scaleValue: 5, content: null },
+      { scaleType: 'NUMERIC_SCALE', scaleValue: 6, content: null },
+      { scaleType: 'NUMERIC_SCALE', scaleValue: 7, content: null },
+      { scaleType: 'NUMERIC_SCALE', scaleValue: 8, content: null },
+      { scaleType: 'NUMERIC_SCALE', scaleValue: 9, content: null },
+      { scaleType: 'NUMERIC_SCALE', scaleValue: 10, content: null },
+      { scaleType: 'FREQUENCY', scaleValue: 1, content: 'Never' },
+      { scaleType: 'FREQUENCY', scaleValue: 2, content: 'Rarely' },
+      { scaleType: 'FREQUENCY', scaleValue: 3, content: 'Sometimes' },
+      { scaleType: 'FREQUENCY', scaleValue: 4, content: 'Often' },
+      { scaleType: 'FREQUENCY', scaleValue: 5, content: 'Always' },
+
+    ]
   });
+  
 
   // Create Users
   const user1 = await prisma.user.create({
@@ -216,104 +231,484 @@ async function main() {
 
 
   // Create Questionnaires
+
+  // Questionnaire 1
   const questionnaire1 = await prisma.questionnaire.create({
     data: {
-      title: 'Shoulder Pain and Disability Index (SPADI)',
-      description: 'The Shoulder Pain and Disability Index (SPADI) is a self-administered questionnaire that consists of two dimensions, one for pain and the other for functional activities. The pain dimension consists of five questions regarding the severity of an individuals pain. Functional activities are assessed with eight questionsdesigned to measure the degree of difficulty an individual has with various activities of daily living that require upper-extremity use. The SPADI takes 5 to 10 minutes for a patient to complete and is the only reliable and valid region-specific measure for the shoulder.',
+      title: 'Shoulder Pain and Disability Index',
+      description: 'Please place a mark on the line that best represents your experience during the last week attributable to your shoulder problem.',
+      index: 'SPADI',
       type: 'Shoulder',
-      authorId: user1.id,
-    },
-  });
-
-  const questionnaire2 = await prisma.questionnaire.create({
-    data: {
-      title: 'Fitness Survey',
-      description: 'Fitness related questions',
-      type: 'Fitness',
       authorId: user2.id,
     },
   });
 
-  // Create Questions
-  const question1 = await prisma.question.create({
+  const section1Questionnaire1 = await prisma.section.create({
+    data : {
+      name: 'Pain Scale',
+      description: 'How severe is your pain? Circle the number that best describes your pain where: 0 = no pain and 10 = the worst pain imaginable. ',
+      questionnaireId : questionnaire1.id
+    }
+  })
+
+  const question1Section1 = await prisma.question.create({
+    data : {
+      title: 'At its worst?',
+      scale : "NUMERIC_SCALE",
+      sectionId : section1Questionnaire1.id
+    }
+  })
+
+  const question2Section1 = await prisma.question.create({
+    data : {
+      title: 'When lying on the involved side ?',
+      scale :  "NUMERIC_SCALE",
+      sectionId : section1Questionnaire1.id
+    }
+  })
+
+  const question3Section1 = await prisma.question.create({
+    data : {
+      title: 'Reaching for something on a high shelf ?',
+      scale : "NUMERIC_SCALE",
+      sectionId : section1Questionnaire1.id
+    }
+  })
+
+  const question4Section1 = await prisma.question.create({
+    data : {
+      title: 'Touching the back of your neck ?',
+      scale :  "NUMERIC_SCALE",
+      sectionId : section1Questionnaire1.id
+    }
+  })
+
+  const question5Section1 = await prisma.question.create({
+    data : {
+      title: 'Pushing with the involved arm ?',
+      scale : "NUMERIC_SCALE",
+      sectionId : section1Questionnaire1.id
+    }
+  })
+
+  const section2Questionnaire1 = await prisma.section.create({
+    data : {
+      name: 'Disability scale',
+      description: 'How much difficulty do you have? Circle the number that best describes your experience where: 0 = no difficulty and 10 = so difficult it requires help. ',
+      questionnaireId : questionnaire1.id
+    }
+  })
+
+  const question1Section2 = await prisma.question.create({
+    data : {
+      title: 'Washing your hair?',
+      scale : "NUMERIC_SCALE",
+      sectionId : section2Questionnaire1.id
+    }
+  })
+
+  const question2Section2 = await prisma.question.create({
+    data : {
+      title: 'Washing your back?',
+      scale : "NUMERIC_SCALE",
+      sectionId : section2Questionnaire1.id
+    }
+  })
+
+  const question3Section2 = await prisma.question.create({
+    data : {
+      title: 'Putting on an undershirt or jumper?',
+      scale : "NUMERIC_SCALE",
+      sectionId : section2Questionnaire1.id
+    }
+  })
+
+  const question4Section2 = await prisma.question.create({
+    data : {
+      title: 'Putting on an undershirt or jumper?',
+      scale : "NUMERIC_SCALE",
+      sectionId : section2Questionnaire1.id
+    }
+  })
+
+  const question5Section2 = await prisma.question.create({
+    data : {
+      title: 'Putting on a shirt that buttons down the front?',
+      scale : "NUMERIC_SCALE",
+      sectionId : section2Questionnaire1.id
+    }
+  })
+
+  const question6Section2 = await prisma.question.create({
+    data : {
+      title: 'Putting on your pants?',
+      scale : "NUMERIC_SCALE",
+      sectionId : section2Questionnaire1.id
+    }
+  })
+
+  const question7Section2 = await prisma.question.create({
+    data : {
+      title: 'Placing an object on a high shelf?',
+      scale : "NUMERIC_SCALE",
+      sectionId : section2Questionnaire1.id
+    }
+  })
+
+  const question8Section2 = await prisma.question.create({
+    data : {
+      title: 'Carrying a heavy object of 10 pounds (4.5 kilograms)',
+      scale : "NUMERIC_SCALE",
+      sectionId : section2Questionnaire1.id
+    }
+  })
+
+  const question9Section2 = await prisma.question.create({
+    data : {
+      title: 'Removing something from your back pocket ?',
+      scale : "NUMERIC_SCALE",
+      sectionId : section2Questionnaire1.id
+    }
+  })
+
+
+  // Questionnaire 2
+  const questionnaire2 = await prisma.questionnaire.create({
     data: {
-      title: 'How often do you exercise?',
-      fieldTypeId: fieldType2.id,
-      questionnaire: {
-        connect: { id: questionnaire1.id },
-      },
+      title: 'Knee injury and Osteoarthritis Outcome Score',
+      description: 'Originally published in 1998 in The Journal of Orthopaedic and Sports Physical Therapy, the Knee injury and Osteoarthritis Outcome Score (KOOS) assesses patient pain (9 items), other symptoms (7 items), function in daily living (17 items), function in sport and recreation (5 items), and knee related quality of life (4 items). Scores range from 0 to 100 with a score of 0 indicating the worst possible knee symptoms and 100 indicating no knee symptoms. The KOOS is a patient reported joint-specific score, which may be useful for assessing changes in knee pathology over time, with or without treatment.',
+      index: 'KOOS',
+      type: 'Knee',
+      authorId: user2.id,
     },
   });
 
-  const question3 = await prisma.question.create({
-    data: {
-      title: 'How severe is your pain? Choose the number that best describes your pain',
-      fieldTypeId: fieldType2.id,
-      questionnaire: {
-        connect: { id: questionnaire1.id },
-      },
-    },
-  });
-
-  const option4 = await prisma.option.create({
+  const section1Questionnaire2 = await prisma.section.create({
     data : {
-      content: '0 - No pain', 
-      questionId: question3.id
+      name: 'Symptoms',
+      description: 'Answer these questions thinking of your knee symptoms during the last week. ',
+      questionnaireId : questionnaire2.id
     }
-  });
+  })
 
-  const option5 = await prisma.option.create({
+  const question1Section1Questionnaire2 = await prisma.question.create({
     data : {
-      content: '1 - Less pain', 
-      questionId: question3.id
+      title: 'Do you have swelling in your knee?',
+      scale : "FREQUENCY",
+      sectionId : section1Questionnaire2.id
     }
-  });
+  })
 
-  const option6 = await prisma.option.create({
+  const question2Section1Questionnaire2 = await prisma.question.create({
     data : {
-      content: '2 - Pain', 
-      questionId: question3.id
+      title: 'Do you feel grinding, hear clicking, or any other type of noise when your knee moves?',
+      scale : "FREQUENCY",
+      sectionId : section1Questionnaire2.id
     }
-  });
+  })
 
-  const option7 = await prisma.option.create({
+  const question3Section1Questionnaire2 = await prisma.question.create({
     data : {
-      content: '3 - Very Pain', 
-      questionId: question3.id
+      title: 'Does your knee catch or hang up when moving?',
+      scale : "FREQUENCY",
+      sectionId : section1Questionnaire2.id
     }
-  });
+  })
+
+  const question4Section1Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'Can you straighten your knee fully?',
+      scale : "FREQUENCY",
+      sectionId : section1Questionnaire2.id
+    }
+  })
+
+  const question5Section1Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'Can you bend your knee fully?s',
+      scale : "FREQUENCY",
+      sectionId : section1Questionnaire2.id
+    }
+  })
+
+  const section2Questionnaire2 = await prisma.section.create({
+    data : {
+      name: 'Stiffness',
+      description: 'The following questions concern the amount of joint stiffness you have experienced during the last week in your knee. Stiffness is a sensation of restriction or slowness in the ease with which you move your knee joint.',
+      questionnaireId : questionnaire2.id
+    }
+  })
+
+  const question1Section2Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'How severe is your knee joint stiffness after first wakening in the morning?',
+      scale : "PAIN_SCALE",
+      sectionId : section2Questionnaire2.id
+    }
+  })
+
+  const question2Section2Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'How severe is your knee joint stiffness after sitting, lying, or resting later in the day?',
+      scale : "PAIN_SCALE",
+      sectionId : section2Questionnaire2.id
+    }
+  })
+
+  const section3Questionnaire2 = await prisma.section.create({
+    data : {
+      name: 'Pain',
+      description: 'What amount of knee pain have you experienced the last week during the following activities?',
+      questionnaireId : questionnaire2.id
+    }
+  })
+
+
+  const question1Section3Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'How often do you experience knee pain?',
+      scale : "FREQUENCY",
+      sectionId : section3Questionnaire2.id
+    }
+  })
+
+  const question2Section3Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'Straightening knee fully',
+      scale : "FREQUENCY",
+      sectionId : section3Questionnaire2.id
+    }
+  })
+
+  const question3Section3Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'Twisting/pivoting on your knee',
+      scale : "PAIN_SCALE",
+      sectionId : section3Questionnaire2.id
+    }
+  })
+
+  const question4Section3Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'bending knee fully',
+      scale : "PAIN_SCALE",
+      sectionId : section3Questionnaire2.id
+    }
+  })
   
-  const question2 = await prisma.question.create({
-    data: {
-      title: 'Do you have any chronic diseases?',
-      fieldTypeId: fieldType1.id,
-      questionnaire: {
-        connect: { id: questionnaire2.id },
-      },
-    },
-  });
-
-
-  const option1 = await prisma.option.create({
-    data: {
-      content: 'Daily', 
-      questionId: question1.id
-    },
-  });
-
-  const option2 = await prisma.option.create({
+  const question5Section3Questionnaire2 = await prisma.question.create({
     data : {
-      content: 'Weekly', 
-      questionId: question1.id
+      title: 'Walking on a flat surface',
+      scale : "PAIN_SCALE",
+      sectionId : section3Questionnaire2.id
     }
-  });
+  })
 
-  const option3 = await prisma.option.create({
+  const question6Section3Questionnaire2 = await prisma.question.create({
     data : {
-      content: 'Monthly', 
-      questionId: question1.id
+      title: 'Going up or down stairs',
+      scale : "PAIN_SCALE",
+      sectionId : section3Questionnaire2.id
     }
-  });
+  })
+
+  const question7Section3Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'At night while in bed',
+      scale : "PAIN_SCALE",
+      sectionId : section3Questionnaire2.id
+    }
+  })
+
+  const question8Section3Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'Sitting or lying',
+      scale : "PAIN_SCALE",
+      sectionId : section3Questionnaire2.id
+    }
+  })
+
+  const question9Section3Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'Standing upright',
+      scale : "PAIN_SCALE",
+      sectionId : section3Questionnaire2.id
+    }
+  })
+
+  const section4Questionnaire2 = await prisma.section.create({
+    data : {
+      name: 'Function, Daily Living',
+      description: 'This section describes your ability to move around and to look after yourself. For each of the following activities, please indicate the degree of difficulty you have experienced in the last week due to your knee.',
+      questionnaireId : questionnaire2.id
+    }
+  })
+
+  const question1Section4Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'Descending stairs',
+      scale : "PAIN_SCALE",
+      sectionId : section4Questionnaire2.id
+    }
+  })
+
+  const question2Section4Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'Ascending stairs',
+      scale : "PAIN_SCALE",
+      sectionId : section4Questionnaire2.id
+    }
+  })
+
+  const question3Section4Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'Rising from sitting',
+      scale : "PAIN_SCALE",
+      sectionId : section4Questionnaire2.id
+    }
+  })
+
+  const question4Section4Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'Standing',
+      scale : "PAIN_SCALE",
+      sectionId : section4Questionnaire2.id
+    }
+  })
+
+  const question5Section4Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'Bending to the floor/pick up an object',
+      scale : "PAIN_SCALE",
+      sectionId : section4Questionnaire2.id
+    }
+  })
+
+  const question6Section4Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'Walking on a flat surface',
+      scale : "PAIN_SCALE",
+      sectionId : section4Questionnaire2.id
+    }
+  })
+
+  const question7Section4Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'Getting in/out of a car',
+      scale : "PAIN_SCALE",
+      sectionId : section4Questionnaire2.id
+    }
+  })
+
+  const question8Section4Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'Going shopping',
+      scale : "PAIN_SCALE",
+      sectionId : section4Questionnaire2.id
+    }
+  })
+
+  const question9Section4Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'Putting on socks/stockings',
+      scale : "PAIN_SCALE",
+      sectionId : section4Questionnaire2.id
+    }
+  })
+
+  const question10Section4Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'Rising from bed',
+      scale : "PAIN_SCALE",
+      sectionId : section4Questionnaire2.id
+    }
+  })
+
+  const question11Section4Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'Taking off socks/stockings',
+      scale : "PAIN_SCALE",
+      sectionId : section4Questionnaire2.id
+    }
+  })
+
+
+  const question12Section4Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'Lying in bed (turning over, maintaining knee position)',
+      scale : "PAIN_SCALE",
+      sectionId : section4Questionnaire2.id
+    }
+  })
+
+  const question13Section4Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'Getting in/out of bath',
+      scale : "PAIN_SCALE",
+      sectionId : section4Questionnaire2.id
+    }
+  })
+
+  const question14Section4Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'Sitting',
+      scale : "PAIN_SCALE",
+      sectionId : section4Questionnaire2.id
+    }
+  })
+
+  const question15Section4Questionnaire2 = await prisma.question.create({
+    data : {
+      title: 'Getting on/off toilet',
+      scale : "PAIN_SCALE",
+      sectionId : section4Questionnaire2.id
+    }
+  })
+
+  const questionsSection4Questionnaire2 = await prisma.question.createMany({
+    data : [
+      {title:'Heavy domestic duties (moving heavy boxes, scrubbing floors, etc)', scale : "PAIN_SCALE", sectionId : section4Questionnaire2.id},
+      {title:'Light domestic duties (cooking, dusting, etc)', scale : "PAIN_SCALE", sectionId : section4Questionnaire2.id}
+    ]
+  })
+
+  const section5Questionnaire2 = await prisma.section.create({
+    data : {
+      name: 'Function, Sports and Recreational Activities',
+      description: 'This section describes your ability to be active on a higher level. For each of the following activities, please indicate the degree of difficulty you have experienced in the last week due to your knee.',
+      questionnaireId : questionnaire2.id
+    }
+  })
+
+  const questionsSection5Questionnaire2 = await prisma.question.createMany({
+    data : [
+      {title:'Suqatting ', scale : "PAIN_SCALE", sectionId : section5Questionnaire2.id},
+      {title:'Running ', scale : "PAIN_SCALE", sectionId : section5Questionnaire2.id},
+      {title:'Jumping ', scale : "PAIN_SCALE", sectionId : section5Questionnaire2.id},
+      {title:'Twisting/pivoting on your injured knee ', scale : "PAIN_SCALE", sectionId : section5Questionnaire2.id},
+      {title:'Kneeling ', scale : "PAIN_SCALE", sectionId : section5Questionnaire2.id}
+    ]
+  })
+
+  const section6Questionnaire2 = await prisma.section.create({
+    data : {
+      name: 'Quality of Life',
+      description: '',
+      questionnaireId : questionnaire2.id
+    }
+  })
+
+  const questionsSection6Questionnaire2 = await prisma.question.createMany({
+    data : [
+      {title:'How often are you aware of your knee problem?', scale : "FREQUENCY", sectionId : section6Questionnaire2.id},
+      {title:'Have you modified your life style to avoid activities potentially damaging to your knee?', scale : "FREQUENCY", sectionId : section6Questionnaire2.id},
+      {title:'How much are you troubled with lack of confidence in your knee?', scale : "FREQUENCY", sectionId : section6Questionnaire2.id},
+      {title:' In general, how much difficulty do you have with your knee?', scale : "FREQUENCY", sectionId : section6Questionnaire2.id},
+    ]
+  })
+
+
+ 
 
   // Create Patient Records
   const patientRecord1 = await prisma.patientRecord.create({
@@ -368,21 +763,21 @@ async function main() {
   });
 
   // Create Responses
-  const response1 = await prisma.response.create({
-    data: {
-      questionId: question1.id,
-      assessmentId: assessment1.id,
-      response: '3 times a week',
-    },
-  });
+  // const response1 = await prisma.response.create({
+  //   data: {
+  //     questionId: question1.id,
+  //     assessmentId: assessment1.id,
+  //     response: '3 times a week',
+  //   },
+  // });
 
-  const response2 = await prisma.response.create({
-    data: {
-      questionId: question2.id,
-      assessmentId: assessment2.id,
-      response: 'No',
-    },
-  });
+  // const response2 = await prisma.response.create({
+  //   data: {
+  //     questionId: question2.id,
+  //     assessmentId: assessment2.id,
+  //     response: 'No',
+  //   },
+  // });
 
   // Create Doctor Validations
   const doctorValidation1 = await prisma.doctorValidation.create({

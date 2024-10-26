@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createAssessment, createQuestionnaire, deleteAssessment, deleteQuestionnaire, getAllAssessmentByPatientId, getAllQuestionnaires, getQuestionnaireById } from '../controllers/questionnaireController';
+import { createAssessment, deleteAssessment, deleteQuestionnaire, getAllAssessmentByPatientId, getAllQuestionnaires, getQuestionnaireById } from '../controllers/questionnaireController';
 
 const router = Router();
 
@@ -106,12 +106,15 @@ router.get('/patient/:id', getAllAssessmentByPatientId);
  *               authorId:
  *                 type: string
  */
-router.post('/create', createQuestionnaire);
+//router.post('/create', createQuestionnaire);
 
 router.post('/assessment', createAssessment);
 
 router.put('/:id', deleteQuestionnaire);
 
 router.delete('/assessment/:id', deleteAssessment);
+
+//router.put('/update', updateQuestionnaire);
+
 
 export { router as questionnaireRoutes };

@@ -70,7 +70,6 @@ router.get('/doctors/:id', getAllPatientRecords)
  *               patientId:
  *                 type: string
  *                 description: The ID of the patient
- *                 description: The gender of the patient
  *               weight:
  *                 type: number
  *                 format: float
