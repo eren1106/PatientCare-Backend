@@ -15,11 +15,10 @@ enum UserRole {
 }
 
 enum ScaleType {
-  PAIN_SCALE    
-  FREQUENCY     
-  NUMERIC_SCALE 
+  PAIN_SCALE
+  FREQUENCY
+  NUMERIC_SCALE
 }
-
 
 enum SignInMethod {
   EMAILPASSWORD
@@ -48,24 +47,30 @@ enum Repeated {
   NO
 }
 
+enum DoctorRegistrationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 // MODELS
 model User {
-  id                String       @id @default(cuid())
-  username          String       @unique
-  email             String       @unique
-  ic                String       @unique
-  fullname          String
-  age               Int
-  gender            Gender
-  password          String
-  signinMethod      SignInMethod
-  role              UserRole
-  profileImageUrl   String?
-  // assignedDoctors   User[]
-  lastLoginDatetime DateTime?
-  createdDatetime   DateTime     @default(now())
-  updatedDatetime   DateTime?
-  isDelete          Boolean      @default(false)
+  id                       String                    @id @default(cuid())
+  username                 String                    @unique
+  email                    String                    @unique
+  ic                       String                    @unique
+  fullname                 String
+  age                      Int
+  gender                   Gender
+  password                 String
+  signinMethod             SignInMethod              @default(EMAILPASSWORD)
+  role                     UserRole
+  profileImageUrl          String?
+  doctorRegistrationStatus DoctorRegistrationStatus?
+  lastLoginDatetime        DateTime?
+  createdDatetime          DateTime                  @default(now())
+  updatedDatetime          DateTime?
+  isDelete                 Boolean                   @default(false)
 
   callTo               Call[]                 @relation("CallTo")
   callFrom             Call[]                 @relation("CallFrom")
@@ -142,37 +147,34 @@ model Questionnaire {
 
   author     User         @relation(fields: [authorId], references: [id])
   assessment Assessment[]
-  sections    Section[]    @relation("QuestionnaireSections")
+  sections   Section[]    @relation("QuestionnaireSections")
 }
 
 model Section {
-  id        String    @id @default(cuid())
-  name      String
-  description   String
-  questionnaireId  String
+  id              String @id @default(cuid())
+  name            String
+  description     String
+  questionnaireId String
 
   questionnaire Questionnaire @relation("QuestionnaireSections", fields: [questionnaireId], references: [id])
-  question   Question[]   @relation("SectionQuestion")
+  question      Question[]    @relation("SectionQuestion")
 }
 
 model Question {
-  id          String @id @default(cuid())
-  title       String
-  sectionId   String
-  scale       ScaleType
+  id        String    @id @default(cuid())
+  title     String
+  sectionId String
+  scale     ScaleType
 
-  response    Response[]
-  section     Section   @relation("SectionQuestion", fields: [sectionId], references: [id])
+  response Response[]
+  section  Section    @relation("SectionQuestion", fields: [sectionId], references: [id])
 }
 
-
-
 model Option {
-  id          String       @id @default(cuid())
-  scaleType   ScaleType         
-  scaleValue  Int
-  content     String?      
-
+  id         String    @id @default(cuid())
+  scaleType  ScaleType
+  scaleValue Int
+  content    String?
 }
 
 model Response {
@@ -184,8 +186,6 @@ model Response {
   question   Question   @relation(fields: [questionId], references: [id])
   assessment Assessment @relation("AssessmentResponse", fields: [assessmentId], references: [id])
 }
-
-
 
 model DoctorValidation {
   id                 String  @id @default(cuid())
