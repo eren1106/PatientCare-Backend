@@ -156,23 +156,31 @@ model Section {
 }
 
 model Question {
-  id          String @id @default(cuid())
-  title       String
-  sectionId   String
-  scale       ScaleType
+  id                String @id @default(cuid())
+  title             String
+  sectionId         String
+  optionId          String
 
-  response    Response[]
-  section     Section   @relation("SectionQuestion", fields: [sectionId], references: [id])
+  response          Response[]
+  section           Section   @relation("SectionQuestion", fields: [sectionId], references: [id])
+  optionTemplate    OptionTemplate @relation("QuestionOption", fields: [optionId], references: [id])
 }
 
+model OptionTemplate {
+  id          String      @id @default(cuid())
+  scaleType   ScaleType
 
+  option      Option[]      @relation("OptionTemplate")
+  question    Question[]    @relation("QuestionOption")
+}
 
 model Option {
-  id          String       @id @default(cuid())
-  scaleType   ScaleType         
-  scaleValue  Int
-  content     String?      
+  id                  String           @id @default(cuid())
+  optionTemplateId    String           
+  scaleValue          Int
+  content             String?      
 
+  optionTemplate      OptionTemplate   @relation("OptionTemplate", fields: [optionTemplateId], references: [id])
 }
 
 model Response {
