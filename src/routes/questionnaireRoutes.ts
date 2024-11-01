@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createAssessment, createQuestionnaire, deleteAssessment, deleteQuestionnaire, getAllAssessmentByPatientId, getAllOptions, getAllQuestionnaires, getQuestionnaireById, updateQuestionnaire } from '../controllers/questionnaireController';
+import { createAssessment, createQuestionnaire, deleteAssessment, deleteQuestionnaire, getAllAssessmentByPatientRecordId, getAllOptions, getAllQuestionnaires, getAssessmentResult, getQuestionnaireById, updateQuestionnaire } from '../controllers/questionnaireController';
 
 const router = Router();
 
@@ -170,7 +170,9 @@ router.put('/:id', updateQuestionnaire);
  *       200:
  *         description: A list of questionnaires
  */
-router.get('/patient/:id', getAllAssessmentByPatientId);
+router.get('/patient/:id', getAllAssessmentByPatientRecordId);
+
+
 
 /**
  * @swagger
@@ -336,7 +338,79 @@ router.delete('/:id', deleteQuestionnaire);
 
 router.delete('/assessment/:id', deleteAssessment);
 
-//router.put('/update', updateQuestionnaire);
+router.get('/assessment/:id/result', getAssessmentResult);
+/**
+ * @swagger
+ * /api/questionnaire/assessment/{id}/result:
+ *   get:
+ *     summary: Get the result of a questionnaire assessment
+ *     description: Retrieve the result of a questionnaire assessment, including the questionnaire details, status, section scores, total score, and responses.
+ *     tags:
+ *       - questionnaires
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the assessment
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved the assessment result
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 questionnaireName:
+ *                   type: string
+ *                 questionnaireType:
+ *                   type: string
+ *                 questionnaireIndex:
+ *                   type: string
+ *                 questionnaireStatus:
+ *                   type: string
+ *                   enum: [Assigned, In Progress, Completed]
+ *                 sectionScores:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       sectionName:
+ *                         type: string
+ *                       sectionScore:
+ *                         type: string
+ *                 totalScore:
+ *                   type: string
+ *                 responses:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       question:
+ *                         type: string
+ *                       option:
+ *                         type: string
+ *       404:
+ *         description: Assessment not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
+
 
 
 export { router as questionnaireRoutes };

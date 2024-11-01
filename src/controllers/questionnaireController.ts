@@ -36,13 +36,13 @@ export const getAllQuestionnaires = async (req: Request, res: Response) => {
     }
 };
 
-export const getAllAssessmentByPatientId = async (req: Request, res: Response) => {
+export const getAllAssessmentByPatientRecordId = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const assessment = await prisma.assessment.findMany({
       where : {
         // isDelete : false
-        userId : id
+        patientRecordId : id
       },
       include : {
         questionnaire : true
@@ -56,6 +56,7 @@ export const getAllAssessmentByPatientId = async (req: Request, res: Response) =
     return errorResponse({ res, error });
   }
 };
+
 
 
 
@@ -101,20 +102,14 @@ export const getQuestionnaireById = async (req: Request, res: Response) => {
 
 export const createAssessment = async (req: Request, res: Response) => {
   try {
-    const { userId, questionnaireId, recordId } = req.body.assessment;
-    const assessmentData = {
-      userId,
-      questionnaire: {
-        connect: { id: questionnaireId }
-      },
-      patientRecord: {
-        connect: { id: recordId }
-      }
-    };
-
+    const { doctorId, questionnaireId, recordId } = req.body.assessment;
 
     const assessment = await prisma.assessment.create({
-      data: assessmentData
+      data : {
+        doctorId : doctorId,
+        questionnaireId : questionnaireId,
+        patientRecordId : recordId
+      }
     });
     return apiResponse({
       res,
@@ -282,6 +277,111 @@ export const updateQuestionnaire = async (req: Request, res: Response) => {
   }
 };
 
+export const getAssessmentResult = async (req: Request, res: Response) => {
+  const assessmentId = req.params.id;
+
+  try {
+    // Fetch the assessment with related data
+    const assessment = await prisma.assessment.findUnique({
+      where: { id: assessmentId },
+      include: {
+        questionnaire: {
+          include: {
+            sections: {
+              include: {
+                question: {
+                  include: {
+                    response: {
+                      where: { assessmentId },
+                      include: {
+                        option: true,
+                      },
+                    },
+                    optionTemplate: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        response: {
+          include: {
+            question: true,
+            option: true,
+          },
+        },
+      },
+    });
+
+    if (!assessment) {
+      return res.status(404).json({ message: 'Assessment not found' });
+    }
+
+    const { questionnaire } = assessment;
+    const totalQuestions = questionnaire.sections.reduce((acc, section) => acc + section.question.length, 0);
+    const answeredQuestions = assessment.response.length;
+
+    let questionnaireStatus = 'Assigned';
+    if (answeredQuestions > 0 && answeredQuestions < totalQuestions) {
+      questionnaireStatus = 'In Progress';
+    } else if (answeredQuestions === totalQuestions) {
+      questionnaireStatus = 'Completed';
+    }
+
+    const sectionScores = questionnaire.sections.map((section) => {
+      const sectionResponses = section.question.flatMap((q) => q.response);
+      const totalPossibleScore = section.question.reduce((acc, question) => {
+        return acc + (question.optionTemplate.scaleType === 'NUMERIC_SCALE' ? 10 : 5);
+      }, 0);
+      const totalScore = sectionResponses.reduce((acc, response) => acc + response.option.scaleValue, 0);
+      const sectionScore = totalScore;
+
+      return {
+        sectionName: section.name,
+        sectionScore: sectionScore,
+        sectionTotalScore: totalPossibleScore,
+        questions: section.question.map((question) => {
+          const response = question.response.find((r) => r.assessmentId === assessmentId);
+          return {
+            questionId: question.id,
+            questionTitle: question.title,
+            response: response
+              ? {
+                  scaleValue: response.option.scaleValue,
+                  content: response.option.content,
+                }
+              : null,
+          };
+        }),
+      };
+    });
+
+    const totalPossibleScore = questionnaire.sections.reduce((acc, section) => {
+      return acc + section.question.reduce((acc, question) => {
+        return acc + (question.optionTemplate.scaleType === 'NUMERIC_SCALE' ? 10 : 5);
+      }, 0);
+    }, 0);
+    const totalScore = assessment.response.reduce((acc, response) => acc + response.option.scaleValue, 0);
+    const totalScorePercentage = (totalScore / totalPossibleScore) * 100;
+
+    const result = {
+      questionnaireName: questionnaire.title,
+      questionnaireType: questionnaire.type,
+      questionnaireIndex: questionnaire.index,
+      questionnaireStatus,
+      sectionScores,
+      totalScore: totalScorePercentage.toFixed(2),
+    };
+
+    return res.status(200).json(result);
+  } catch (error: any) {
+    console.error('Error fetching assessment result:', error.message);
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: error.message,
+    });
+  }
+};
 
 interface Option {
   id?: string; 

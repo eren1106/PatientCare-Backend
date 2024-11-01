@@ -73,6 +73,7 @@ model User {
   isDelete                 Boolean                   @default(false)
 
   callTo               Call[]                 @relation("CallTo")
+  assessment           Assessment[]           @relation("AssessmentDoctor")
   callFrom             Call[]                 @relation("CallFrom")
   messageFrom          Message[]              @relation("MessageFrom")
   messageTo            Message[]              @relation("MessageTo")
@@ -185,6 +186,7 @@ model Option {
   scaleValue          Int
   content             String?      
 
+  response            Response[]      @relation("QuestionAnswer")
   optionTemplate      OptionTemplate   @relation("OptionTemplate", fields: [optionTemplateId], references: [id])
 }
 
@@ -192,9 +194,10 @@ model Response {
   id           String @id @default(cuid())
   assessmentId String
   questionId   String
-  response     String
+  optionId     String
 
   question   Question   @relation(fields: [questionId], references: [id])
+  option     Option     @relation("QuestionAnswer",fields: [optionId], references: [id])
   assessment Assessment @relation("AssessmentResponse", fields: [assessmentId], references: [id])
 }
 

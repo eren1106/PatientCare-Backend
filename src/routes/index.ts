@@ -10,6 +10,7 @@ import { notificationRoutes } from './notificationRoutes';
 import { userRoutes } from './userRoutes';
 import { chatRoutes } from './chatRoutes';
 import { callRoutes } from './callRoutes';
+import { assessmentRoutes } from './assessmentRoutes';
 const router = Router();
 
 router.get('/', (req: Request, res: Response) => {
@@ -27,5 +28,6 @@ router.use('/notifications', notificationRoutes);
 router.use('/users', userRoutes);
 router.use('/chat', chatRoutes);
 router.use('/call', callRoutes);
+router.use('/assessment', assessmentRoutes);
 
 export default router;
