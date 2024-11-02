@@ -125,7 +125,7 @@ model Notification {
 
 model Assessment {
   id              String   @id @default(cuid())
-  userId          String
+  doctorId          String
   questionnaireId String
   createdDatetime DateTime @default(now())
   patientRecordId String
@@ -133,6 +133,7 @@ model Assessment {
   questionnaire Questionnaire @relation(fields: [questionnaireId], references: [id])
   response      Response[]    @relation("AssessmentResponse")
   patientRecord PatientRecord @relation("PatientRecordAssessment", fields: [patientRecordId], references: [id])
+  user          User          @relation("AssessmentDoctor", fields: [doctorId], references: [id])
 }
 
 model Questionnaire {
