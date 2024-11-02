@@ -123,17 +123,6 @@ model Notification {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Assessment {
-  id              String   @id @default(cuid())
-  userId          String
-  questionnaireId String
-  createdDatetime DateTime @default(now())
-  patientRecordId String
-
-  questionnaire Questionnaire @relation(fields: [questionnaireId], references: [id])
-  response      Response[]    @relation("AssessmentResponse")
-  patientRecord PatientRecord @relation("PatientRecordAssessment", fields: [patientRecordId], references: [id])
-}
 
 model Questionnaire {
   id              String    @id @default(cuid())
@@ -150,6 +139,20 @@ model Questionnaire {
   assessment Assessment[]
   sections   Section[]    @relation("QuestionnaireSections")
 }
+
+model Assessment {
+  id              String   @id @default(cuid())
+  questionnaireId String
+  createdDatetime DateTime @default(now())
+  patientRecordId String
+  doctorId        String
+
+  questionnaire Questionnaire @relation(fields: [questionnaireId], references: [id])
+  response      Response[]    @relation("AssessmentResponse")
+  patientRecord PatientRecord @relation("PatientRecordAssessment", fields: [patientRecordId], references: [id])
+  user          User          @relation("AssessmentDoctor", fields: [doctorId], references: [id])
+}
+
 
 model Section {
   id              String @id @default(cuid())
