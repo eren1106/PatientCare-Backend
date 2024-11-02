@@ -147,10 +147,10 @@ model Assessment {
   patientRecordId String
   doctorId        String
 
-  questionnaire Questionnaire @relation(fields: [questionnaireId], references: [id])
-  response      Response[]    @relation("AssessmentResponse")
-  patientRecord PatientRecord @relation("PatientRecordAssessment", fields: [patientRecordId], references: [id])
-  user          User          @relation("AssessmentDoctor", fields: [doctorId], references: [id])
+  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id])
+  response        Response[]    @relation("AssessmentResponse")
+  patientRecord   PatientRecord @relation("PatientRecordAssessment", fields: [patientRecordId], references: [id])
+  doctor          User          @relation("AssessmentDoctor", fields: [doctorId], references: [id])
 }
 
 
