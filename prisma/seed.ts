@@ -52,6 +52,21 @@ async function main() {
     ]
   });
   
+  // Create Admin
+  const admin = await prisma.user.create({
+    data: {
+      username: 'Patient Care Admin',
+      email: 'patientcare@admin.com',
+      password: 'securepassword',
+      signinMethod: 'EMAILPASSWORD',
+      profileImageUrl: 'https://external-preview.redd.it/kevin-durant-usa-mens-leading-point-scorer-in-olympic-v0-KlataPnkXqTtYczpASxTqgqJVaxrYZlL3YwsGBLVLuE.jpg?auto=webp&s=66bb76ac0496ece60bf9954b77489fd11f234f1d',
+      role: 'ADMIN',
+      fullname: 'Admin',
+      age: 35,  
+      gender: Gender.MALE, 
+      ic: "990101123456", 
+    },
+  });
 
   // Create Users
   const user1 = await prisma.user.create({

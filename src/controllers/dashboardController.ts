@@ -63,6 +63,8 @@ export const getAllPatientRecords = async (req: Request, res: Response) => {
           select: {
             id: true,
             username: true,
+            fullname:true,
+            age: true,
             email: true,
             role: true,
             profileImageUrl: true,
@@ -89,7 +91,13 @@ export const insertPatientRecord = async (req: Request, res: Response) => {
   try {
     // Check if the doctor exists
     const doctor = await prisma.user.findUnique({
-      where: { id: doctorId, role: "DOCTOR" },
+      where: {
+        id: doctorId,
+        OR: [
+          { role: "DOCTOR" },
+          { role: "ADMIN" },
+        ],
+      },
     });
 
     if (!doctor)
