@@ -252,3 +252,31 @@ export const deletePatientExerciseById = async (req: Request, res: Response) => 
     return errorResponse({ res, error });
   }
 };
+
+// get all time daily patient exercises (all, not just today)
+export const getAllDailyPatientExercisesByPatientId = async (req: Request, res: Response) => {
+  const { patientId } = req.params;
+
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set time to the start of the day
+    const dailyPatientExercises = await prisma.dailyPatientExercise.findMany({
+      where: {
+        patientId,
+      },
+      include: {
+        patientExercise: {
+          include: {
+            exercise: true,
+          }
+        },
+      }
+    });
+    return apiResponse({
+      res,
+      result: dailyPatientExercises
+    });
+  } catch (error) {
+    return errorResponse({ res, error });
+  }
+};

@@ -69,6 +69,7 @@ async function main() {
   });
 
   // Create Users
+  // TODO: hash password
   const user1 = await prisma.user.create({
     data: {
       username: 'john_doe_123',
