@@ -11,6 +11,7 @@ import { userRoutes } from './userRoutes';
 import { chatRoutes } from './chatRoutes';
 import { callRoutes } from './callRoutes';
 import { assessmentRoutes } from './assessmentRoutes';
+import { adminRoutes } from './adminRoutes';
 const router = Router();
 
 router.get('/', (req: Request, res: Response) => {
@@ -29,5 +30,6 @@ router.use('/users', userRoutes);
 router.use('/chat', chatRoutes);
 router.use('/call', callRoutes);
 router.use('/assessment', assessmentRoutes);
+router.use('/admin', adminRoutes);
 
 export default router;
