@@ -14,11 +14,6 @@ enum UserRole {
   ADMIN
 }
 
-enum ScaleType {
-  PAIN_SCALE
-  FREQUENCY
-  NUMERIC_SCALE
-}
 
 enum SignInMethod {
   EMAILPASSWORD
@@ -177,7 +172,7 @@ model Question {
 
 model OptionTemplate {
   id          String      @id @default(cuid())
-  scaleType   ScaleType
+  scaleType   String
 
   option      Option[]      @relation("OptionTemplate")
   question    Question[]    @relation("QuestionOption")

@@ -383,6 +383,136 @@ export const getAssessmentResult = async (req: Request, res: Response) => {
   }
 };
 
+export const createOptionTemplate = async (req: Request, res: Response) => {
+  const { scaleType, options } = req.body;
+
+  try {
+    const optionTemplate = await prisma.optionTemplate.create({
+      data: {
+        scaleType,
+        option: {
+          create: options.map((opt: { scaleValue: number; content: string }) => ({
+            scaleValue: opt.scaleValue,
+            content: opt.content,
+          })),
+        },
+      },
+      include: {
+        option: true,
+      },
+    });
+
+    return apiResponse({
+      res,
+      result: optionTemplate,
+      message: 'Option template created successfully',
+    });
+  } catch (error: any) {
+    return errorResponse({ res, error });
+  }
+};
+
+
+export const getAllOptionTemplates = async (req: Request, res: Response) => {
+  try {
+    const optionTemplates = await prisma.optionTemplate.findMany({
+      include: {
+        option: true,
+      },
+    });
+
+    return apiResponse({
+      res,
+      result: optionTemplates,
+    });
+  } catch (error: any) {
+    return errorResponse({ res, error });
+  }
+};
+
+
+
+export const updateOptionTemplate = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { scaleType, options } = req.body;
+
+  try {
+    // Update the option template
+    const optionTemplate = await prisma.optionTemplate.update({
+      where: { id },
+      data: {
+        scaleType,
+      },
+    });
+
+    // Update existing options and create new ones
+    for (const opt of options) {
+      if (opt.id) {
+        // Update existing option
+        await prisma.option.update({
+          where: { id: opt.id },
+          data: {
+            scaleValue: opt.scaleValue,
+            content: opt.content,
+          },
+        });
+      } else {
+        // Create new option
+        await prisma.option.create({
+          data: {
+            optionTemplateId: id,
+            scaleValue: opt.scaleValue,
+            content: opt.content,
+          },
+        });
+      }
+    }
+
+
+    return apiResponse({
+      res,
+      result: optionTemplate,
+      message: 'Option template updated successfully',
+    });
+  } catch (error: any) {
+    return errorResponse({ res, error });
+  }
+};
+
+export const deleteOptionTemplate = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    // Check if the option template is referenced in questions or options
+    const referencedQuestion = await prisma.question.findFirst({
+      where: { optionId: id },
+    });
+
+
+    if (referencedQuestion) {
+      return res.status(400).json({
+        message: 'Cannot delete option template as it is referenced in questions or options',
+      });
+    }
+
+    const options = await prisma.option.deleteMany({
+      where: { optionTemplateId: id },
+    })
+
+    const optionTemplate = await prisma.optionTemplate.delete({
+      where: { id },
+    });
+
+    return apiResponse({
+      res,
+      result: optionTemplate,
+      message: 'Option template deleted successfully',
+    });
+  } catch (error: any) {
+    return errorResponse({ res, error });
+  }
+};
+
 interface Option {
   id?: string; 
   content: string;

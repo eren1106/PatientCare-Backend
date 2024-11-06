@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createAssessment, createQuestionnaire, deleteAssessment, deleteQuestionnaire, getAllAssessmentByPatientRecordId, getAllOptions, getAllQuestionnaires, getAssessmentResult, getQuestionnaireById, updateQuestionnaire } from '../controllers/questionnaireController';
+import { createAssessment, createOptionTemplate, createQuestionnaire, deleteAssessment, deleteOptionTemplate, deleteQuestionnaire, getAllAssessmentByPatientRecordId, getAllOptions, getAllOptionTemplates, getAllQuestionnaires, getAssessmentResult, getQuestionnaireById, updateOptionTemplate, updateQuestionnaire } from '../controllers/questionnaireController';
 
 const router = Router();
 
@@ -15,6 +15,36 @@ const router = Router();
  *         description: A list of questionnaires
  */
 router.get('/', getAllQuestionnaires);
+
+
+/**
+ * @swagger
+ * /api/questionnaire/optionTemplate:
+ *   get:
+ *     summary: Get all option templates
+ *     description: Retrieve all option templates with their associated options.
+ *     tags:
+ *       - OptionTemplate
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved all option templates
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
+router.get('/optionTemplate', getAllOptionTemplates);
 
 /**
  * @swagger
@@ -411,6 +441,165 @@ router.get('/assessment/:id/result', getAssessmentResult);
  *                   type: string
  */
 
+/**
+ * @swagger
+ * /api/questionnaire/optionTemplate:
+ *   post:
+ *     summary: Create a new option template
+ *     description: Create a new option template with associated options.
+ *     tags:
+ *       - OptionTemplate
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               scaleType:
+ *                 type: string
+ *               options:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     scaleValue:
+ *                       type: integer
+ *                     content:
+ *                       type: string
+ *     responses:
+ *       200:
+ *         description: Option template created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 result:
+ *                   type: object
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
+router.post('/optionTemplate', createOptionTemplate);
 
+
+
+
+/**
+ * @swagger
+ * /api/questionnaire/optionTemplate/{id}:
+ *   put:
+ *     summary: Update an option template
+ *     description: Update an existing option template and its associated options.
+ *     tags:
+ *       - OptionTemplate
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the option template to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               scaleType:
+ *                 type: string
+ *               options:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     scaleValue:
+ *                       type: integer
+ *                     content:
+ *                       type: string
+ *     responses:
+ *       200:
+ *         description: Option template updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 result:
+ *                   type: object
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
+router.put('/optionTemplate/:id', updateOptionTemplate);
+
+
+/**
+ * @swagger
+ * /api/questionnaire/optionTemplate/{id}:
+ *   delete:
+ *     summary: Delete an option template
+ *     description: Delete an option template if it is not referenced elsewhere.
+ *     tags:
+ *       - OptionTemplate
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the option template to delete
+ *     responses:
+ *       200:
+ *         description: Option template deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 result:
+ *                   type: object
+ *                 message:
+ *                   type: string
+ *       400:
+ *         description: Cannot delete option template as it is referenced in questions or options
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
+router.delete('/optionTemplate/:id', deleteOptionTemplate);
 
 export { router as questionnaireRoutes };
