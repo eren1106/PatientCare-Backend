@@ -1,6 +1,6 @@
 import { Gender } from "@prisma/client";
 
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
@@ -820,45 +820,46 @@ async function main() {
   });
 
   // Create Responses
-  const response1 = await prisma.response.create({
-    data: {
-      questionId: question1Section1.id,
-      assessmentId: assessment1.id,
-      optionId: option1.id,
-    },
-  });
+  // TODO: uncomment and fix these errors
+  // const response1 = await prisma.response.create({
+  //   data: {
+  //     questionId: question1Section1.id,
+  //     assessmentId: assessment1.id,
+  //     optionId: option1.id,
+  //   },
+  // });
 
-  const response2 = await prisma.response.create({
-    data: {
-      questionId: question2Section1.id,
-      assessmentId: assessment1.id,
-      optionId: option2.id,
-    },
-  });
+  // const response2 = await prisma.response.create({
+  //   data: {
+  //     questionId: question2Section1.id,
+  //     assessmentId: assessment1.id,
+  //     optionId: option2.id,
+  //   },
+  // });
 
-  const response3 = await prisma.response.create({
-    data: {
-      questionId: question3Section1.id,
-      assessmentId: assessment1.id,
-      optionId: option3.id,
-    },
-  });
+  // const response3 = await prisma.response.create({
+  //   data: {
+  //     questionId: question3Section1.id,
+  //     assessmentId: assessment1.id,
+  //     optionId: option3.id,
+  //   },
+  // });
 
-  const response4 = await prisma.response.create({
-    data: {
-      questionId: question4Section1.id,
-      assessmentId: assessment1.id,
-      optionId: option4.id,
-    },
-  });
+  // const response4 = await prisma.response.create({
+  //   data: {
+  //     questionId: question4Section1.id,
+  //     assessmentId: assessment1.id,
+  //     optionId: option4.id,
+  //   },
+  // });
 
-  const response5 = await prisma.response.create({
-    data: {
-      questionId: question5Section1.id,
-      assessmentId: assessment1.id,
-      optionId: option4.id,
-    },
-  });
+  // const response5 = await prisma.response.create({
+  //   data: {
+  //     questionId: question5Section1.id,
+  //     assessmentId: assessment1.id,
+  //     optionId: option4.id,
+  //   },
+  // });
 
   // Create Doctor Validations
   const doctorValidation1 = await prisma.doctorValidation.create({
@@ -948,6 +949,9 @@ async function main() {
       patientId: user1.id,
       exerciseId: exercise1.id,
       sets: 3,
+      reps: 3,
+      frequency: 3,
+      duration: 30,
     },
   });
 
@@ -956,6 +960,9 @@ async function main() {
       patientId: user1.id,
       exerciseId: exercise2.id,
       sets: 4,
+      reps: 3,
+      frequency: 3,
+      duration: 30,
     },
   });
 
@@ -964,6 +971,9 @@ async function main() {
       patientId: user1.id,
       exerciseId: exercise3.id,
       sets: 2,
+      reps: 3,
+      frequency: 3,
+      duration: 30,
     },
   });
 

@@ -1,9 +1,9 @@
 import Groq from "groq-sdk";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
 export async function getExerciseSuggestions(cleanedData: any) {
-    const prompt = `
+  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+  const prompt = `
 
     Based on the following assessment details, analyze the patient's response and suggest suitable exercises for the patient. 
     Provide the output strictly in a JSON array format, with each exercise containing the following fields:  
@@ -43,24 +43,24 @@ export async function getExerciseSuggestions(cleanedData: any) {
       ]
     ]
     `;
-  
-    const response = await groq.chat.completions.create({
-      messages: [
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      model: "llama-3.2-11b-text-preview",
-    });
-  
-    
 
-    const content = response.choices[0].message.content;
-    if (!content) {
-        throw new Error("Response content is null");
-    }
-    const suggestions = JSON.parse(content);
-  
-    return suggestions;
+  const response = await groq.chat.completions.create({
+    messages: [
+      {
+        role: "user",
+        content: prompt,
+      },
+    ],
+    model: "llama-3.2-11b-text-preview",
+  });
+
+
+
+  const content = response.choices[0].message.content;
+  if (!content) {
+    throw new Error("Response content is null");
+  }
+  const suggestions = JSON.parse(content);
+
+  return suggestions;
 }
