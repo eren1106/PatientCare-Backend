@@ -14,7 +14,6 @@ enum UserRole {
   ADMIN
 }
 
-
 enum SignInMethod {
   EMAILPASSWORD
   GOOGLE
@@ -118,7 +117,6 @@ model Notification {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-
 model Questionnaire {
   id              String    @id @default(cuid())
   title           String
@@ -142,12 +140,11 @@ model Assessment {
   patientRecordId String
   doctorId        String
 
-  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id])
-  response        Response[]    @relation("AssessmentResponse")
-  patientRecord   PatientRecord @relation("PatientRecordAssessment", fields: [patientRecordId], references: [id])
-  doctor          User          @relation("AssessmentDoctor", fields: [doctorId], references: [id])
+  questionnaire Questionnaire @relation(fields: [questionnaireId], references: [id])
+  response      Response[]    @relation("AssessmentResponse")
+  patientRecord PatientRecord @relation("PatientRecordAssessment", fields: [patientRecordId], references: [id])
+  doctor        User          @relation("AssessmentDoctor", fields: [doctorId], references: [id])
 }
-
 
 model Section {
   id              String @id @default(cuid())
@@ -160,32 +157,32 @@ model Section {
 }
 
 model Question {
-  id                String @id @default(cuid())
-  title             String
-  sectionId         String
-  optionId          String
+  id        String @id @default(cuid())
+  title     String
+  sectionId String
+  optionId  String
 
-  response          Response[]
-  section           Section   @relation("SectionQuestion", fields: [sectionId], references: [id])
-  optionTemplate    OptionTemplate @relation("QuestionOption", fields: [optionId], references: [id])
+  response       Response[]
+  section        Section        @relation("SectionQuestion", fields: [sectionId], references: [id])
+  optionTemplate OptionTemplate @relation("QuestionOption", fields: [optionId], references: [id])
 }
 
 model OptionTemplate {
-  id          String      @id @default(cuid())
-  scaleType   String
+  id        String @id @default(cuid())
+  scaleType String
 
-  option      Option[]      @relation("OptionTemplate")
-  question    Question[]    @relation("QuestionOption")
+  option   Option[]   @relation("OptionTemplate")
+  question Question[] @relation("QuestionOption")
 }
 
 model Option {
-  id                  String           @id @default(cuid())
-  optionTemplateId    String           
-  scaleValue          Int
-  content             String?      
+  id               String  @id @default(cuid())
+  optionTemplateId String
+  scaleValue       Int
+  content          String?
 
-  response            Response[]      @relation("QuestionAnswer")
-  optionTemplate      OptionTemplate   @relation("OptionTemplate", fields: [optionTemplateId], references: [id])
+  response       Response[]     @relation("QuestionAnswer")
+  optionTemplate OptionTemplate @relation("OptionTemplate", fields: [optionTemplateId], references: [id])
 }
 
 model Response {
@@ -195,7 +192,7 @@ model Response {
   optionId     String
 
   question   Question   @relation(fields: [questionId], references: [id])
-  option     Option     @relation("QuestionAnswer",fields: [optionId], references: [id])
+  option     Option     @relation("QuestionAnswer", fields: [optionId], references: [id])
   assessment Assessment @relation("AssessmentResponse", fields: [assessmentId], references: [id])
 }
 
@@ -290,7 +287,10 @@ model PatientExercise {
   id              String   @id @default(cuid())
   patientId       String
   exerciseId      String
+  reps            Int
   sets            Int
+  frequency       Int
+  duration        Int
   createdDatetime DateTime @default(now())
 
   user                 User                   @relation(fields: [patientId], references: [id])
