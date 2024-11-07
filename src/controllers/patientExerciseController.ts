@@ -3,6 +3,7 @@ import { apiResponse, errorResponse } from '../utils/api-response.util';
 import prisma from '../lib/prisma';
 import { STATUS_CODES } from '../constants';
 import { sendNotification } from '../services/notifications.service';
+import { startOfMonth, endOfMonth, eachDayOfInterval, format } from 'date-fns';
 
 export const getPatientExercises = async (req: Request, res: Response) => {
   const { patientId } = req.params;
@@ -269,6 +270,61 @@ export const getAllDailyPatientExercisesByPatientId = async (req: Request, res: 
     return apiResponse({
       res,
       result: dailyPatientExercises
+    });
+  } catch (error) {
+    return errorResponse({ res, error });
+  }
+};
+
+// TODO: modify it so that can get any month
+// get exercise completion summary of current month
+export const getExerciseCompletionSummaryByPatientId = async (req: Request, res: Response) => {
+  const { patientId } = req.params;
+
+  try {
+    // Get the start and end of the current month
+    const start = startOfMonth(new Date());
+    const end = endOfMonth(new Date());
+
+    // Fetch all daily exercises within the current month for the specified patient
+    const dailyExercises = await prisma.dailyPatientExercise.findMany({
+      where: {
+        patientId: patientId,
+        createdDatetime: {
+          gte: start,
+          lte: end,
+        },
+      },
+    });
+
+    // Map the exercises by day
+    const dayMap = dailyExercises.reduce((acc, exercise) => {
+      const day = format(exercise.createdDatetime, 'd'); // Day of the month
+      if (!acc[day]) {
+        acc[day] = { total: 0, completed: 0 };
+      }
+      acc[day].total += 1;
+      if (exercise.isCompleted) {
+        acc[day].completed += 1;
+      }
+      return acc;
+    }, {} as Record<string, { total: number; completed: number }>);
+
+    // Calculate percentages for each day in the month
+    const daysInMonth = eachDayOfInterval({ start, end });
+    const results = daysInMonth.map((date) => {
+      const day = format(date, 'd');
+      const dayData = dayMap[day] || { total: 0, completed: 0 };
+      const percentage = dayData.total ? (dayData.completed / dayData.total) * 100 : 0;
+      return {
+        day: parseInt(day, 10),
+        percentage: Math.round(percentage),
+      };
+    });
+
+    return apiResponse({
+      res,
+      result: results,
     });
   } catch (error) {
     return errorResponse({ res, error });
