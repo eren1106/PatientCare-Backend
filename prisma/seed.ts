@@ -8,50 +8,50 @@ async function main() {
 
 
   const optionTemplate1 = await prisma.optionTemplate.create({
-    data : { 
-      scaleType : 'PAIN_SCALE'
+    data: {
+      scaleType: 'PAIN_SCALE'
     },
   });
 
   const optionTemplate2 = await prisma.optionTemplate.create({
-    data : { 
-      scaleType : 'NUMERIC_SCALE'
+    data: {
+      scaleType: 'NUMERIC_SCALE'
     },
   });
 
   const optionTemplate3 = await prisma.optionTemplate.create({
-    data : { 
-      scaleType : 'FREQUENCY'
+    data: {
+      scaleType: 'FREQUENCY'
     },
   });
- 
+
   const option = await prisma.option.createMany({
     data: [
-      { optionTemplateId : optionTemplate1.id , scaleValue: 1, content: 'None' },
-      { optionTemplateId : optionTemplate1.id , scaleValue: 2, content: 'Mild' },
-      { optionTemplateId : optionTemplate1.id , scaleValue: 3, content: 'Moderate' },
-      { optionTemplateId : optionTemplate1.id , scaleValue: 4, content: 'Severe' },
-      { optionTemplateId : optionTemplate1.id , scaleValue: 5, content: 'Extreme' },
+      { optionTemplateId: optionTemplate1.id, scaleValue: 1, content: 'None' },
+      { optionTemplateId: optionTemplate1.id, scaleValue: 2, content: 'Mild' },
+      { optionTemplateId: optionTemplate1.id, scaleValue: 3, content: 'Moderate' },
+      { optionTemplateId: optionTemplate1.id, scaleValue: 4, content: 'Severe' },
+      { optionTemplateId: optionTemplate1.id, scaleValue: 5, content: 'Extreme' },
 
-      { optionTemplateId : optionTemplate2.id , scaleValue: 1, content: null },
-      { optionTemplateId : optionTemplate2.id , scaleValue: 2, content: null },
-      { optionTemplateId : optionTemplate2.id , scaleValue: 3, content: null },
-      { optionTemplateId : optionTemplate2.id , scaleValue: 4, content: null },
-      { optionTemplateId : optionTemplate2.id , scaleValue: 5, content: null },
-      { optionTemplateId : optionTemplate2.id , scaleValue: 6, content: null },
-      { optionTemplateId : optionTemplate2.id , scaleValue: 7, content: null },
-      { optionTemplateId : optionTemplate2.id , scaleValue: 8, content: null },
-      { optionTemplateId : optionTemplate2.id , scaleValue: 9, content: null },
-      { optionTemplateId : optionTemplate2.id , scaleValue: 10, content: null },
+      { optionTemplateId: optionTemplate2.id, scaleValue: 1, content: null },
+      { optionTemplateId: optionTemplate2.id, scaleValue: 2, content: null },
+      { optionTemplateId: optionTemplate2.id, scaleValue: 3, content: null },
+      { optionTemplateId: optionTemplate2.id, scaleValue: 4, content: null },
+      { optionTemplateId: optionTemplate2.id, scaleValue: 5, content: null },
+      { optionTemplateId: optionTemplate2.id, scaleValue: 6, content: null },
+      { optionTemplateId: optionTemplate2.id, scaleValue: 7, content: null },
+      { optionTemplateId: optionTemplate2.id, scaleValue: 8, content: null },
+      { optionTemplateId: optionTemplate2.id, scaleValue: 9, content: null },
+      { optionTemplateId: optionTemplate2.id, scaleValue: 10, content: null },
 
-      { optionTemplateId : optionTemplate3.id , scaleValue: 1, content: 'Never' },
-      { optionTemplateId : optionTemplate3.id , scaleValue: 2, content: 'Rarely' },
-      { optionTemplateId : optionTemplate3.id , scaleValue: 3, content: 'Sometimes' },
-      { optionTemplateId : optionTemplate3.id , scaleValue: 4, content: 'Often' },
-      { optionTemplateId : optionTemplate3.id , scaleValue: 5, content: 'Always' },
+      { optionTemplateId: optionTemplate3.id, scaleValue: 1, content: 'Never' },
+      { optionTemplateId: optionTemplate3.id, scaleValue: 2, content: 'Rarely' },
+      { optionTemplateId: optionTemplate3.id, scaleValue: 3, content: 'Sometimes' },
+      { optionTemplateId: optionTemplate3.id, scaleValue: 4, content: 'Often' },
+      { optionTemplateId: optionTemplate3.id, scaleValue: 5, content: 'Always' },
     ]
   });
-  
+
   // Create Admin
   const admin = await prisma.user.create({
     data: {
@@ -62,9 +62,9 @@ async function main() {
       profileImageUrl: 'https://external-preview.redd.it/kevin-durant-usa-mens-leading-point-scorer-in-olympic-v0-KlataPnkXqTtYczpASxTqgqJVaxrYZlL3YwsGBLVLuE.jpg?auto=webp&s=66bb76ac0496ece60bf9954b77489fd11f234f1d',
       role: 'ADMIN',
       fullname: 'Admin',
-      age: 35,  
-      gender: Gender.MALE, 
-      ic: "990101123456", 
+      age: 35,
+      gender: Gender.MALE,
+      ic: "990101123456",
     },
   });
 
@@ -121,7 +121,7 @@ async function main() {
       email: 'zilii@example.com',
       password: 'securepassword',
       signinMethod: 'EMAILPASSWORD',
-      profileImageUrl:'https://atd-blog.s3.us-east-2.amazonaws.com/wp-content/uploads/2022/04/16142821/cool-profile-pictures-for-girls-9.webp',
+      profileImageUrl: 'https://atd-blog.s3.us-east-2.amazonaws.com/wp-content/uploads/2022/04/16142821/cool-profile-pictures-for-girls-9.webp',
       role: 'PATIENT',
       fullname: 'Zi Lii',
       age: 22,
@@ -175,7 +175,7 @@ async function main() {
         fromUserId: user1.id,
         toUserId: user2.id,
       },
-  
+
       // Messages between user2 and user3
       {
         message: 'Hey, user3, are you available this week?',
@@ -197,7 +197,7 @@ async function main() {
         fromUserId: user3.id,
         toUserId: user2.id,
       },
-  
+
       // Messages between user2 and user4
       {
         message: 'Hi user4, do you have time to chat?',
@@ -229,7 +229,7 @@ async function main() {
         fromUserId: user1.id,
         status: 'ACCEPTED',
         createdDatetime: new Date('2023-05-01T10:00:00Z'),
-        duration: 300, 
+        duration: 300,
       },
       {
         toUserId: user1.id,
@@ -243,14 +243,14 @@ async function main() {
         fromUserId: user1.id,
         status: 'ACCEPTED',
         createdDatetime: new Date('2023-05-03T09:15:00Z'),
-        duration: 180, 
+        duration: 180,
       },
       {
         toUserId: user1.id,
         fromUserId: user2.id,
         status: 'ACCEPTED',
         createdDatetime: new Date('2023-05-04T16:45:00Z'),
-        duration: 600, 
+        duration: 600,
       },
       {
         toUserId: user3.id,
@@ -262,7 +262,7 @@ async function main() {
     ],
   });
 
-  
+
 
 
   // Create Questionnaires
@@ -279,123 +279,123 @@ async function main() {
   });
 
   const section1Questionnaire1 = await prisma.section.create({
-    data : {
+    data: {
       name: 'Pain Scale',
       description: 'How severe is your pain? Circle the number that best describes your pain where: 0 = no pain and 10 = the worst pain imaginable. ',
-      questionnaireId : questionnaire1.id
+      questionnaireId: questionnaire1.id
     }
   })
 
   const question1Section1 = await prisma.question.create({
-    data : {
+    data: {
       title: 'At its worst?',
-      optionId : optionTemplate2.id,
-      sectionId : section1Questionnaire1.id
+      optionId: optionTemplate2.id,
+      sectionId: section1Questionnaire1.id
     }
   })
 
   const question2Section1 = await prisma.question.create({
-    data : {
+    data: {
       title: 'When lying on the involved side ?',
-      optionId : optionTemplate2.id,
-      sectionId : section1Questionnaire1.id
+      optionId: optionTemplate2.id,
+      sectionId: section1Questionnaire1.id
     }
   })
 
   const question3Section1 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Reaching for something on a high shelf ?',
-      optionId : optionTemplate2.id,
-      sectionId : section1Questionnaire1.id
+      optionId: optionTemplate2.id,
+      sectionId: section1Questionnaire1.id
     }
   })
 
   const question4Section1 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Touching the back of your neck ?',
-      optionId : optionTemplate2.id,
-      sectionId : section1Questionnaire1.id
+      optionId: optionTemplate2.id,
+      sectionId: section1Questionnaire1.id
     }
   })
 
   const question5Section1 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Pushing with the involved arm ?',
-      optionId : optionTemplate2.id,
-      sectionId : section1Questionnaire1.id
+      optionId: optionTemplate2.id,
+      sectionId: section1Questionnaire1.id
     }
   })
 
   const section2Questionnaire1 = await prisma.section.create({
-    data : {
+    data: {
       name: 'Disability scale',
       description: 'How much difficulty do you have? Circle the number that best describes your experience where: 0 = no difficulty and 10 = so difficult it requires help. ',
-      questionnaireId : questionnaire1.id
+      questionnaireId: questionnaire1.id
     }
   })
 
   const question1Section2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Washing your hair?',
-      optionId : optionTemplate2.id,
-      sectionId : section2Questionnaire1.id
+      optionId: optionTemplate2.id,
+      sectionId: section2Questionnaire1.id
     }
   })
 
   const question2Section2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Washing your back?',
-      optionId : optionTemplate2.id,
-      sectionId : section2Questionnaire1.id
+      optionId: optionTemplate2.id,
+      sectionId: section2Questionnaire1.id
     }
   })
 
   const question3Section2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Putting on an undershirt or jumper?',
-      optionId : optionTemplate2.id,
-      sectionId : section2Questionnaire1.id
+      optionId: optionTemplate2.id,
+      sectionId: section2Questionnaire1.id
     }
   })
 
 
   const question5Section2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Putting on a shirt that buttons down the front?',
-      optionId : optionTemplate2.id,
-      sectionId : section2Questionnaire1.id
+      optionId: optionTemplate2.id,
+      sectionId: section2Questionnaire1.id
     }
   })
 
   const question6Section2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Putting on your pants?',
-      optionId : optionTemplate2.id,
-      sectionId : section2Questionnaire1.id
+      optionId: optionTemplate2.id,
+      sectionId: section2Questionnaire1.id
     }
   })
 
   const question7Section2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Placing an object on a high shelf?',
-      optionId : optionTemplate2.id,
-      sectionId : section2Questionnaire1.id
+      optionId: optionTemplate2.id,
+      sectionId: section2Questionnaire1.id
     }
   })
 
   const question8Section2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Carrying a heavy object of 10 pounds (4.5 kilograms)',
-      optionId : optionTemplate2.id,
-      sectionId : section2Questionnaire1.id
+      optionId: optionTemplate2.id,
+      sectionId: section2Questionnaire1.id
     }
   })
 
   const question9Section2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Removing something from your back pocket ?',
-      optionId : optionTemplate2.id,
-      sectionId : section2Questionnaire1.id
+      optionId: optionTemplate2.id,
+      sectionId: section2Questionnaire1.id
     }
   })
 
@@ -412,331 +412,331 @@ async function main() {
   });
 
   const section1Questionnaire2 = await prisma.section.create({
-    data : {
+    data: {
       name: 'Symptoms',
       description: 'Answer these questions thinking of your knee symptoms during the last week. ',
-      questionnaireId : questionnaire2.id
+      questionnaireId: questionnaire2.id
     }
   })
 
   const question1Section1Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Do you have swelling in your knee?',
-      optionId : optionTemplate3.id,
-      sectionId : section1Questionnaire2.id
+      optionId: optionTemplate3.id,
+      sectionId: section1Questionnaire2.id
     }
   })
 
   const question2Section1Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Do you feel grinding, hear clicking, or any other type of noise when your knee moves?',
-      optionId : optionTemplate3.id,
-      sectionId : section1Questionnaire2.id
+      optionId: optionTemplate3.id,
+      sectionId: section1Questionnaire2.id
     }
   })
 
   const question3Section1Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Does your knee catch or hang up when moving?',
-      optionId : optionTemplate3.id,
-      sectionId : section1Questionnaire2.id
+      optionId: optionTemplate3.id,
+      sectionId: section1Questionnaire2.id
     }
   })
 
   const question4Section1Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Can you straighten your knee fully?',
-      optionId : optionTemplate3.id,
-      sectionId : section1Questionnaire2.id
+      optionId: optionTemplate3.id,
+      sectionId: section1Questionnaire2.id
     }
   })
 
   const question5Section1Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Can you bend your knee fully?s',
-      optionId : optionTemplate3.id,
-      sectionId : section1Questionnaire2.id
+      optionId: optionTemplate3.id,
+      sectionId: section1Questionnaire2.id
     }
   })
 
   const section2Questionnaire2 = await prisma.section.create({
-    data : {
+    data: {
       name: 'Stiffness',
       description: 'The following questions concern the amount of joint stiffness you have experienced during the last week in your knee. Stiffness is a sensation of restriction or slowness in the ease with which you move your knee joint.',
-      questionnaireId : questionnaire2.id
+      questionnaireId: questionnaire2.id
     }
   })
 
   const question1Section2Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'How severe is your knee joint stiffness after first wakening in the morning?',
-      optionId : optionTemplate1.id,
-      sectionId : section2Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section2Questionnaire2.id
     }
   })
 
   const question2Section2Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'How severe is your knee joint stiffness after sitting, lying, or resting later in the day?',
-      optionId : optionTemplate1.id,
-      sectionId : section2Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section2Questionnaire2.id
     }
   })
 
   const section3Questionnaire2 = await prisma.section.create({
-    data : {
+    data: {
       name: 'Pain',
       description: 'What amount of knee pain have you experienced the last week during the following activities?',
-      questionnaireId : questionnaire2.id
+      questionnaireId: questionnaire2.id
     }
   })
 
 
   const question1Section3Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'How often do you experience knee pain?',
-      optionId : optionTemplate3.id,
-      sectionId : section3Questionnaire2.id
+      optionId: optionTemplate3.id,
+      sectionId: section3Questionnaire2.id
     }
   })
 
   const question2Section3Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Straightening knee fully',
-      optionId : optionTemplate3.id,
-      sectionId : section3Questionnaire2.id
+      optionId: optionTemplate3.id,
+      sectionId: section3Questionnaire2.id
     }
   })
 
   const question3Section3Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Twisting/pivoting on your knee',
-      optionId : optionTemplate1.id,
-      sectionId : section3Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section3Questionnaire2.id
     }
   })
 
   const question4Section3Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'bending knee fully',
-      optionId : optionTemplate1.id,
-      sectionId : section3Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section3Questionnaire2.id
     }
   })
-  
+
   const question5Section3Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Walking on a flat surface',
-      optionId : optionTemplate1.id,
-      sectionId : section3Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section3Questionnaire2.id
     }
   })
 
   const question6Section3Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Going up or down stairs',
-      optionId : optionTemplate1.id,
-      sectionId : section3Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section3Questionnaire2.id
     }
   })
 
   const question7Section3Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'At night while in bed',
-      optionId : optionTemplate1.id,
-      sectionId : section3Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section3Questionnaire2.id
     }
   })
 
   const question8Section3Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Sitting or lying',
-      optionId : optionTemplate1.id,
-      sectionId : section3Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section3Questionnaire2.id
     }
   })
 
   const question9Section3Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Standing upright',
-      optionId : optionTemplate1.id,
-      sectionId : section3Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section3Questionnaire2.id
     }
   })
 
   const section4Questionnaire2 = await prisma.section.create({
-    data : {
+    data: {
       name: 'Function, Daily Living',
       description: 'This section describes your ability to move around and to look after yourself. For each of the following activities, please indicate the degree of difficulty you have experienced in the last week due to your knee.',
-      questionnaireId : questionnaire2.id
+      questionnaireId: questionnaire2.id
     }
   })
 
   const question1Section4Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Descending stairs',
-      optionId : optionTemplate1.id,
-      sectionId : section4Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section4Questionnaire2.id
     }
   })
 
   const question2Section4Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Ascending stairs',
-      optionId : optionTemplate1.id,
-      sectionId : section4Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section4Questionnaire2.id
     }
   })
 
   const question3Section4Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Rising from sitting',
-      optionId : optionTemplate1.id,
-      sectionId : section4Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section4Questionnaire2.id
     }
   })
 
   const question4Section4Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Standing',
-      optionId : optionTemplate1.id,
-      sectionId : section4Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section4Questionnaire2.id
     }
   })
 
   const question5Section4Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Bending to the floor/pick up an object',
-      optionId : optionTemplate1.id,
-      sectionId : section4Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section4Questionnaire2.id
     }
   })
 
   const question6Section4Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Walking on a flat surface',
-      optionId : optionTemplate1.id,
-      sectionId : section4Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section4Questionnaire2.id
     }
   })
 
   const question7Section4Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Getting in/out of a car',
-      optionId : optionTemplate1.id,
-      sectionId : section4Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section4Questionnaire2.id
     }
   })
 
   const question8Section4Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Going shopping',
-      optionId : optionTemplate1.id,
-      sectionId : section4Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section4Questionnaire2.id
     }
   })
 
   const question9Section4Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Putting on socks/stockings',
-      optionId : optionTemplate1.id,
-      sectionId : section4Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section4Questionnaire2.id
     }
   })
 
   const question10Section4Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Rising from bed',
-      optionId : optionTemplate1.id,
-      sectionId : section4Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section4Questionnaire2.id
     }
   })
 
   const question11Section4Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Taking off socks/stockings',
-      optionId : optionTemplate1.id,
-      sectionId : section4Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section4Questionnaire2.id
     }
   })
 
 
   const question12Section4Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Lying in bed (turning over, maintaining knee position)',
-      optionId : optionTemplate1.id,
-      sectionId : section4Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section4Questionnaire2.id
     }
   })
 
   const question13Section4Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Getting in/out of bath',
-      optionId : optionTemplate1.id,
-      sectionId : section4Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section4Questionnaire2.id
     }
   })
 
   const question14Section4Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Sitting',
-      optionId : optionTemplate1.id,
-      sectionId : section4Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section4Questionnaire2.id
     }
   })
 
   const question15Section4Questionnaire2 = await prisma.question.create({
-    data : {
+    data: {
       title: 'Getting on/off toilet',
-      optionId : optionTemplate1.id,
-      sectionId : section4Questionnaire2.id
+      optionId: optionTemplate1.id,
+      sectionId: section4Questionnaire2.id
     }
   })
 
   const questionsSection4Questionnaire2 = await prisma.question.createMany({
-    data : [
-      {title:'Heavy domestic duties (moving heavy boxes, scrubbing floors, etc)', optionId : optionTemplate1.id, sectionId : section4Questionnaire2.id},
-      {title:'Light domestic duties (cooking, dusting, etc)', optionId : optionTemplate1.id, sectionId : section4Questionnaire2.id}
+    data: [
+      { title: 'Heavy domestic duties (moving heavy boxes, scrubbing floors, etc)', optionId: optionTemplate1.id, sectionId: section4Questionnaire2.id },
+      { title: 'Light domestic duties (cooking, dusting, etc)', optionId: optionTemplate1.id, sectionId: section4Questionnaire2.id }
     ]
   })
 
   const section5Questionnaire2 = await prisma.section.create({
-    data : {
+    data: {
       name: 'Function, Sports and Recreational Activities',
       description: 'This section describes your ability to be active on a higher level. For each of the following activities, please indicate the degree of difficulty you have experienced in the last week due to your knee.',
-      questionnaireId : questionnaire2.id
+      questionnaireId: questionnaire2.id
     }
   })
 
   const questionsSection5Questionnaire2 = await prisma.question.createMany({
-    data : [
-      {title:'Suqatting ', optionId : optionTemplate1.id, sectionId : section5Questionnaire2.id},
-      {title:'Running ', optionId : optionTemplate1.id, sectionId : section5Questionnaire2.id},
-      {title:'Jumping ', optionId : optionTemplate1.id, sectionId : section5Questionnaire2.id},
-      {title:'Twisting/pivoting on your injured knee ', optionId : optionTemplate1.id, sectionId : section5Questionnaire2.id},
-      {title:'Kneeling ', optionId : optionTemplate1.id, sectionId : section5Questionnaire2.id}
+    data: [
+      { title: 'Suqatting ', optionId: optionTemplate1.id, sectionId: section5Questionnaire2.id },
+      { title: 'Running ', optionId: optionTemplate1.id, sectionId: section5Questionnaire2.id },
+      { title: 'Jumping ', optionId: optionTemplate1.id, sectionId: section5Questionnaire2.id },
+      { title: 'Twisting/pivoting on your injured knee ', optionId: optionTemplate1.id, sectionId: section5Questionnaire2.id },
+      { title: 'Kneeling ', optionId: optionTemplate1.id, sectionId: section5Questionnaire2.id }
     ]
   })
 
   const section6Questionnaire2 = await prisma.section.create({
-    data : {
+    data: {
       name: 'Quality of Life',
       description: '',
-      questionnaireId : questionnaire2.id
+      questionnaireId: questionnaire2.id
     }
   })
 
   const questionsSection6Questionnaire2 = await prisma.question.createMany({
-    data : [
-      {title:'How often are you aware of your knee problem?', optionId : optionTemplate3.id, sectionId : section6Questionnaire2.id},
-      {title:'Have you modified your life style to avoid activities potentially damaging to your knee?', optionId : optionTemplate3.id, sectionId : section6Questionnaire2.id},
-      {title:'How much are you troubled with lack of confidence in your knee?', optionId : optionTemplate3.id, sectionId : section6Questionnaire2.id},
-      {title:' In general, how much difficulty do you have with your knee?', optionId : optionTemplate3.id, sectionId : section6Questionnaire2.id},
+    data: [
+      { title: 'How often are you aware of your knee problem?', optionId: optionTemplate3.id, sectionId: section6Questionnaire2.id },
+      { title: 'Have you modified your life style to avoid activities potentially damaging to your knee?', optionId: optionTemplate3.id, sectionId: section6Questionnaire2.id },
+      { title: 'How much are you troubled with lack of confidence in your knee?', optionId: optionTemplate3.id, sectionId: section6Questionnaire2.id },
+      { title: ' In general, how much difficulty do you have with your knee?', optionId: optionTemplate3.id, sectionId: section6Questionnaire2.id },
     ]
   })
 
 
- 
+
 
   // Create Patient Records
   const patientRecord1 = await prisma.patientRecord.create({
@@ -994,40 +994,39 @@ async function main() {
   // });
 
   // Create Daily Patient Exercises
-  const dailyPatientExercise1 = await prisma.dailyPatientExercise.create({
-    data: {
-      patientId: user1.id,
-      patientExerciseId: patientExercise1.id,
-    },
-  });
+  const currentDate = new Date();
 
-  const dailyPatientExercise2 = await prisma.dailyPatientExercise.create({
-    data: {
-      patientId: user1.id,
-      patientExerciseId: patientExercise2.id,
-    },
-  });
+  for (let i = 0; i <= 10; i++) {
+    const date = new Date(currentDate);
+    date.setDate(currentDate.getDate() - i);
 
-  const dailyPatientExercise3 = await prisma.dailyPatientExercise.create({
-    data: {
-      patientId: user1.id,
-      patientExerciseId: patientExercise3.id,
-    },
-  });
+    await prisma.dailyPatientExercise.create({
+      data: {
+        patientId: user1.id,
+        patientExerciseId: patientExercise1.id,
+        createdDatetime: date,
+        isCompleted: Math.random() < 0.5,
+      },
+    });
 
-  // const dailyPatientExercise4 = await prisma.dailyPatientExercise.create({
-  //   data: {
-  //     patientId: user1.id,
-  //     patientExerciseId: patientExercise4.id,
-  //   },
-  // });
+    await prisma.dailyPatientExercise.create({
+      data: {
+        patientId: user1.id,
+        patientExerciseId: patientExercise2.id,
+        createdDatetime: date,
+        isCompleted: Math.random() < 0.5,
+      },
+    });
 
-  // const dailyPatientExercise5 = await prisma.dailyPatientExercise.create({
-  //   data: {
-  //     patientId: user1.id,
-  //     patientExerciseId: patientExercise5.id,
-  //   },
-  // });
+    await prisma.dailyPatientExercise.create({
+      data: {
+        patientId: user1.id,
+        patientExerciseId: patientExercise3.id,
+        createdDatetime: date,
+        isCompleted: Math.random() < 0.5,
+      },
+    });
+  }
 
   console.log('Database has been seeded.');
 }
