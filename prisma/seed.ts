@@ -1,5 +1,10 @@
-import { Gender } from "@prisma/client";
+import { ExerciseDifficulty, Gender } from "@prisma/client";
 
+export const getYouTubeThumbnail = (videoUrl: string): string | null => {
+  const videoIdMatch = videoUrl.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  const videoId = videoIdMatch ? videoIdMatch[1] : null;
+  return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null;
+}
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
@@ -888,60 +893,236 @@ async function main() {
   const exercise1 = await prisma.exercise.create({
     data: {
       exerciseCategoryId: exerciseCategory1.id,
-      title: 'Shoulder Bursitis Rehab',
-      description: 'Shoulder Bursitis Rehab involves a structured program of rest, physical therapy, and exercises aimed at reducing inflammation, relieving pain, and restoring shoulder function and mobility.',
-      content: 'Shoulder Bursitis Rehab is a comprehensive treatment program designed to alleviate the inflammation and pain associated with shoulder bursitis, a condition where the bursae, small fluid-filled sacs that cushion the shoulder joint, become inflamed. The rehab process typically includes a combination of rest to reduce aggravation of the bursa, physical therapy to enhance shoulder strength and flexibility, and specific exercises to restore normal movement and prevent future injuries. Additionally, modalities such as ice therapy, anti-inflammatory medications, and in some cases, corticosteroid injections may be employed to manage pain and swelling. The goal is to enable patients to return to their daily activities and sports with improved shoulder function and without discomfort.',
+      title: 'Wall Squat',
+      description: 'Wall Squat is a lower body exercise that targets the quadriceps, hamstrings, and glutes.',
+      content: 'Wall Squat is a lower body exercise that targets the quadriceps, hamstrings, and glutes. This exercise is performed by leaning against a wall with the feet shoulder-width apart and sliding down into a seated position with the knees at a 90-degree angle. The wall provides support and stability, making it an ideal exercise for beginners or those with knee issues. Wall Squat helps to strengthen the muscles of the lower body, improve balance and stability, and increase overall leg strength. It can be performed with or without weights, depending on the individual’s fitness level and goals.',
       duration: 30,
-      difficulty: 'EASY',
-      thumbnailUrl: 'https://img.youtube.com/vi/432yWPJQ-is/maxresdefault.jpg',
-      videoUrl: 'https://www.youtube.com/watch?v=432yWPJQ-is',
+      difficulty: ExerciseDifficulty.EASY,
+      thumbnailUrl: getYouTubeThumbnail("https://youtu.be/rRxESnji06A"),
+      videoUrl: 'https://youtu.be/rRxESnji06A',
     },
   });
 
   const exercise2 = await prisma.exercise.create({
     data: {
       exerciseCategoryId: exerciseCategory2.id,
-      title: 'Stiff Knee Exercise',
-      description: 'Stiff Knee Exercise involves targeted movements and stretches to improve flexibility, strength, and mobility in the knee joint.',
-      content: "Stiff Knee Exercise is a targeted rehabilitation routine designed to alleviate stiffness, enhance flexibility, and strengthen the muscles around the knee joint. This program includes a variety of stretches, such as hamstring and calf stretches, which help to improve the range of motion. Strengthening exercises like leg lifts, quadriceps sets, and mini squats are incorporated to build muscle support around the knee. Additionally, low-impact activities like cycling or swimming may be recommended to promote joint mobility without placing excessive stress on the knee. Consistent practice of these exercises can help reduce pain, prevent further stiffness, and improve overall knee function, allowing individuals to return to their regular activities with greater ease and comfort.",
+      title: 'Quadriceps stretch',
+      description: 'Quadriceps stretch is a stretching exercise that targets the quadriceps muscles in the front of the thigh.',
+      content: "Quadriceps stretch is a stretching exercise that targets the quadriceps muscles in the front of the thigh. This exercise is performed by standing on one leg and bending the other leg at the knee, bringing the heel towards the buttocks. The hand on the same side as the bent leg can be used to gently pull the foot closer to the buttocks to increase the stretch. Quadriceps stretch can help improve flexibility, reduce muscle tension, and prevent injury in the quadriceps muscles. It is commonly used as part of a warm-up or cool-down routine for athletes and fitness enthusiasts.",
       duration: 45,
-      difficulty: 'HARD',
-      thumbnailUrl: 'https://img.youtube.com/vi/N4CUptFi3Qc/maxresdefault.jpg',
-      videoUrl: 'https://www.youtube.com/watch?v=N4CUptFi3Qc',
+      difficulty: ExerciseDifficulty.MEDIUM,
+      thumbnailUrl: getYouTubeThumbnail("https://youtu.be/one9XVRyHhE"),
+      videoUrl: 'https://youtu.be/one9XVRyHhE',
     },
   });
 
   const exercise3 = await prisma.exercise.create({
     data: {
       exerciseCategoryId: exerciseCategory2.id,
-      title: 'Shoulder Dislocation Rehab',
-      description: 'Shoulder Dislocation Rehab involves a series of exercises and therapies to restore stability, strength, and range of motion after a shoulder dislocation.',
-      content: "Shoulder Dislocation Rehab is a structured rehabilitation program aimed at restoring the stability, strength, and range of motion of the shoulder joint following a dislocation. The rehab process begins with a period of immobilization to allow initial healing, followed by gradual reintroduction of movement through passive and active range-of-motion exercises. Strengthening exercises focus on the rotator cuff and shoulder stabilizing muscles to enhance joint stability and prevent future dislocations. Physical therapy may include resistance training, proprioception exercises, and manual therapy techniques to improve shoulder function. Throughout the rehab process, emphasis is placed on proper technique and gradual progression to ensure a safe return to daily activities and sports, reducing the risk of recurrent dislocations.",
+      title: 'Calf stretch',
+      description: 'Calf stretch is a stretching exercise that targets the calf muscles in the back of the lower leg.',
+      content: "Calf stretch is a stretching exercise that targets the calf muscles in the back of the lower leg. This exercise is performed by standing facing a wall with one foot in front of the other and the hands on the wall for support. The back leg is kept straight, and the heel is pressed into the ground to stretch the calf muscle. Calf stretch can help improve flexibility, reduce muscle tension, and prevent injury in the calf muscles. It is commonly used as part of a warm-up or cool-down routine for athletes and fitness enthusiasts.",
       duration: 40,
-      difficulty: 'HARD',
-      thumbnailUrl: 'https://img.youtube.com/vi/AB1TWySCpVA/maxresdefault.jpg',
-      videoUrl: 'https://www.youtube.com/watch?v=AB1TWySCpVA',
+      difficulty: ExerciseDifficulty.MEDIUM,
+      thumbnailUrl: getYouTubeThumbnail('https://youtu.be/XDvDYfQLTfM'),
+      videoUrl: 'https://youtu.be/XDvDYfQLTfM',
     },
   });
-  // const exercise4 = await prisma.exercise.create({
-  //   data: {
-  //     exerciseCategoryId: exerciseCategory2.id,
-  //     title: 'Push-Ups',
-  //     description: 'Push-ups exercise',
-  //     duration: 20,
-  //     difficulty: 'MEDIUM',
-  //   },
-  // });
 
-  // const exercise5 = await prisma.exercise.create({
-  //   data: {
-  //     exerciseCategoryId: exerciseCategory2.id,
-  //     title: 'Deadlifts',
-  //     description: 'Deadlift exercise',
-  //     duration: 50,
-  //     difficulty: 'HARD',
-  //   },
-  // });
+  const exercise4 = await prisma.exercise.create({
+    data: {
+      exerciseCategoryId: exerciseCategory1.id,
+      title: 'Squat',
+      description: 'Squat is a lower body exercise that targets the quadriceps, hamstrings, and glutes.',
+      content: 'Squat is a lower body exercise that targets the quadriceps, hamstrings, and glutes. This exercise is performed by standing with the feet shoulder-width apart and lowering the body into a seated position with the knees at a 90-degree angle. The weight is shifted back into the heels, and the chest is lifted to maintain a neutral spine. Squat helps to strengthen the muscles of the lower body, improve balance and stability, and increase overall leg strength. It can be performed with or without weights, depending on the individual’s fitness level and goals.',
+      duration: 30,
+      difficulty: ExerciseDifficulty.EASY,
+      thumbnailUrl: getYouTubeThumbnail("https://youtu.be/p7xbRTKo_qM"),
+      videoUrl: 'https://youtu.be/p7xbRTKo_qM',
+    },
+  });
+
+  const exercise5 = await prisma.exercise.create({
+    data: {
+      exerciseCategoryId: exerciseCategory2.id,
+      title: 'Clam',
+      description: 'Clam is a lower body exercise that targets the glutes and hip abductors.',
+      content: "Clam is a lower body exercise that targets the glutes and hip abductors. This exercise is performed by lying on one side with the hips and knees bent at a 90-degree angle. The feet are stacked on top of each other, and the top knee is lifted towards the ceiling while keeping the feet together. Clam helps to strengthen the muscles of the hips and glutes, improve hip stability, and prevent injury in the lower body. It can be performed with or without resistance bands, depending on the individual’s fitness level and goals.",
+      duration: 45,
+      difficulty: ExerciseDifficulty.MEDIUM,
+      thumbnailUrl: getYouTubeThumbnail("https://youtu.be/_XgIeO3sA7c"),
+      videoUrl: 'https://youtu.be/_XgIeO3sA7c',
+    },
+  });
+
+  const exercise6 = await prisma.exercise.create({
+    data: {
+      exerciseCategoryId: exerciseCategory2.id,
+      title: 'Marching on soft surface',
+      description: 'Marching on soft surface is a lower body exercise that targets the glutes and hip abductors.',
+      content: "Marching on soft surface is a lower body exercise that targets the glutes and hip abductors. This exercise is performed by standing on one leg and lifting the opposite knee towards the chest while maintaining balance on a soft surface. The foot is lowered back to the ground and the movement is repeated on the other side. Marching on soft surface helps to strengthen the muscles of the hips and glutes, improve balance and stability, and prevent injury in the lower body. It can be performed with or without resistance bands, depending on the individual’s fitness level and goals.",
+      duration: 40,
+      difficulty: ExerciseDifficulty.MEDIUM,
+      thumbnailUrl: getYouTubeThumbnail('https://youtu.be/SKBszAgSFtI'),
+      videoUrl: 'https://youtu.be/SKBszAgSFtI',
+    },
+  });
+
+  const exercise7 = await prisma.exercise.create({
+    data: {
+      exerciseCategoryId: exerciseCategory1.id,
+      title: 'Air cycle',
+      description: '',
+      content: '',
+      duration: 30,
+      difficulty: ExerciseDifficulty.EASY,
+      thumbnailUrl: getYouTubeThumbnail("https://youtu.be/YBeAH0lS9wE"),
+      videoUrl: 'https://youtu.be/YBeAH0lS9wE',
+    },
+  });
+
+  const exercise8 = await prisma.exercise.create({
+    data: {
+      exerciseCategoryId: exerciseCategory2.id,
+      title: 'Calf stretch close up',
+      description: 'Calf stretch is a stretching exercise that targets the calf muscles in the back of the lower leg.',
+      content: "Calf stretch is a stretching exercise that targets the calf muscles in the back of the lower leg. This exercise is performed by standing facing a wall with one foot in front of the other and the hands on the wall for support. The back leg is kept straight, and the heel is pressed into the ground to stretch the calf muscle. Calf stretch can help improve flexibility, reduce muscle tension, and prevent injury in the calf muscles. It is commonly used as part of a warm-up or cool-down routine for athletes and fitness enthusiasts.",
+      duration: 45,
+      difficulty: ExerciseDifficulty.MEDIUM,
+      thumbnailUrl: getYouTubeThumbnail("https://youtu.be/N2m_wjMzMYM"),
+      videoUrl: 'https://youtu.be/N2m_wjMzMYM',
+    },
+  });
+
+  const exercise9 = await prisma.exercise.create({
+    data: {
+      exerciseCategoryId: exerciseCategory2.id,
+      title: 'Seat up',
+      description: '',
+      content: "",
+      duration: 40,
+      difficulty: ExerciseDifficulty.MEDIUM,
+      thumbnailUrl: getYouTubeThumbnail('https://youtu.be/YDEfl_ae_no'),
+      videoUrl: 'https://youtu.be/YDEfl_ae_no',
+    },
+  });
+
+  const exercise10 = await prisma.exercise.create({
+    data: {
+      exerciseCategoryId: exerciseCategory1.id,
+      title: 'Straight leg raise',
+      description: 'Straight leg raise is a lower body exercise that targets the quadriceps muscles in the front of the thigh.',
+      content: 'Straight leg raise is a lower body exercise that targets the quadriceps muscles in the front of the thigh. This exercise is performed by lying on the back with one leg bent at the knee and the other leg straight. The straight leg is lifted towards the ceiling while keeping it straight and the foot flexed. Straight leg raise helps to strengthen the muscles of the quadriceps, improve hip stability, and prevent injury in the lower body. It can be performed with or without ankle weights, depending on the individual’s fitness level and goals.',
+      duration: 30,
+      difficulty: ExerciseDifficulty.EASY,
+      thumbnailUrl: getYouTubeThumbnail("https://youtu.be/jeCK1e_BH6M"),
+      videoUrl: 'https://youtu.be/jeCK1e_BH6M',
+    },
+  });
+
+  const exercise11 = await prisma.exercise.create({
+    data: {
+      exerciseCategoryId: exerciseCategory2.id,
+      title: 'Gluteus stretch',
+      description: 'Gluteus stretch is a stretching exercise that targets the gluteus muscles in the buttocks.',
+      content: 'Gluteus stretch is a stretching exercise that targets the gluteus muscles in the buttocks. This exercise is performed by lying on the back with one leg bent at the knee and the other leg crossed over the bent knee. The hands are placed behind the thigh of the bent leg and gently pulled towards the chest to increase the stretch in the gluteus muscles. Gluteus stretch can help improve flexibility, reduce muscle tension, and prevent injury in the gluteus muscles. It is commonly used as part of a warm-up or cool-down routine for athletes and fitness enthusiasts.',
+      duration: 45,
+      difficulty: ExerciseDifficulty.MEDIUM,
+      thumbnailUrl: getYouTubeThumbnail("https://youtu.be/LxQLxgPS8S4"),
+      videoUrl: 'https://youtu.be/LxQLxgPS8S4',
+    },
+  });
+
+  const exercise12 = await prisma.exercise.create({
+    data: {
+      exerciseCategoryId: exerciseCategory2.id,
+      title: 'Static Squat',
+      description: 'Static Squat is a lower body exercise that targets the quadriceps, hamstrings, and glutes.',
+      content: "Static Squat is a lower body exercise that targets the quadriceps, hamstrings, and glutes. This exercise is performed by standing with the feet shoulder-width apart and lowering the body into a seated position with the knees at a 90-degree angle. The weight is shifted back into the heels, and the chest is lifted to maintain a neutral spine. Static Squat helps to strengthen the muscles of the lower body, improve balance and stability, and increase overall leg strength. It can be performed with or without weights, depending on the individual’s fitness level and goals.",
+      duration: 40,
+      difficulty: ExerciseDifficulty.MEDIUM,
+      thumbnailUrl: getYouTubeThumbnail('https://youtu.be/JucSY_pgqsw'),
+      videoUrl: 'https://youtu.be/JucSY_pgqsw',
+    },
+  });
+
+  const exercise13 = await prisma.exercise.create({
+    data: {
+      exerciseCategoryId: exerciseCategory2.id,
+      title: 'Side lunges',
+      description: 'Side lunges is a lower body exercise that targets the quadriceps, hamstrings, and glutes.',
+      content: "Side lunges is a lower body exercise that targets the quadriceps, hamstrings, and glutes. This exercise is performed by standing with the feet wider than shoulder-width apart and stepping to the side with one leg while bending the knee and lowering the body into a lunge position. The weight is shifted back into the heels, and the chest is lifted to maintain a neutral spine. Side lunges help to strengthen the muscles of the lower body, improve balance and stability, and increase overall leg strength. It can be performed with or without weights, depending on the individual’s fitness level and goals.",
+      duration: 40,
+      difficulty: ExerciseDifficulty.MEDIUM,
+      thumbnailUrl: getYouTubeThumbnail('https://youtu.be/g5FToxLJjK8'),
+      videoUrl: 'https://youtu.be/g5FToxLJjK8',
+    },
+  });
+
+  const exercise14 = await prisma.exercise.create({
+    data: {
+      exerciseCategoryId: exerciseCategory1.id,
+      title: 'Static cycling',
+      description: 'Static cycling is a lower body exercise that targets the quadriceps, hamstrings, and glutes.',
+      content: 'Static cycling is a lower body exercise that targets the quadriceps, hamstrings, and glutes. This exercise is performed by sitting on a stationary bike and pedaling at a moderate pace. The resistance can be adjusted to increase or decrease the intensity of the workout. Static cycling helps to strengthen the muscles of the lower body, improve cardiovascular fitness, and burn calories. It can be performed at home or in a gym, depending on the individual’s preference and access to equipment.',
+      duration: 30,
+      difficulty: ExerciseDifficulty.EASY,
+      thumbnailUrl: getYouTubeThumbnail("https://youtu.be/IkfptqFEW-0"),
+      videoUrl: 'https://youtu.be/IkfptqFEW-0',
+    },
+  });
+
+  const exercise15 = await prisma.exercise.create({
+    data: {
+      exerciseCategoryId: exerciseCategory2.id,
+      title: 'Isometric quadriceps',
+      description: 'Isometric quadriceps is a lower body exercise that targets the quadriceps muscles in the front of the thigh.',
+      content: "Isometric quadriceps is a lower body exercise that targets the quadriceps muscles in the front of the thigh. This exercise is performed by sitting on a chair with the feet flat on the ground and the knees bent at a 90-degree angle. The hands are placed on the thighs, and the quadriceps muscles are contracted by pressing the thighs down into the hands. Isometric quadriceps helps to strengthen the muscles of the quadriceps, improve knee stability, and prevent injury in the lower body. It can be performed with or without resistance bands, depending on the individual’s fitness level and goals.",
+      duration: 45,
+      difficulty: ExerciseDifficulty.MEDIUM,
+      thumbnailUrl: getYouTubeThumbnail("https://youtu.be/i0TBwMZcSb4"),
+      videoUrl: 'https://youtu.be/i0TBwMZcSb4',
+    },
+  });
+
+  const exercise16 = await prisma.exercise.create({
+    data: {
+      exerciseCategoryId: exerciseCategory2.id,
+      title: 'Seated Leg Straight',
+      description: 'Seated Leg Straight is a lower body exercise that targets the quadriceps muscles in the front of the thigh.',
+      content: "Seated Leg Straight is a lower body exercise that targets the quadriceps muscles in the front of the thigh. This exercise is performed by sitting on a chair with the feet flat on the ground and the knees bent at a 90-degree angle. The legs are straightened out in front of the body and held in place for a few seconds before returning to the starting position. Seated Leg Straight helps to strengthen the muscles of the quadriceps, improve knee stability, and prevent injury in the lower body. It can be performed with or without ankle weights, depending on the individual’s fitness level and goals.",
+      duration: 40,
+      difficulty: ExerciseDifficulty.MEDIUM,
+      thumbnailUrl: getYouTubeThumbnail('https://youtu.be/sdUNIdsFztE'),
+      videoUrl: 'https://youtu.be/sdUNIdsFztE',
+    },
+  });
+
+  const exercise17 = await prisma.exercise.create({
+    data: {
+      exerciseCategoryId: exerciseCategory1.id,
+      title: 'Seated Hamstring stretch',
+      description: 'Seated Hamstring stretch is a stretching exercise that targets the hamstring muscles in the back of the thigh.',
+      content: 'Seated Hamstring stretch is a stretching exercise that targets the hamstring muscles in the back of the thigh. This exercise is performed by sitting on the edge of a chair with one leg extended straight out in front of the body and the heel on the ground. The toes are flexed towards the body, and the chest is lifted to maintain a neutral spine. Seated Hamstring stretch helps to improve flexibility, reduce muscle tension, and prevent injury in the hamstring muscles. It is commonly used as part of a warm-up or cool-down routine for athletes and fitness enthusiasts.',
+      duration: 30,
+      difficulty: ExerciseDifficulty.EASY,
+      thumbnailUrl: getYouTubeThumbnail("https://youtu.be/bJjNFAF2qNA"),
+      videoUrl: 'https://youtu.be/bJjNFAF2qNA',
+    },
+  });
+
+  const exercise18 = await prisma.exercise.create({
+    data: {
+      exerciseCategoryId: exerciseCategory2.id,
+      title: 'Single leg stand',
+      description: 'Single leg stand is a balance exercise that targets the muscles of the lower body and core.',
+      content: "Single leg stand is a balance exercise that targets the muscles of the lower body and core. This exercise is performed by standing on one leg with the knee slightly bent and the foot flat on the ground. The hands can be placed on the hips or out to the sides for balance. Single leg stand helps to improve balance and stability, strengthen the muscles of the lower body, and prevent injury in the legs and hips. It can be performed with or without a balance pad, depending on the individual’s fitness level and goals.",
+      duration: 45,
+      difficulty: ExerciseDifficulty.MEDIUM,
+      thumbnailUrl: getYouTubeThumbnail("https://youtu.be/wRzM1DuUcKE"),
+      videoUrl: 'https://youtu.be/wRzM1DuUcKE',
+    },
+  });
 
   // Create Patient Exercises
   const patientExercise1 = await prisma.patientExercise.create({
