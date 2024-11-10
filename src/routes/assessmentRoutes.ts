@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { createOrUpdateAssessmentResponses, getAllAssessmentByPatientId, getAssessmentDetails, getPatientAssessmentDetailsForAIFeed } from '../controllers/assessmentController';
+import { createOrUpdateAssessmentResponses, getAllAssessmentByPatientId, getAssessmentDetails, 
+    createExerciseSuggestion } from '../controllers/assessmentController';
 
 const router = Router();
 
@@ -152,19 +153,22 @@ router.get('/:id/details', getAssessmentDetails);
 
 /**
  * @swagger
- * /api/assessment/{id}/detailsCleaned:
- *   get:
- *     summary: Get cleaned assessment details for AI feed
- *     description: Retrieve cleaned assessment details.  This data is prepared for feeding into an AI model to suggest exercises.
+ * /api/assessment/exerciseSuggestion:
+ *   post:
+ *     summary: Get exercise suggestion from AI model
+ *     description: Feed assessment result into an AI model to suggest exercises.
  *     tags:
  *       - Assessment
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: The ID of the assessment
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: string
+ *                 description: The ID of the assessment
  *     responses:
  *       200:
  *         description: Successfully retrieved the cleaned assessment details
@@ -173,7 +177,7 @@ router.get('/:id/details', getAssessmentDetails);
  *       500:
  *         description: Internal server error
  */
-router.get('/:id/detailsCleaned', getPatientAssessmentDetailsForAIFeed);
+router.post('/exerciseSuggestion', createExerciseSuggestion);
 
 router.post('/response', createOrUpdateAssessmentResponses);
 
