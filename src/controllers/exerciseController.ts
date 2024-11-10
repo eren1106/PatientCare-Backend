@@ -32,7 +32,7 @@ export const getExerciseById = async (req: Request, res: Response) => {
 
 export const createExercise = async (req: Request, res: Response) => {
   const {
-    // exerciseCategoryId,
+    exerciseCategoryId,
     // thumbnail,
     title,
     description,
@@ -42,15 +42,14 @@ export const createExercise = async (req: Request, res: Response) => {
     videoUrl,
   } = req.body;
   try {
-    const MOCK_EXERCISE_CATEGORY = await prisma.exerciseCategory.findFirst();
     const thumbnailUrl = getYouTubeThumbnail(videoUrl);
     const newExercise = await prisma.exercise.create({
       data: {
-        exerciseCategoryId: MOCK_EXERCISE_CATEGORY!.id,
+        exerciseCategoryId,
         thumbnailUrl,
         title,
         description,
-        duration: 666,
+        duration: 666, // TODO: determine to put duration in exercise or patientExercise
         difficulty,
         content,
         videoUrl,
@@ -69,7 +68,7 @@ export const createExercise = async (req: Request, res: Response) => {
 export const updateExercise = async (req: Request, res: Response) => {
   const { id } = req.params;
   const {
-    // exerciseCategoryId,
+    exerciseCategoryId,
     thumbnailUrl,
     title,
     description,
@@ -82,7 +81,7 @@ export const updateExercise = async (req: Request, res: Response) => {
     const updatedExercise = await prisma.exercise.update({
       where: { id: id },
       data: {
-        // exerciseCategoryId,
+        exerciseCategoryId,
         thumbnailUrl,
         title,
         description,
@@ -127,3 +126,15 @@ export const deleteExercise = async (req: Request, res: Response) => {
     return errorResponse({ res, error });
   }
 };
+
+export const getAllExerciseCategories = async (req: Request, res: Response) => {
+  try {
+    const exerciseCategories = await prisma.exerciseCategory.findMany();
+    return apiResponse({
+      res,
+      result: exerciseCategories
+    });
+  } catch (error) {
+    return errorResponse({ res, error });
+  }
+}
