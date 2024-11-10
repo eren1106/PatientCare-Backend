@@ -133,6 +133,25 @@ model Questionnaire {
   sections   Section[]    @relation("QuestionnaireSections")
 }
 
+model ExerciseSuggestion {
+  id            String  @id @default(cuid())
+  analysis      String 
+  assessmentId  String
+  
+  assessment    Assessment    @relation("AssessmentExerciseSuggestion", fields:[assessmentId], references:[id])
+  suggestion    Suggestion[]  @relation("Suggestion")
+
+}
+
+model Suggestion {
+  id                     String  @id @default(cuid())
+  exerciseTitle          String
+  exerciseId             String
+  exerciseSuggestionId   String
+
+  exerciseSuggest        ExerciseSuggestion @relation("Suggestion", fields:[ exerciseSuggestionId], references:[id])
+}
+
 model Assessment {
   id              String   @id @default(cuid())
   questionnaireId String
@@ -140,10 +159,11 @@ model Assessment {
   patientRecordId String
   doctorId        String
 
-  questionnaire Questionnaire @relation(fields: [questionnaireId], references: [id])
-  response      Response[]    @relation("AssessmentResponse")
-  patientRecord PatientRecord @relation("PatientRecordAssessment", fields: [patientRecordId], references: [id])
-  doctor        User          @relation("AssessmentDoctor", fields: [doctorId], references: [id])
+  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id])
+  response        Response[]    @relation("AssessmentResponse")
+  patientRecord   PatientRecord @relation("PatientRecordAssessment", fields: [patientRecordId], references: [id])
+  doctor          User          @relation("AssessmentDoctor", fields: [doctorId], references: [id])
+  exerciseSuggest ExerciseSuggestion[] @relation("AssessmentExerciseSuggestion")
 }
 
 model Section {
@@ -264,6 +284,8 @@ model ExerciseCategory {
 
   exercise Exercise[]
 }
+
+
 
 model Exercise {
   id                 String             @id @default(cuid())

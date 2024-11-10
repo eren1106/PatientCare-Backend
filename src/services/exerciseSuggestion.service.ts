@@ -1,47 +1,41 @@
 import Groq from "groq-sdk";
 
-export async function getExerciseSuggestions(cleanedData: any) {
+export async function getExerciseSuggestions(cleanedData: any, exerciseData : any) {
   const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
   const prompt = `
 
-    Based on the following assessment details, analyze the patient's response and suggest suitable exercises for the patient. 
-    Provide the output strictly in a JSON array format, with each exercise containing the following fields:  
+    ###Assessment Result###:
+     ${JSON.stringify(cleanedData, null, 2)}
+
+    ###Exercises###:
+      ${JSON.stringify(exerciseData, null, 2)}
+
+    Based on the following assessment details, analyze the patient's assessment result and suggest suitable exercises for the patient.
+    The suggestions should be based on the ###Assessment Result### and the ###Exercises###. 
+    Provide the output strictly in a JSON format with following keys:  
   
     - "analysis": a brief analysis based on the patient's response,
-    - "exerciseTitle": title of the exercise, 
-    - "exerciseDescription": description of the exercise (obtained directly from the link as a preview),
-    - "exerciseThumbnailUrl": a URL to a preview thumbnail for the exercise video,
-    - "exerciseUrl": a valid URL for the exercise articles or video (ensure this link is existing and functional).
+    - "exerciseTitle": title of the exercise (obtained from ###Exercises###), 
+    - "exerciseId": id of the exercise (obtained from ###Exercises###),
 
-    Ensure that the title, description, and thumbnail are pulled from the exerciseUrl itself for consistency with the actual content. Provide 1 analysis and exercise suggestions only.
-
-
+    Suggest 1-5 exercises based on the  ###Assessment Result###.
     Only return the json array as output, do not include any additional text or formatting.
-
-    Ensure that the exerciseUrl is a valid URL.
-    
-    Assessment Details:
-     ${JSON.stringify(cleanedData, null, 2)}
   
     Example Output:
-    [
+    {
       "analysis": "Analysis of the patient's response",
       "suggestions": [
         {
           "exerciseTitle": "Exercise Title",
-          "exerciseDescription": "Description obtained from the link",
-          "exerciseThumbnailUrl": "Thumbnail URL from the link preview",
-          "exerciseUrl": "Exercise Video Or Article URL"
+          "exerciseId: "Exercise ID",
         },
         {
           "exerciseTitle": "Exercise Title",
-          "exerciseDescription": "Description obtained from the link",
-          "exerciseThumbnailUrl": "Thumbnail URL from the link preview",
-          "exerciseUrl": "Exercise Video Or Article URL"
+          "exerciseId: "Exercise ID",
         }
       ]
-    ]
+    }
     `;
 
   const response = await groq.chat.completions.create({

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { apiResponse, errorResponse } from '../utils/api-response.util';
 import prisma from '../lib/prisma';
 import { STATUS_CODES } from '../constants';
+import { getExerciseSuggestions } from '../services/exerciseSuggestion.service';
 
 export const getAllOptions = async (req: Request, res: Response) => {
   try {
@@ -304,6 +305,12 @@ export const getAssessmentResult = async (req: Request, res: Response) => {
             },
           },
         },
+
+        exerciseSuggest: {
+          include: {
+            suggestion: true,
+          }
+        },
         response: {
           include: {
             question: true,
@@ -367,6 +374,7 @@ export const getAssessmentResult = async (req: Request, res: Response) => {
     const result = {
       questionnaireName: questionnaire.title,
       questionnaireType: questionnaire.type,
+      exerciseSuggestions : assessment.exerciseSuggest,
       questionnaireIndex: questionnaire.index,
       questionnaireStatus,
       sectionScores,

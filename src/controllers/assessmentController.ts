@@ -98,8 +98,13 @@ export const getAllAssessmentByPatientId = async (req: Request, res: Response) =
                   },
                 },
               },
+
+              
             },
           },
+          
+
+
         },
       });
   
@@ -110,6 +115,7 @@ export const getAllAssessmentByPatientId = async (req: Request, res: Response) =
       const questionnaireDetails = {
         title: assessment.questionnaire.title,
         description: assessment.questionnaire.description,
+
         sections: assessment.questionnaire.sections.map((section) => ({
           sectionId: section.id,
           sectionName: section.name,
@@ -132,6 +138,7 @@ export const getAllAssessmentByPatientId = async (req: Request, res: Response) =
             };
           }),
         })),
+        
       };
   
       return res.status(200).json({
@@ -193,9 +200,10 @@ export const getAllAssessmentByPatientId = async (req: Request, res: Response) =
   };
 
 
-  export const getPatientAssessmentDetailsForAIFeed = async (req: Request, res: Response) => {
-    const { id } = req.params;
-  
+
+
+  export const createExerciseSuggestion = async (req: Request, res: Response) => {
+    const { id } = req.body;  
     try {
       const assessment = await prisma.assessment.findUnique({
         where: { id },
@@ -230,6 +238,7 @@ export const getAllAssessmentByPatientId = async (req: Request, res: Response) =
         return res.status(404).json({ message: 'Assessment not found' });
       }
   
+      // collect the assessment result
       const cleanedData = {
         title: assessment.questionnaire.title,
         description: assessment.questionnaire.description,
@@ -251,10 +260,39 @@ export const getAllAssessmentByPatientId = async (req: Request, res: Response) =
           }),
         })),
       };
+
+      const exercises = await prisma.exercise.findMany({
+        include: {
+          exerciseCategory: true,
+        },
+      });
+
+      const exerciseData = exercises.map(exercise => ({
+        exerciseId : exercise.id,
+        title: exercise.title,
+        description: exercise.description,
+        difficulty: exercise.difficulty,
+        duration: exercise.duration,
+        category: exercise.exerciseCategory.title,
+      }));
   
-      const exerciseSuggestions = await getExerciseSuggestions(cleanedData);
+  
+      const exerciseSuggestions = await getExerciseSuggestions(cleanedData, exerciseData);
+
+      const exerciseSuggestion = await prisma.exerciseSuggestion.create({
+        data: {
+          analysis: exerciseSuggestions.analysis,
+          assessmentId: id,
+          suggestion: {
+            create: exerciseSuggestions.suggestions.map((s: any) => ({
+              exerciseTitle: s.exerciseTitle,
+              exerciseId: s.exerciseId,
+            })),
+          },
+        },
+      });
       return res.status(200).json({
-        result: exerciseSuggestions,
+        result: exerciseSuggestion,
       });
     } catch (error: any) {
       return res.status(500).json({
@@ -263,3 +301,6 @@ export const getAllAssessmentByPatientId = async (req: Request, res: Response) =
       });
     }
   };
+
+
+  
