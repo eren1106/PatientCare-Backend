@@ -201,7 +201,11 @@ export const getTodayPatientExerciseById = async (req: Request, res: Response) =
       include: {
         patientExercise: {
           include: {
-            exercise: true,
+            exercise: {
+              include: {
+                exerciseCategory: true,
+              }
+            },
           }
         },
       }

@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import prisma from "../lib/prisma";
 import { apiResponse, errorResponse } from "../utils/api-response.util";
-import { STATUS_CODES } from "../constants";
+import { SALT_ROUNDS, STATUS_CODES } from "../constants";
 import { DoctorRegistrationStatus, Gender, SignInMethod, UserRole } from "@prisma/client";
+import bcrypt from 'bcrypt';
 
 export const login = async (req: Request, res: Response) => {
   const {
@@ -22,6 +23,14 @@ export const login = async (req: Request, res: Response) => {
     statusCode: STATUS_CODES.NOT_FOUND
   });
 
+  // Implement bcrypt to check hashed password
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (!isPasswordValid) return errorResponse({
+    res,
+    error: "Wrong Password!",
+    statusCode: STATUS_CODES.UNAUTHORIZED
+  });
+  
   // Check if the user is a doctor and their registration status is not approved
   if (user.role === UserRole.DOCTOR && user.doctorRegistrationStatus === (DoctorRegistrationStatus.PENDING || DoctorRegistrationStatus.REJECTED)) {
     return errorResponse({
@@ -30,14 +39,6 @@ export const login = async (req: Request, res: Response) => {
       statusCode: STATUS_CODES.UNAUTHORIZED,
     });
   }
-
-  // TODO: implement bcrypt to hash password
-  // TODO: implement jwt
-  if(password !== user.password) return errorResponse({
-    res,
-    error: "Wrong Password!",
-    statusCode: STATUS_CODES.UNAUTHORIZED
-  });
 
   return apiResponse({
     res,
@@ -78,10 +79,12 @@ export const register = async (req: Request, res: Response) => {
   });
 
   // TODO: implement bcrypt to hash password
+  const hashedPassword = await bcrypt.hash(data.password, SALT_ROUNDS);
+
   const user = await prisma.user.create({
     data: {
       email: data.email,
-      password: data.password,
+      password: hashedPassword,
       username: data.username,
       fullname: data.fullname,
       role: data.role,
