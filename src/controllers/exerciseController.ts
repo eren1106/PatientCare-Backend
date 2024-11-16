@@ -20,6 +20,9 @@ export const getExerciseById = async (req: Request, res: Response) => {
   try {
     const exercise = await prisma.exercise.findUnique({
       where: { id: id },
+      include: {
+        exerciseCategory: true,
+      }
     });
     return apiResponse({
       res,
