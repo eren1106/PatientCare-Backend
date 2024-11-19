@@ -1,4 +1,5 @@
 import { ExerciseDifficulty, Gender } from "@prisma/client";
+import bcrypt from 'bcrypt';
 
 export const getYouTubeThumbnail = (videoUrl: string): string | null => {
   const videoIdMatch = videoUrl.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
@@ -58,11 +59,12 @@ async function main() {
   });
 
   // Create Admin
+  const hashedPassword = await bcrypt.hash('securepassword', 10);
   const admin = await prisma.user.create({
     data: {
       username: 'Patient Care Admin',
       email: 'patientcare@admin.com',
-      password: 'securepassword',
+      password: hashedPassword,
       signinMethod: 'EMAILPASSWORD',
       profileImageUrl: 'https://external-preview.redd.it/kevin-durant-usa-mens-leading-point-scorer-in-olympic-v0-KlataPnkXqTtYczpASxTqgqJVaxrYZlL3YwsGBLVLuE.jpg?auto=webp&s=66bb76ac0496ece60bf9954b77489fd11f234f1d',
       role: 'ADMIN',
@@ -74,12 +76,11 @@ async function main() {
   });
 
   // Create Users
-  // TODO: hash password
   const user1 = await prisma.user.create({
     data: {
       username: 'john_doe_123',
       email: 'john@example.com',
-      password: 'securepassword',
+      password: hashedPassword,
       signinMethod: 'EMAILPASSWORD',
       profileImageUrl: 'https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg',
       role: 'PATIENT',
@@ -94,7 +95,7 @@ async function main() {
     data: {
       username: 'jane_doe',
       email: 'jane@example.com',
-      password: 'securepassword',
+      password: hashedPassword,
       signinMethod: 'GOOGLE',
       role: 'DOCTOR',
       profileImageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5q9GlWCAoQHPpOiDOECuYUeXW9MQP7Ddt-Q&s',
@@ -109,7 +110,7 @@ async function main() {
     data: {
       username: 'wubang',
       email: 'wubang1232@example.com',
-      password: 'securepassword',
+      password: hashedPassword,
       signinMethod: 'GOOGLE',
       role: 'PATIENT',
       profileImageUrl: 'https://p4.itc.cn/images01/20231219/8d424b652feb4021a31d4a676f7e0cf9.jpeg',
@@ -124,7 +125,7 @@ async function main() {
     data: {
       username: 'zilii',
       email: 'zilii@example.com',
-      password: 'securepassword',
+      password: hashedPassword,
       signinMethod: 'EMAILPASSWORD',
       profileImageUrl: 'https://atd-blog.s3.us-east-2.amazonaws.com/wp-content/uploads/2022/04/16142821/cool-profile-pictures-for-girls-9.webp',
       role: 'PATIENT',
