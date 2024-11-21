@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import { apiResponse, errorResponse } from "../utils/api-response.util";
 import prisma from "../lib/prisma";
-import { UserRole } from "@prisma/client";
+import { Gender, UserRole } from "@prisma/client";
 import { STATUS_CODES } from "../constants";
+import { uploadImage } from "../utils/supabase-helper";
 
 export const getProfileById = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -46,20 +47,25 @@ export const getProfileById = async (req: Request, res: Response) => {
 
 export const updateProfile = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const {
-    fullname,
-    gender,
-    age,
-    ic,
-  } = req.body;
   try {
+    const json = req.body.json as string;
+    const jsonData = JSON.parse(json) as {
+      fullname: string,
+      gender: Gender,
+      age: number,
+      ic: string,
+    };
+    // Access the file uploaded by multer
+    const imageFile = req.file;
+    // upload image to supabase storage and get image url
+    let imageUrl: string | undefined;
+    if (imageFile) imageUrl = await uploadImage(imageFile);
+    
     const updatedProfile = await prisma.user.update({
       where: { id: id },
       data: {
-        fullname,
-        gender,
-        age,
-        ic,
+        ...jsonData,
+        profileImageUrl: imageUrl,
       },
     });
     return apiResponse({
