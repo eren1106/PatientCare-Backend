@@ -14,7 +14,7 @@ const app = express();
 const httpServer = createServer(app);
 
 const corsOptions = {
-  origin: process.env.CLIENT_URL || "http://localhost:5173",
+  origin: [process.env.CLIENT_URL || "http://localhost:5173", process.env.PWA_URL || "http://localhost:4173"], // 4173 is for PWA, not sure what will be the domain after deploy
   methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
   credentials: true,
 };
