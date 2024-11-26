@@ -47,6 +47,12 @@ enum DoctorRegistrationStatus {
   REJECTED
 }
 
+enum AppointmentStatus {
+  SCHEDULED
+  CONFIRMED
+  CANCELLED
+}
+
 // MODELS
 model User {
   id                       String                    @id @default(cuid())
@@ -134,22 +140,21 @@ model Questionnaire {
 }
 
 model ExerciseSuggestion {
-  id            String  @id @default(cuid())
-  analysis      String 
-  assessmentId  String
-  
-  assessment    Assessment    @relation("AssessmentExerciseSuggestion", fields:[assessmentId], references:[id])
-  suggestion    Suggestion[]  @relation("Suggestion")
+  id           String @id @default(cuid())
+  analysis     String
+  assessmentId String
 
+  assessment Assessment   @relation("AssessmentExerciseSuggestion", fields: [assessmentId], references: [id])
+  suggestion Suggestion[] @relation("Suggestion")
 }
 
 model Suggestion {
-  id                     String  @id @default(cuid())
-  exerciseTitle          String
-  exerciseId             String
-  exerciseSuggestionId   String
+  id                   String @id @default(cuid())
+  exerciseTitle        String
+  exerciseId           String
+  exerciseSuggestionId String
 
-  exerciseSuggest        ExerciseSuggestion @relation("Suggestion", fields:[ exerciseSuggestionId], references:[id])
+  exerciseSuggest ExerciseSuggestion @relation("Suggestion", fields: [exerciseSuggestionId], references: [id])
 }
 
 model Assessment {
@@ -159,10 +164,10 @@ model Assessment {
   patientRecordId String
   doctorId        String
 
-  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id])
-  response        Response[]    @relation("AssessmentResponse")
-  patientRecord   PatientRecord @relation("PatientRecordAssessment", fields: [patientRecordId], references: [id])
-  doctor          User          @relation("AssessmentDoctor", fields: [doctorId], references: [id])
+  questionnaire   Questionnaire        @relation(fields: [questionnaireId], references: [id])
+  response        Response[]           @relation("AssessmentResponse")
+  patientRecord   PatientRecord        @relation("PatientRecordAssessment", fields: [patientRecordId], references: [id])
+  doctor          User                 @relation("AssessmentDoctor", fields: [doctorId], references: [id])
   exerciseSuggest ExerciseSuggestion[] @relation("AssessmentExerciseSuggestion")
 }
 
@@ -260,7 +265,7 @@ model Injury {
 }
 
 model Appointment {
-  id              String    @id @default(cuid())
+  id              String            @id @default(cuid())
   title           String
   description     String
   date            DateTime
@@ -268,8 +273,9 @@ model Appointment {
   endTime         DateTime
   doctorId        String
   patientId       String
-  createdDatetime DateTime  @default(now())
-  updatedDatetime DateTime? @updatedAt
+  createdDatetime DateTime          @default(now())
+  updatedDatetime DateTime?         @updatedAt
+  status          AppointmentStatus @default(SCHEDULED)
 
   doctor        User          @relation("AppointmentDoctor", fields: [doctorId], references: [id], onDelete: Cascade)
   patient       User          @relation("AppointmentPatient", fields: [patientId], references: [id], onDelete: Cascade)
@@ -284,8 +290,6 @@ model ExerciseCategory {
 
   exercise Exercise[]
 }
-
-
 
 model Exercise {
   id                 String             @id @default(cuid())
