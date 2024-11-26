@@ -4,6 +4,7 @@ import { Request, Response } from 'express';
 import { copyDay, formatDate, formatTime } from "../utils/utils";
 import { io } from "..";
 import { sendNotification } from "../services/notifications.service";
+import { AppointmentStatus } from "@prisma/client";
 
 export const getAppointmentsByUserId = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -204,5 +205,35 @@ export const deleteAppointment = async (req: Request, res: Response) => {
     return errorResponse({ res, error });
   }
 };
+
+export const confirmAppointment = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { confirm } = req.body;
+
+  try {
+    const appointment = await prisma.appointment.update({
+      where: { id },
+      data: {
+        status: confirm ? AppointmentStatus.CONFIRMED : AppointmentStatus.CANCELLED,
+      },
+    });
+
+    // create notification
+    await sendNotification({
+      userId: appointment.doctorId,
+      title: `One of your appointment has been ${confirm ? "confirmed" : "cancelled"}!`,
+      message: `The appointment for ${formatDate(appointment.date)} from ${formatTime(appointment.startTime)} to ${formatTime(appointment.endTime)} has been ${confirm ? "confirmed" : "cancelled!"}`,
+      redirectUrl: `/appointments`
+    });
+
+    return apiResponse({
+      res,
+      result: appointment,
+      message: confirm ? 'Appointment confirmed' : 'Appointment cancelled',
+    });
+  } catch (error) {
+    return errorResponse({ res, error });
+  }
+}
 
 
