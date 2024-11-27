@@ -76,7 +76,7 @@ export const sendEmail = async ({ recipientEmail, subject, textPart, htmlPart }:
     process.env.MJ_APIKEY_PRIVATE as string
   );
 
-  const res = await mailjet
+  await mailjet
     .post("send", { version: 'v3.1' })
     .request({
       Messages: [{

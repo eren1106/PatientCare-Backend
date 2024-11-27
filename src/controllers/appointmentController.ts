@@ -223,7 +223,7 @@ export const confirmAppointment = async (req: Request, res: Response) => {
       userId: appointment.doctorId,
       title: `One of your appointment has been ${confirm ? "confirmed" : "cancelled"}!`,
       message: `The appointment for ${formatDate(appointment.date)} from ${formatTime(appointment.startTime)} to ${formatTime(appointment.endTime)} has been ${confirm ? "confirmed" : "cancelled!"}`,
-      redirectUrl: `/appointments`
+      redirectUrl: `/dashboard/appointments`
     });
 
     return apiResponse({
