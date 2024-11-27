@@ -71,6 +71,8 @@ model User {
   createdDatetime          DateTime                  @default(now())
   updatedDatetime          DateTime?
   isDelete                 Boolean                   @default(false)
+  isVerified               Boolean                   @default(false)
+  verificationToken        String?                   @unique
 
   callTo               Call[]                 @relation("CallTo")
   assessment           Assessment[]           @relation("AssessmentDoctor")

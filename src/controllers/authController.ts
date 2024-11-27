@@ -4,6 +4,7 @@ import { apiResponse, errorResponse } from "../utils/api-response.util";
 import { SALT_ROUNDS, STATUS_CODES } from "../constants";
 import { DoctorRegistrationStatus, Gender, SignInMethod, UserRole } from "@prisma/client";
 import bcrypt from 'bcrypt';
+import { VerificationService } from "../services/verification.service";
 
 export const login = async (req: Request, res: Response) => {
   const {
@@ -23,6 +24,12 @@ export const login = async (req: Request, res: Response) => {
     statusCode: STATUS_CODES.NOT_FOUND
   });
 
+  if (!user.isVerified) return errorResponse({
+    res,
+    error: "Please verify your email first!",
+    statusCode: STATUS_CODES.BAD_REQUEST
+  });
+
   // Implement bcrypt to check hashed password
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) return errorResponse({
@@ -30,7 +37,7 @@ export const login = async (req: Request, res: Response) => {
     error: "Wrong Password!",
     statusCode: STATUS_CODES.UNAUTHORIZED
   });
-  
+
   // Check if the user is a doctor and their registration status is not approved
   if (user.role === UserRole.DOCTOR && user.doctorRegistrationStatus === (DoctorRegistrationStatus.PENDING || DoctorRegistrationStatus.REJECTED)) {
     return errorResponse({
@@ -55,7 +62,7 @@ interface RegisterUserDTO {
   ic: string;
   age: number;
   gender: Gender;
-  registrationNumber? : string;
+  registrationNumber?: string;
 }
 
 export const register = async (req: Request, res: Response) => {
@@ -72,13 +79,12 @@ export const register = async (req: Request, res: Response) => {
     },
   });
 
-  if(existingUser) return errorResponse({
+  if (existingUser) return errorResponse({
     res,
     error: "User already exists!",
     statusCode: STATUS_CODES.CONFLICT
   });
 
-  // TODO: implement bcrypt to hash password
   const hashedPassword = await bcrypt.hash(data.password, SALT_ROUNDS);
 
   const user = await prisma.user.create({
@@ -96,7 +102,14 @@ export const register = async (req: Request, res: Response) => {
     },
   });
 
-  if (data.role === UserRole.DOCTOR) {
+  if (data.role === UserRole.PATIENT) {
+    // send verification email
+    await VerificationService.sendVerificationEmail({
+      email: user.email,
+      userId: user.id,
+    });
+  }
+  else if (data.role === UserRole.DOCTOR) {
     await prisma.doctorValidation.create({
       data: {
         doctorId: user.id,
@@ -109,4 +122,38 @@ export const register = async (req: Request, res: Response) => {
     res,
     result: user,
   });
+}
+
+export const verifyEmail = async (req: Request, res: Response) => {
+  try {
+    const { token } = req.query;
+    console.log("TOKENN", token);
+
+    if (!token) return errorResponse({
+      res,
+      error: "Token is required!",
+      statusCode: STATUS_CODES.BAD_REQUEST
+    });
+
+    const isVerified = await VerificationService.verifyEmail(token as string);
+
+    if (!isVerified) return errorResponse({
+      res,
+      error: "Invalid Token!",
+      statusCode: STATUS_CODES.UNAUTHORIZED
+    });
+
+    return apiResponse({
+      res,
+      result: {
+        isVerified
+      },
+      message: "Email Verified Successfully!",
+    });
+  }
+  catch (e) {
+    return errorResponse({
+      res, error: e
+    });
+  }
 }
