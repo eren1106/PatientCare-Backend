@@ -278,7 +278,7 @@ export const getAllAssessmentByPatientId = async (req: Request, res: Response) =
   
   
       const exerciseSuggestions = await getExerciseSuggestions(cleanedData, exerciseData);
-
+      
       const exerciseSuggestion = await prisma.exerciseSuggestion.create({
         data: {
           analysis: exerciseSuggestions.analysis,

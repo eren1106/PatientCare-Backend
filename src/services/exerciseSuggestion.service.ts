@@ -11,28 +11,40 @@ export async function getExerciseSuggestions(cleanedData: any, exerciseData : an
     ###Exercises###:
       ${JSON.stringify(exerciseData, null, 2)}
 
-    Based on the following assessment details, analyze the patient's assessment result and suggest suitable exercises for the patient.
+    Based on the following assessment result, provide an analysis of the patient's response.
+    Then, suggest suitable exercises for the patient. 
+    Your analysis of the patient response will be stored in the ###analysis### field in the json.
     The suggestions should be based on the ###Assessment Result### and the ###Exercises###. 
-    Provide the output strictly in a JSON format with following keys:  
+    Provide the output strictly in a JSON format with following structure:  
   
-    - "analysis": a brief analysis based on the patient's response,
-    - "exerciseTitle": title of the exercise (obtained from ###Exercises###), 
-    - "exerciseId": id of the exercise (obtained from ###Exercises###),
+    {
+     "analysis": "Analysis of the patient's response",
+     "suggestions": [
+       {
+        "exerciseTitle": "Exercise Title",
+        "exerciseId": "Exercise ID"
+       },
+       {
+        "exerciseTitle": "Exercise Title",
+        "exerciseId": "Exercise ID"
+       }
+     ]
+   }
 
-    Suggest 1-5 exercises based on the  ###Assessment Result###.
-    Only return the json array as output, do not include any additional text or formatting.
+    Suggest 1-3 exercises based on the  ###Assessment Result###.
+    Strictly return the json array as output only, do not include any additional text or formatting.
   
     Example Output:
     {
-      "analysis": "Analysis of the patient's response",
+      "analysis": "The patient is experiencing severe pain in their shoulder, making even simple activities like washing hair or reaching difficult. Exercises should focus on gentle movements and improving flexibility.",
       "suggestions": [
         {
-          "exerciseTitle": "Exercise Title",
-          "exerciseId: "Exercise ID",
+          "exerciseTitle": "Wall Squat",
+          "exerciseId: "cm40y6rfn004zeub2uzgtkoug",
         },
         {
-          "exerciseTitle": "Exercise Title",
-          "exerciseId: "Exercise ID",
+          "exerciseTitle": "Quadriceps stretch",
+          "exerciseId: "cm40y6rgw0051eub2j4kfe4co",
         }
       ]
     }
@@ -45,7 +57,7 @@ export async function getExerciseSuggestions(cleanedData: any, exerciseData : an
         content: prompt,
       },
     ],
-    model: "llama-3.2-11b-text-preview",
+    model: "llama-3.2-3b-preview",
   });
 
 
@@ -54,7 +66,8 @@ export async function getExerciseSuggestions(cleanedData: any, exerciseData : an
   if (!content) {
     throw new Error("Response content is null");
   }
+  
   const suggestions = JSON.parse(content);
-
+  console.log('exerciseSuggestions', content);
   return suggestions;
 }
