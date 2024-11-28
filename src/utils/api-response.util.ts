@@ -39,7 +39,7 @@ export const apiResponse = ({
   result,
   message,
   extra = undefined
-}: { res: Response; result?: any; message?: string; extra?: any }) => {
+}: { res: Response; result: any; message?: string; extra?: any }) => {
   if (Array.isArray(result) && result.length === 0) {
     return noResultArrayResponse(res);
   }

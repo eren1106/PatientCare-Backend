@@ -66,7 +66,7 @@ Please do not reply directly to this email.
 interface SendEmailProps {
   recipientEmail: string;
   subject: string;
-  textPart: string;
+  textPart?: string;
   htmlPart: string;
 }
 
