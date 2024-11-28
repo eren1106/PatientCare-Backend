@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 import prisma from "../lib/prisma";
-import { apiResponse, errorResponse } from "../utils/api-response.util";
+import { apiResponse, customResponse, errorResponse } from "../utils/api-response.util";
 import { SALT_ROUNDS, STATUS_CODES } from "../constants";
 import { DoctorRegistrationStatus, Gender, SignInMethod, UserRole } from "@prisma/client";
 import bcrypt from 'bcrypt';
 import { VerificationService } from "../services/verification.service";
+import crypto from 'crypto';
+import { sendEmail } from "../services/emails.service";
 
 export const login = async (req: Request, res: Response) => {
   const {
@@ -149,6 +151,108 @@ export const verifyEmail = async (req: Request, res: Response) => {
         isVerified
       },
       message: "Email Verified Successfully!",
+    });
+  }
+  catch (e) {
+    return errorResponse({
+      res, error: e
+    });
+  }
+}
+
+export const requestResetPassword = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) return errorResponse({
+      res,
+      error: "Email is required!",
+      statusCode: STATUS_CODES.BAD_REQUEST
+    });
+
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      }
+    });
+
+    if (!user) return errorResponse({
+      res,
+      error: "No User Found!",
+      statusCode: STATUS_CODES.NOT_FOUND
+    });
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetTokenExpiry = new Date(Date.now() + 1000 * 60 * 60); // 1 hour from now
+
+    await prisma.user.update({
+      where: { email },
+      data: { resetToken, resetTokenExpiry },
+    });
+
+    await sendEmail({
+      recipientEmail: email,
+      subject: 'Reset Password',
+      htmlPart: `
+        <h1>Reset Password</h1>
+        <p>Click the link below to reset your password:</p>
+        <a href="${process.env.CLIENT_URL}/auth/reset-password?token=${resetToken}">Reset Password</a>
+        <p>This link will expire in 1 hour.</p>
+        <p>If you did not request a password reset, please ignore this email.</p>
+        `
+    });
+
+    return customResponse({
+      res,
+      message: "Reset Password Email Sent Successfully!",
+    });
+  }
+  catch (e) {
+    return errorResponse({
+      res, error: e
+    });
+  }
+}
+
+export const resetPassword = async (req: Request, res: Response) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) return errorResponse({
+      res,
+      error: "Token and Password are required!",
+      statusCode: STATUS_CODES.BAD_REQUEST
+    });
+
+    const user = await prisma.user.findFirst({
+      where: {
+        resetToken: token,
+        resetTokenExpiry: {
+          gte: new Date(), // gte = greater than or equal to
+        },
+      }
+    });
+
+    if (!user) return errorResponse({
+      res,
+      error: "Invalid or Expired Token!",
+      statusCode: STATUS_CODES.UNAUTHORIZED
+    });
+
+    const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        resetToken: null,
+        resetTokenExpiry: null,
+      }
+    });
+
+    return customResponse({
+      res,
+      message: "Password Reset Successfully!",
     });
   }
   catch (e) {
