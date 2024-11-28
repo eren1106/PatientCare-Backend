@@ -2,11 +2,22 @@ import Mailjet from 'node-mailjet';
 
 interface EmailTemplateProps {
   messageContent: string;
+  redirectUrl?: string;
 }
 
 const generateEmailTemplate = ({
-  messageContent
+  messageContent,
+  redirectUrl,
 }: EmailTemplateProps): { html: string; text: string } => {
+  // Conditional button HTML generation
+  const redirectButton = redirectUrl
+    ? `
+        <a href="${redirectUrl}" style="display: inline-block; background-color: #0066cc; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+          Open in PatientCare
+        </a>
+   `
+    : '';
+
   const htmlTemplate = `
 <!DOCTYPE html>
 <html lang="en">
@@ -15,7 +26,7 @@ const generateEmailTemplate = ({
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PatientCare</title>
 </head>
-<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; line-height: 1.6; color: #333333; background-color: #f5f5f5;">
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; line-height: 1.6; color: #333333; background-color: #f5f5f5; font-size: 14px;">
     <table role="presentation" style="width: 100%; border-collapse: collapse;">
         <tr>
             <td style="padding: 0;">
@@ -29,11 +40,12 @@ const generateEmailTemplate = ({
                     
                     <!-- Main Content -->
                     <tr>
-                        <td style="padding: 32px 24px;">
-                            ${messageContent}
+                        <td style="padding: 32px 24px; text-align: center;">
+                            <p>${messageContent}</p>
+                            ${redirectButton}
                         </td>
                     </tr>
-                    
+
                     <!-- Footer -->
                     <tr>
                         <td style="background-color: #f8f9fa; padding: 24px; text-align: center; font-size: 14px;">
@@ -68,9 +80,10 @@ interface SendEmailProps {
   subject: string;
   textPart?: string;
   htmlPart: string;
+  redirectUrl?: string;
 }
 
-export const sendEmail = async ({ recipientEmail, subject, textPart, htmlPart }: SendEmailProps) => {
+export const sendEmail = async ({ recipientEmail, subject, textPart, htmlPart, redirectUrl }: SendEmailProps) => {
   const mailjet = Mailjet.apiConnect(
     process.env.MJ_APIKEY_PUBLIC as string,
     process.env.MJ_APIKEY_PRIVATE as string
@@ -88,7 +101,7 @@ export const sendEmail = async ({ recipientEmail, subject, textPart, htmlPart }:
         }],
         Subject: subject,
         TextPart: textPart,
-        HTMLPart: generateEmailTemplate({ messageContent: htmlPart }).html,
+        HTMLPart: generateEmailTemplate({ messageContent: htmlPart, redirectUrl }).html,
       }]
     });
 }

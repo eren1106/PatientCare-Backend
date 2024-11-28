@@ -12,13 +12,17 @@ interface NotificationDTO {
 export const sendNotification = async (data: NotificationDTO) => {
   const newNotification = await prisma.notification.create({
     data,
+    include: {
+      user: true
+    }
   });
 
   await sendEmail({
-    recipientEmail: "erengaming1106@gmail.com", // TODO: change to user email
+    recipientEmail: newNotification.user.email,
     subject: data.title,
     textPart: data.message,
     htmlPart: data.message,
+    redirectUrl: `${process.env.CLIENT_URL}${data.redirectUrl}`,
   });
 
   io.emit(`notification-${data.userId}`, newNotification); // for real time purpose
