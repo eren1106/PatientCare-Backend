@@ -5,7 +5,8 @@ const router = Router();
 
 router.get('/', getPatientExercises);
 router.get('/today', getTodayPatientExercises);
-router.get('/today/:id', getTodayPatientExerciseById);
+// router.get('/today/:id', getTodayPatientExerciseById);
+router.get('/:id/today', getTodayPatientExerciseById);
 router.get('/all-daily', getAllDailyPatientExercisesByPatientId);
 router.get('/completion-summary', getExerciseCompletionSummaryByPatientId);
 router.get('/:id', getPatientExerciseById);

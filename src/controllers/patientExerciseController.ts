@@ -35,7 +35,11 @@ export const getPatientExerciseById = async (req: Request, res: Response) => {
         id: id
       },
       include: {
-        exercise: true,
+        exercise: {
+          include: {
+            exerciseCategory: true,
+          }
+        },
       }
     });
     return apiResponse({
@@ -194,21 +198,13 @@ export const getTodayPatientExerciseById = async (req: Request, res: Response) =
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Set time to the start of the day
-    const dailyPatientExercise = await prisma.dailyPatientExercise.findUnique({
+    const dailyPatientExercise = await prisma.dailyPatientExercise.findFirst({
       where: {
-        id,
-      },
-      include: {
-        patientExercise: {
-          include: {
-            exercise: {
-              include: {
-                exerciseCategory: true,
-              }
-            },
-          }
+        patientExerciseId: id,
+        createdDatetime: {
+          gte: today
         },
-      }
+      },
     });
     return apiResponse({
       res,
@@ -218,6 +214,37 @@ export const getTodayPatientExerciseById = async (req: Request, res: Response) =
     return errorResponse({ res, error });
   }
 };
+
+// export const getTodayPatientExerciseById = async (req: Request, res: Response) => {
+//   const { id } = req.params;
+
+//   try {
+//     const today = new Date();
+//     today.setHours(0, 0, 0, 0); // Set time to the start of the day
+//     const dailyPatientExercise = await prisma.dailyPatientExercise.findUnique({
+//       where: {
+//         id,
+//       },
+//       include: {
+//         patientExercise: {
+//           include: {
+//             exercise: {
+//               include: {
+//                 exerciseCategory: true,
+//               }
+//             },
+//           }
+//         },
+//       }
+//     });
+//     return apiResponse({
+//       res,
+//       result: dailyPatientExercise
+//     });
+//   } catch (error) {
+//     return errorResponse({ res, error });
+//   }
+// };
 
 export const deletePatientExerciseById = async (req: Request, res: Response) => {
   const { id } = req.params;
