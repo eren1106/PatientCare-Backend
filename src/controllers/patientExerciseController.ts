@@ -28,11 +28,12 @@ export const getPatientExercises = async (req: Request, res: Response) => {
 
 export const getPatientExerciseById = async (req: Request, res: Response) => {
   const { id } = req.params;
+  console.log("IDDDD", id);
   try {
     const patientExercise = await prisma.patientExercise.findUnique({
       where: {
         // patientId: patientId,
-        id: id
+        id,
       },
       include: {
         exercise: {
@@ -52,7 +53,6 @@ export const getPatientExerciseById = async (req: Request, res: Response) => {
 };
 
 interface PatientExerciseDTO {
-  patientId: string,
   exerciseId: string,
   reps: number,
   sets: number,
@@ -60,23 +60,26 @@ interface PatientExerciseDTO {
   duration: number,
 }
 export const createPatientExercise = async (req: Request, res: Response) => {
-  // const {patientId} = req.params;
+  const {patientId} = req.params;
   const dto: PatientExerciseDTO = req.body;
   try {
     const newPatientExercise = await prisma.patientExercise.create({
-      data: dto,
+      data: {
+        patientId,
+        ...dto,
+      },
       include: { exercise: true }  // to display the exercise title in notification
     });
     const newDailyPatientExercise = await prisma.dailyPatientExercise.create({
       data: {
         patientExerciseId: newPatientExercise.id,
-        patientId: dto.patientId
+        patientId: patientId
       }
     });
 
     // create notification
     await sendNotification({
-      userId: dto.patientId,
+      userId: patientId,
       title: "A new exercise has been assigned to you!",
       message: `A new exercise (${newPatientExercise.exercise.title}) has been assigned to you`,
       redirectUrl: `/exercises/${newPatientExercise.id}`
@@ -163,7 +166,6 @@ export const completePatientExercise = async (req: Request, res: Response) => {
 
 export const getTodayPatientExercises = async (req: Request, res: Response) => {
   const { patientId } = req.params;
-  console.log("PATIENT-ID", patientId);
 
   try {
     const today = new Date();
