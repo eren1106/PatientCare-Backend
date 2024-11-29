@@ -163,6 +163,7 @@ export const completePatientExercise = async (req: Request, res: Response) => {
 
 export const getTodayPatientExercises = async (req: Request, res: Response) => {
   const { patientId } = req.params;
+  console.log("PATIENT-ID", patientId);
 
   try {
     const today = new Date();
@@ -170,10 +171,9 @@ export const getTodayPatientExercises = async (req: Request, res: Response) => {
     const dailyPatientExercises = await prisma.dailyPatientExercise.findMany({
       where: {
         patientId,
-        // TODO: uncomment this when want to deploy to cloud
-        // createdDatetime: {
-        //   gte: today.toISOString(),
-        // }
+        createdDatetime: {
+          gte: today.toISOString(),
+        }
       },
       include: {
         patientExercise: {

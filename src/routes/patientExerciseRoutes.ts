@@ -3,12 +3,12 @@ import { completePatientExercise, createPatientExercise, deletePatientExerciseBy
 
 const router = Router();
 
-router.get('/', getPatientExercises);
-router.get('/today', getTodayPatientExercises);
+router.get('/:patientId', getPatientExercises);
+router.get('/:patientId/today', getTodayPatientExercises);
+router.get('/:patientId/all-daily', getAllDailyPatientExercisesByPatientId);
+router.get('/:patientId/completion-summary', getExerciseCompletionSummaryByPatientId);
 // router.get('/today/:id', getTodayPatientExerciseById);
 router.get('/:id/today', getTodayPatientExerciseById);
-router.get('/all-daily', getAllDailyPatientExercisesByPatientId);
-router.get('/completion-summary', getExerciseCompletionSummaryByPatientId);
 router.get('/:id', getPatientExerciseById);
 router.post('/', createPatientExercise);
 router.put('/:id', updatePatientExerciseById);
