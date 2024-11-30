@@ -103,7 +103,13 @@ export const updatePatientExerciseById = async (req: Request, res: Response) => 
       where: {
         id,
       },
-      data: dto,
+      data: {
+        exerciseId: dto.exerciseId,
+        reps: dto.reps,
+        sets: dto.sets,
+        frequency: dto.frequency,
+        duration: dto.duration,
+      },
       include: { exercise: true }  // to display the exercise title in notification
     });
 
