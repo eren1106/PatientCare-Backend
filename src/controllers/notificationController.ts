@@ -96,10 +96,12 @@ export const markNotificationsAsReadByUserId = async (req: Request, res: Respons
     const updatedNotifications = await prisma.notification.updateMany({
       where: { 
         userId,
-        isRead: false,
+        // isRead: false,
+        isClicked: false
        },
       data: {
-        isRead: true,
+        // isRead: true,
+        isClicked: true
       },
     });
 
