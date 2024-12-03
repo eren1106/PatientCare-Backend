@@ -4,8 +4,20 @@ import prisma from '../lib/prisma';
 import { getYouTubeThumbnail } from '../utils/utils';
 
 export const getExercises = async (req: Request, res: Response) => {
+  const { patientId } = req.query;
+
   try {
-    const exercises = await prisma.exercise.findMany();
+    const exercises = await prisma.exercise.findMany({
+      where: patientId
+        ? {
+          patientExercise: {
+            none: {
+              patientId: patientId as string,
+            },
+          },
+        }
+        : {},
+    });
     return apiResponse({
       res,
       result: exercises
@@ -136,6 +148,73 @@ export const getAllExerciseCategories = async (req: Request, res: Response) => {
     return apiResponse({
       res,
       result: exerciseCategories
+    });
+  } catch (error) {
+    return errorResponse({ res, error });
+  }
+}
+
+export const createExerciseCategory = async (req: Request, res: Response) => {
+  try {
+    const { title, description } = req.body;
+    const newExerciseCategory = await prisma.exerciseCategory.create({
+      data: {
+        title,
+        description
+      },
+    });
+    return apiResponse({
+      res,
+      result: newExerciseCategory,
+      message: "Exercise category created"
+    });
+  }
+  catch (error) {
+    return errorResponse({ res, error });
+  }
+}
+
+export const updateExerciseCategory = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { title, description } = req.body;
+  try {
+    const updatedExerciseCategory = await prisma.exerciseCategory.update({
+      where: { id },
+      data: {
+        title,
+        description
+      },
+    });
+    return apiResponse({
+      res,
+      result: updatedExerciseCategory,
+      message: "Exercise category updated"
+    });
+  } catch (error) {
+    return errorResponse({ res, error });
+  }
+};
+
+export const deleteExerciseCategory = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    // check whether got exercise refer to this exercise category
+    const findExercise = await prisma.exercise.findFirst({
+      where: {
+        exerciseCategoryId: id,
+      }
+    });
+    if (findExercise) return errorResponse({
+      res,
+      error: "Unable to delete this exercise category because got exercise referring to this exercise category",
+    })
+    const deletedExerciseCategory = await prisma.exerciseCategory.delete({
+      where: { id },
+    });
+    return apiResponse({
+      res,
+      result: deletedExerciseCategory,
+      message: "Exercise category deleted"
     });
   } catch (error) {
     return errorResponse({ res, error });

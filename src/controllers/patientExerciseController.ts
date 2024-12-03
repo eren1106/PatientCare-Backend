@@ -28,14 +28,19 @@ export const getPatientExercises = async (req: Request, res: Response) => {
 
 export const getPatientExerciseById = async (req: Request, res: Response) => {
   const { id } = req.params;
+  console.log("IDDDD", id);
   try {
     const patientExercise = await prisma.patientExercise.findUnique({
       where: {
         // patientId: patientId,
-        id: id
+        id,
       },
       include: {
-        exercise: true,
+        exercise: {
+          include: {
+            exerciseCategory: true,
+          }
+        },
       }
     });
     return apiResponse({
@@ -48,7 +53,6 @@ export const getPatientExerciseById = async (req: Request, res: Response) => {
 };
 
 interface PatientExerciseDTO {
-  patientId: string,
   exerciseId: string,
   reps: number,
   sets: number,
@@ -56,23 +60,26 @@ interface PatientExerciseDTO {
   duration: number,
 }
 export const createPatientExercise = async (req: Request, res: Response) => {
-  // const {patientId} = req.params;
+  const {patientId} = req.params;
   const dto: PatientExerciseDTO = req.body;
   try {
     const newPatientExercise = await prisma.patientExercise.create({
-      data: dto,
+      data: {
+        patientId,
+        ...dto,
+      },
       include: { exercise: true }  // to display the exercise title in notification
     });
     const newDailyPatientExercise = await prisma.dailyPatientExercise.create({
       data: {
         patientExerciseId: newPatientExercise.id,
-        patientId: dto.patientId
+        patientId: patientId
       }
     });
 
     // create notification
     await sendNotification({
-      userId: dto.patientId,
+      userId: patientId,
       title: "A new exercise has been assigned to you!",
       message: `A new exercise (${newPatientExercise.exercise.title}) has been assigned to you`,
       redirectUrl: `/exercises/${newPatientExercise.id}`
@@ -96,7 +103,13 @@ export const updatePatientExerciseById = async (req: Request, res: Response) => 
       where: {
         id,
       },
-      data: dto,
+      data: {
+        exerciseId: dto.exerciseId,
+        reps: dto.reps,
+        sets: dto.sets,
+        frequency: dto.frequency,
+        duration: dto.duration,
+      },
       include: { exercise: true }  // to display the exercise title in notification
     });
 
@@ -166,10 +179,9 @@ export const getTodayPatientExercises = async (req: Request, res: Response) => {
     const dailyPatientExercises = await prisma.dailyPatientExercise.findMany({
       where: {
         patientId,
-        // TODO: uncomment this when want to deploy to cloud
-        // createdDatetime: {
-        //   gte: today.toISOString(),
-        // }
+        createdDatetime: {
+          gte: today.toISOString(),
+        }
       },
       include: {
         patientExercise: {
@@ -194,21 +206,13 @@ export const getTodayPatientExerciseById = async (req: Request, res: Response) =
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Set time to the start of the day
-    const dailyPatientExercise = await prisma.dailyPatientExercise.findUnique({
+    const dailyPatientExercise = await prisma.dailyPatientExercise.findFirst({
       where: {
-        id,
-      },
-      include: {
-        patientExercise: {
-          include: {
-            exercise: {
-              include: {
-                exerciseCategory: true,
-              }
-            },
-          }
+        patientExerciseId: id,
+        createdDatetime: {
+          gte: today
         },
-      }
+      },
     });
     return apiResponse({
       res,
@@ -218,6 +222,37 @@ export const getTodayPatientExerciseById = async (req: Request, res: Response) =
     return errorResponse({ res, error });
   }
 };
+
+// export const getTodayPatientExerciseById = async (req: Request, res: Response) => {
+//   const { id } = req.params;
+
+//   try {
+//     const today = new Date();
+//     today.setHours(0, 0, 0, 0); // Set time to the start of the day
+//     const dailyPatientExercise = await prisma.dailyPatientExercise.findUnique({
+//       where: {
+//         id,
+//       },
+//       include: {
+//         patientExercise: {
+//           include: {
+//             exercise: {
+//               include: {
+//                 exerciseCategory: true,
+//               }
+//             },
+//           }
+//         },
+//       }
+//     });
+//     return apiResponse({
+//       res,
+//       result: dailyPatientExercise
+//     });
+//   } catch (error) {
+//     return errorResponse({ res, error });
+//   }
+// };
 
 export const deletePatientExerciseById = async (req: Request, res: Response) => {
   const { id } = req.params;

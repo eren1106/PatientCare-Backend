@@ -72,6 +72,7 @@ async function main() {
       age: 35,
       gender: Gender.MALE,
       ic: "990101123456",
+      isVerified: true,
     },
   });
 
@@ -88,6 +89,7 @@ async function main() {
       age: 22,
       gender: Gender.MALE,
       ic: "020203023456",
+      isVerified: true,
     },
   });
 
@@ -103,6 +105,7 @@ async function main() {
       age: 26,
       gender: Gender.MALE,
       ic: "980304067891",
+      isVerified: true,
     },
   });
 
@@ -118,6 +121,7 @@ async function main() {
       age: 22,
       gender: Gender.MALE,
       ic: "020203027897",
+      isVerified: true,
     },
   });
 
@@ -133,6 +137,7 @@ async function main() {
       age: 22,
       gender: Gender.MALE,
       ic: "021212025555",
+      isVerified: true,
     },
   });
 
