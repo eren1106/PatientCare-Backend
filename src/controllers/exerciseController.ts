@@ -4,8 +4,20 @@ import prisma from '../lib/prisma';
 import { getYouTubeThumbnail } from '../utils/utils';
 
 export const getExercises = async (req: Request, res: Response) => {
+  const { patientId } = req.query;
+
   try {
-    const exercises = await prisma.exercise.findMany();
+    const exercises = await prisma.exercise.findMany({
+      where: patientId
+        ? {
+          patientExercise: {
+            none: {
+              patientId: patientId as string,
+            },
+          },
+        }
+        : {},
+    });
     return apiResponse({
       res,
       result: exercises
