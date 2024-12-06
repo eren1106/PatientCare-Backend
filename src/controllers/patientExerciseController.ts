@@ -28,7 +28,6 @@ export const getPatientExercises = async (req: Request, res: Response) => {
 
 export const getPatientExerciseById = async (req: Request, res: Response) => {
   const { id } = req.params;
-  console.log("IDDDD", id);
   try {
     const patientExercise = await prisma.patientExercise.findUnique({
       where: {
@@ -189,7 +188,11 @@ export const getTodayPatientExercises = async (req: Request, res: Response) => {
             exercise: true,
           }
         },
-      }
+      },
+      orderBy: [
+        { createdDatetime: 'asc' },
+        { isCompleted: 'asc' }
+      ]
     });
     return apiResponse({
       res,
