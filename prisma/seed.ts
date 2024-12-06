@@ -63,7 +63,7 @@ async function main() {
   const admin = await prisma.user.create({
     data: {
       username: 'Patient Care Admin',
-      email: 'patientcareadmin@gmail.com',
+      email: 'admin@gmail.com',
       password: hashedPassword,
       signinMethod: 'EMAILPASSWORD',
       profileImageUrl: 'https://external-preview.redd.it/kevin-durant-usa-mens-leading-point-scorer-in-olympic-v0-KlataPnkXqTtYczpASxTqgqJVaxrYZlL3YwsGBLVLuE.jpg?auto=webp&s=66bb76ac0496ece60bf9954b77489fd11f234f1d',
@@ -125,10 +125,10 @@ async function main() {
     },
   });
 
-  const user4 = await prisma.user.create({
+  const userDemo = await prisma.user.create({
     data: {
       username: 'zilii',
-      email: 'zilii@gmail.com',
+      email: 'erenkuek@gmail.com',
       password: hashedPassword,
       signinMethod: 'EMAILPASSWORD',
       profileImageUrl: 'https://atd-blog.s3.us-east-2.amazonaws.com/wp-content/uploads/2022/04/16142821/cool-profile-pictures-for-girls-9.webp',
@@ -189,23 +189,23 @@ async function main() {
 
       // Messages between user2 and user4
       {
-        message: 'Hi user4, do you have time to chat?',
+        message: 'Hi Zi Lii, do you have time to chat?',
         fromUserId: user2.id,
-        toUserId: user4.id,
+        toUserId: userDemo.id,
       },
       {
         message: 'Yes, what do you want to talk about?',
-        fromUserId: user4.id,
+        fromUserId: userDemo.id,
         toUserId: user2.id,
       },
       {
         message: 'It’s about a collaboration opportunity.',
         fromUserId: user2.id,
-        toUserId: user4.id,
+        toUserId: userDemo.id,
       },
       {
         message: 'I’m interested! Let’s discuss more.',
-        fromUserId: user4.id,
+        fromUserId: userDemo.id,
         toUserId: user2.id,
       },
     ],
@@ -228,7 +228,7 @@ async function main() {
         duration: 0,
       },
       {
-        toUserId: user4.id,
+        toUserId: userDemo.id,
         fromUserId: user1.id,
         status: 'ACCEPTED',
         createdDatetime: new Date('2023-05-03T09:15:00Z'),
@@ -737,6 +737,15 @@ async function main() {
       progressReport: 'pdf'
     },
   });
+  const patientRecord2 = await prisma.patientRecord.create({
+    data: {
+      doctorId: user2.id,
+      patientId: userDemo.id,
+      weight: 50,
+      height: 1.5,
+      progressReport: 'pdf'
+    },
+  });
 
 
   // Create Injury Details
@@ -1142,25 +1151,41 @@ async function main() {
     },
   });
 
-  // const patientExercise4 = await prisma.patientExercise.create({
-  //   data: {
-  //     patientId: user1.id,
-  //     exerciseId: exercise4.id,
-  //     sets: 3,
-  //   },
-  // });
+  const patientExercise4 = await prisma.patientExercise.create({
+    data: {
+      patientId: userDemo.id,
+      exerciseId: exercise1.id,
+      sets: 3,
+      reps: 3,
+      frequency: 3,
+      duration: 30,
+    },
+  });
 
-  // const patientExercise5 = await prisma.patientExercise.create({
-  //   data: {
-  //     patientId: user1.id,
-  //     exerciseId: exercise5.id,
-  //     sets: 5,
-  //   },
-  // });
+  const patientExercise5 = await prisma.patientExercise.create({
+    data: {
+      patientId: userDemo.id,
+      exerciseId: exercise2.id,
+      sets: 4,
+      reps: 3,
+      frequency: 3,
+      duration: 30,
+    },
+  });
+
+  const patientExercise6 = await prisma.patientExercise.create({
+    data: {
+      patientId: userDemo.id,
+      exerciseId: exercise3.id,
+      sets: 2,
+      reps: 3,
+      frequency: 3,
+      duration: 30,
+    },
+  });
 
   // Create Daily Patient Exercises
   const currentDate = new Date();
-
   for (let i = 0; i <= 10; i++) {
     const date = new Date(currentDate);
     date.setDate(currentDate.getDate() - i);
@@ -1189,6 +1214,33 @@ async function main() {
         patientExerciseId: patientExercise3.id,
         createdDatetime: date,
         isCompleted: Math.random() < 0.5,
+      },
+    });
+
+    await prisma.dailyPatientExercise.create({
+      data: {
+        patientId: userDemo.id,
+        patientExerciseId: patientExercise1.id,
+        createdDatetime: date,
+        isCompleted: true,
+      },
+    });
+
+    await prisma.dailyPatientExercise.create({
+      data: {
+        patientId: userDemo.id,
+        patientExerciseId: patientExercise2.id,
+        createdDatetime: date,
+        isCompleted: false,
+      },
+    });
+
+    await prisma.dailyPatientExercise.create({
+      data: {
+        patientId: userDemo.id,
+        patientExerciseId: patientExercise3.id,
+        createdDatetime: date,
+        isCompleted: false,
       },
     });
   }
