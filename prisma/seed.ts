@@ -63,7 +63,7 @@ async function main() {
   const admin = await prisma.user.create({
     data: {
       username: 'Patient Care Admin',
-      email: 'patientcare@admin.com',
+      email: 'patientcareadmin@gmail.com',
       password: hashedPassword,
       signinMethod: 'EMAILPASSWORD',
       profileImageUrl: 'https://external-preview.redd.it/kevin-durant-usa-mens-leading-point-scorer-in-olympic-v0-KlataPnkXqTtYczpASxTqgqJVaxrYZlL3YwsGBLVLuE.jpg?auto=webp&s=66bb76ac0496ece60bf9954b77489fd11f234f1d',
@@ -80,7 +80,7 @@ async function main() {
   const user1 = await prisma.user.create({
     data: {
       username: 'john_doe_123',
-      email: 'john@example.com',
+      email: 'john@gmail.com',
       password: hashedPassword,
       signinMethod: 'EMAILPASSWORD',
       profileImageUrl: 'https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg',
@@ -95,16 +95,16 @@ async function main() {
 
   const user2 = await prisma.user.create({
     data: {
-      username: 'jane_doe',
-      email: 'jane@example.com',
+      username: 'reiner_braun',
+      email: 'reiner@gmail.com',
       password: hashedPassword,
-      signinMethod: 'GOOGLE',
+      signinMethod: 'EMAILPASSWORD',
       role: 'DOCTOR',
       profileImageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5q9GlWCAoQHPpOiDOECuYUeXW9MQP7Ddt-Q&s',
-      fullname: 'Jane Doe',
-      age: 26,
+      fullname: 'Reiner Braun',
+      age: 36,
       gender: Gender.MALE,
-      ic: "980304067891",
+      ic: "880304067891",
       isVerified: true,
     },
   });
@@ -112,12 +112,12 @@ async function main() {
   const user3 = await prisma.user.create({
     data: {
       username: 'wubang',
-      email: 'wubang1232@example.com',
+      email: 'wubang1232@gmail.com',
       password: hashedPassword,
-      signinMethod: 'GOOGLE',
+      signinMethod: 'EMAILPASSWORD',
       role: 'PATIENT',
       profileImageUrl: 'https://p4.itc.cn/images01/20231219/8d424b652feb4021a31d4a676f7e0cf9.jpeg',
-      fullname: 'Wu Bang',
+      fullname: 'Zheng Wu Bang',
       age: 22,
       gender: Gender.MALE,
       ic: "020203027897",
@@ -128,40 +128,18 @@ async function main() {
   const user4 = await prisma.user.create({
     data: {
       username: 'zilii',
-      email: 'zilii@example.com',
+      email: 'zilii@gmail.com',
       password: hashedPassword,
       signinMethod: 'EMAILPASSWORD',
       profileImageUrl: 'https://atd-blog.s3.us-east-2.amazonaws.com/wp-content/uploads/2022/04/16142821/cool-profile-pictures-for-girls-9.webp',
       role: 'PATIENT',
-      fullname: 'Zi Lii',
+      fullname: 'Kuek Zi Lii',
       age: 22,
       gender: Gender.MALE,
       ic: "021212025555",
       isVerified: true,
     },
   });
-
-  // const user4 = await prisma.user.create({
-  //   data: {
-  //     username: 'zhenen',
-  //     email: 'zhenen@example.com',
-  //     password: 'securepassword',
-  //     signinMethod: 'GOOGLE',
-  //     role: 'PATIENT',
-  //     fullname: 'Zhen En',
-  //   },
-  // });
-
-  // const user5 = await prisma.user.create({
-  //   data: {
-  //     username: 'wubang2',
-  //     email: 'wuban2g@example.com',
-  //     password: 'securepassword',
-  //     signinMethod: 'GOOGLE',
-  //     role: 'PATIENT',
-  //     fullname: 'Zheng Wu Bang',
-  //   },
-  // });
 
   const message = await prisma.message.createMany({
     data: [
