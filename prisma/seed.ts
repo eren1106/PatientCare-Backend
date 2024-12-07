@@ -128,7 +128,7 @@ async function main() {
   const userDemo = await prisma.user.create({
     data: {
       username: 'zilii',
-      email: 'erenkuek@gmail.com',
+      email: 'erenkuek1106@gmail.com',
       password: hashedPassword,
       signinMethod: 'EMAILPASSWORD',
       profileImageUrl: 'https://atd-blog.s3.us-east-2.amazonaws.com/wp-content/uploads/2022/04/16142821/cool-profile-pictures-for-girls-9.webp',
