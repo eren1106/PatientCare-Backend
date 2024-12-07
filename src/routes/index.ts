@@ -22,7 +22,7 @@ router.use('/auth', authRoutes);
 router.use('/exercises', exerciseRoutes);
 router.use('/dashboard', dashboardRoutes)
 router.use('/questionnaire', questionnaireRoutes)
-router.use('/patients/:patientId/exercises', patientExerciseRoutes);
+router.use('/patient-exercises', patientExerciseRoutes);
 router.use('/profile', profileRoutes);
 router.use('/appointments', appointmentRoutes);
 router.use('/notifications', notificationRoutes);

@@ -6,12 +6,18 @@ import {
   updateExercise,
   deleteExercise,
   getAllExerciseCategories,
+  createExerciseCategory,
+  updateExerciseCategory,
+  deleteExerciseCategory,
 } from '../controllers/exerciseController';
 
 const router = Router();
 
 router.get('/', getExercises);
 router.get('/exercise-categories', getAllExerciseCategories);
+router.post('/exercise-categories', createExerciseCategory);
+router.put('/exercise-categories/:id', updateExerciseCategory);
+router.delete('/exercise-categories/:id', deleteExerciseCategory);
 router.get('/:id', getExerciseById);
 router.post('/', createExercise);
 router.put('/:id', updateExercise);
