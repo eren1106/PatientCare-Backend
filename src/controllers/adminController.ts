@@ -3,6 +3,7 @@ import prisma from "../lib/prisma";
 import { apiResponse, errorResponse } from "../utils/api-response.util";
 import { STATUS_CODES } from "../constants";
 import { DoctorRegistrationStatus } from "@prisma/client";
+import { sendEmail } from "../services/emails.service";
 
 
 export const getDoctors = async (req: Request, res: Response) => {
@@ -56,6 +57,15 @@ export const updateDoctorRegistrationStatus = async (req: Request, res: Response
         data: {
           doctorRegistrationStatus: status,
         },
+      });
+
+      await sendEmail({
+        recipientEmail: updatedDoctor.email,
+        subject: 'Doctor Registration Completed',
+        htmlPart: `
+          <h1>Doctor Registration Completed</h1>
+          <p>Your email has been successfully verified and your registration as a doctor is complete.</p>
+        `
       });
   
       return apiResponse({

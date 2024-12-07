@@ -36,7 +36,7 @@ export const login = async (req: Request, res: Response) => {
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) return errorResponse({
     res,
-    error: "Wrong Password!",
+    error: "Incorrect Password!",
     statusCode: STATUS_CODES.UNAUTHORIZED
   });
 
@@ -104,14 +104,7 @@ export const register = async (req: Request, res: Response) => {
     },
   });
 
-  if (data.role === UserRole.PATIENT) {
-    // send verification email
-    await VerificationService.sendVerificationEmail({
-      email: user.email,
-      userId: user.id,
-    });
-  }
-  else if (data.role === UserRole.DOCTOR) {
+  if (data.role === UserRole.DOCTOR) {
     await prisma.doctorValidation.create({
       data: {
         doctorId: user.id,
@@ -119,6 +112,12 @@ export const register = async (req: Request, res: Response) => {
       },
     });
   }
+
+  // Send verification email
+  await VerificationService.sendVerificationEmail({
+    email: user.email,
+    userId: user.id,
+  });
 
   return apiResponse({
     res,
@@ -144,6 +143,9 @@ export const verifyEmail = async (req: Request, res: Response) => {
       error: "Invalid Token!",
       statusCode: STATUS_CODES.UNAUTHORIZED
     });
+    
+
+
 
     return apiResponse({
       res,
