@@ -204,13 +204,14 @@ export const getTodayPatientExercises = async (req: Request, res: Response) => {
 };
 
 export const getTodayPatientExerciseById = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { patientId, id } = req.params;
 
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Set time to the start of the day
     const dailyPatientExercise = await prisma.dailyPatientExercise.findFirst({
       where: {
+        patientId: patientId,
         patientExerciseId: id,
         createdDatetime: {
           gte: today
