@@ -127,13 +127,13 @@ async function main() {
 
   const userDemo = await prisma.user.create({
     data: {
-      username: 'zilii',
+      username: 'eren_kuek',
       email: 'erenkuek1106@gmail.com',
       password: hashedPassword,
       signinMethod: 'EMAILPASSWORD',
       profileImageUrl: 'https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?size=338&ext=jpg&ga=GA1.1.2008272138.1722816000&semt=ais_hybrid',
       role: 'PATIENT',
-      fullname: 'Kuek Zi Lii',
+      fullname: 'Eren Kuek',
       age: 22,
       gender: Gender.MALE,
       ic: "021212025555",
