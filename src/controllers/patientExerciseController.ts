@@ -15,6 +15,9 @@ export const getPatientExercises = async (req: Request, res: Response) => {
       },
       include: {
         exercise: true,
+      },
+      orderBy: {
+        createdDatetime: 'desc'
       }
     });
     return apiResponse({
@@ -278,7 +281,7 @@ export const deletePatientExerciseById = async (req: Request, res: Response) => 
       userId: deletedPatientExercise.patientId,
       title: "One of your assigned exercise has been deleted",
       message: `Your assigned exercise (${deletedPatientExercise.exercise.title}) has been deleted`,
-      redirectUrl: `/exercises/${deletedPatientExercise.id}`
+      redirectUrl: `/exercises`
     });
 
     return apiResponse({
