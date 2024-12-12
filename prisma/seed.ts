@@ -777,6 +777,7 @@ async function main() {
       doctorId: user2.id,
       questionnaireId: questionnaire1.id,
       patientRecordId: patientRecord1.id,
+      createdDatetime: new Date('2024-05-01T10:00:00Z'),
     },
   });
 
@@ -785,79 +786,533 @@ async function main() {
       doctorId: user2.id,
       questionnaireId: questionnaire2.id,
       patientRecordId: patientRecord1.id,
+      createdDatetime: new Date('2024-06-01T10:00:00Z'),
+
     },
   });
 
+  const assessment3 = await prisma.assessment.create({
+    data: {
+      doctorId: user2.id,
+      questionnaireId: questionnaire1.id,
+      patientRecordId: patientRecord1.id,
+      createdDatetime: new Date('2024-09-01T10:00:00Z'),
+
+    },
+  });
+
+  const assessment4 = await prisma.assessment.create({
+    data: {
+      doctorId: user2.id,
+      questionnaireId: questionnaire1.id,
+      patientRecordId: patientRecord1.id,
+      createdDatetime: new Date('2024-11-01T10:00:00Z'),
+    },
+  });
+
+  const assessment5 = await prisma.assessment.create({
+    data: {
+      doctorId: user2.id,
+      questionnaireId: questionnaire1.id,
+      patientRecordId: patientRecord1.id,
+      createdDatetime: new Date('2024-07-01T10:00:00Z'),
+    },
+  });
   // Find options to be reference in the response
   const option1 = await prisma.option.findFirst({
-    where: {
-      scaleValue: 5,
-      content: null
-    },
-  });
-
-  const option2 = await prisma.option.findFirst({
-    where: {
-      scaleValue: 7,
-      content: null
-    },
-  });
-
-  const option3 = await prisma.option.findFirst({
-    where: {
-      scaleValue: 10,
-      content: null
-    },
-  });
-
-  const option4 = await prisma.option.findFirst({
     where: {
       scaleValue: 1,
       content: null
     },
   });
 
+  const option2 = await prisma.option.findFirst({
+    where: {
+      scaleValue: 2,
+      content: null
+    },
+  });
+
+  const option3 = await prisma.option.findFirst({
+    where: {
+      scaleValue: 3,
+      content: null
+    },
+  });
+
+  const option4 = await prisma.option.findFirst({
+    where: {
+      scaleValue: 4,
+      content: null
+    },
+  });
+
+  const option5 = await prisma.option.findFirst({
+    where: {
+      scaleValue: 5,
+      content: null
+    },
+  });
+
+  const option6 = await prisma.option.findFirst({
+    where: {
+      scaleValue: 6,
+      content: null
+    },
+  });
+
+  const option7 = await prisma.option.findFirst({
+    where: {
+      scaleValue: 7,
+      content: null
+    },
+  });
+
+  const option8 = await prisma.option.findFirst({
+    where: {
+      scaleValue: 8,
+      content: null
+    },
+  });
+
+  const option9 = await prisma.option.findFirst({
+    where: {
+      scaleValue: 9,
+      content: null
+    },
+  });
+
+  const option10 = await prisma.option.findFirst({
+    where: {
+      scaleValue: 10,
+      content: null
+    },
+  });
+
   // Create Responses
-  // TODO: uncomment and fix these errors
-  // const response1 = await prisma.response.create({
-  //   data: {
-  //     questionId: question1Section1.id,
-  //     assessmentId: assessment1.id,
-  //     optionId: option1.id,
-  //   },
-  // });
+  //TODO: uncomment and fix these errors
+  const response1Assessment1 = await prisma.response.create({
+    data: {
+      questionId: question1Section1.id,
+      assessmentId: assessment1.id,
+      optionId: option1!.id,
+    },
+  });
 
-  // const response2 = await prisma.response.create({
-  //   data: {
-  //     questionId: question2Section1.id,
-  //     assessmentId: assessment1.id,
-  //     optionId: option2.id,
-  //   },
-  // });
+  const response2Assessment1 = await prisma.response.create({
+    data: {
+      questionId: question2Section1.id,
+      assessmentId: assessment1.id,
+      optionId: option2!.id,
+    },
+  });
 
-  // const response3 = await prisma.response.create({
-  //   data: {
-  //     questionId: question3Section1.id,
-  //     assessmentId: assessment1.id,
-  //     optionId: option3.id,
-  //   },
-  // });
+  const response3Assessment1 = await prisma.response.create({
+    data: {
+      questionId: question3Section1.id,
+      assessmentId: assessment1.id,
+      optionId: option3!.id,
+    },
+  });
 
-  // const response4 = await prisma.response.create({
-  //   data: {
-  //     questionId: question4Section1.id,
-  //     assessmentId: assessment1.id,
-  //     optionId: option4.id,
-  //   },
-  // });
+  const response4Assessment1 = await prisma.response.create({
+    data: {
+      questionId: question4Section1.id,
+      assessmentId: assessment1.id,
+      optionId: option4!.id,
+    },
+  });
 
-  // const response5 = await prisma.response.create({
-  //   data: {
-  //     questionId: question5Section1.id,
-  //     assessmentId: assessment1.id,
-  //     optionId: option4.id,
-  //   },
-  // });
+  const response5Assessment1 = await prisma.response.create({
+    data: {
+      questionId: question5Section1.id,
+      assessmentId: assessment1.id,
+      optionId: option5!.id,
+    },
+  });
+
+  const response6Assessment1 = await prisma.response.create({
+    data: {
+      questionId: question1Section2.id,
+      assessmentId: assessment1.id,
+      optionId: option7!.id,
+    },
+  });
+
+  const response7Assessment1 = await prisma.response.create({
+    data: {
+      questionId: question2Section2.id,
+      assessmentId: assessment1.id,
+      optionId: option8!.id,
+    },
+  });
+
+  const response8Assessment1 = await prisma.response.create({
+    data: {
+      questionId: question3Section2.id,
+      assessmentId: assessment1.id,
+      optionId: option10!.id,
+    },
+  });
+
+  const response9Assessment1 = await prisma.response.create({
+    data: {
+      questionId: question5Section2.id,
+      assessmentId: assessment1.id,
+      optionId: option10!.id,
+    },
+  });
+
+  const response10Assessment1 = await prisma.response.create({
+    data: {
+      questionId: question6Section2.id,
+      assessmentId: assessment1.id,
+      optionId: option10!.id,
+    },
+  });
+
+  const response11Assessment1 = await prisma.response.create({
+    data: {
+      questionId: question7Section2.id,
+      assessmentId: assessment1.id,
+      optionId: option6!.id,
+    },
+  });
+
+  const response12Assessment1 = await prisma.response.create({
+    data: {
+      questionId: question8Section2.id,
+      assessmentId: assessment1.id,
+      optionId: option6!.id,
+    },
+  });
+
+  const response13Assessment1 = await prisma.response.create({
+    data: {
+      questionId: question9Section2.id,
+      assessmentId: assessment1.id,
+      optionId: option3!.id,
+    },
+  });
+
+
+  // Assessment 3
+
+  const response1Assessment3 = await prisma.response.create({
+    data: {
+      questionId: question1Section1.id,
+      assessmentId: assessment3.id,
+      optionId: option10!.id,
+    },
+  });
+
+  const response2Assessment3 = await prisma.response.create({
+    data: {
+      questionId: question2Section1.id,
+      assessmentId: assessment3.id,
+      optionId: option9!.id,
+    },
+  });
+
+  const response3Assessment3 = await prisma.response.create({
+    data: {
+      questionId: question3Section1.id,
+      assessmentId: assessment3.id,
+      optionId: option8!.id,
+    },
+  });
+
+  const response4Assessment3 = await prisma.response.create({
+    data: {
+      questionId: question4Section1.id,
+      assessmentId: assessment3.id,
+      optionId: option6!.id,
+    },
+  });
+
+  const response5Assessment3 = await prisma.response.create({
+    data: {
+      questionId: question5Section1.id,
+      assessmentId: assessment3.id,
+      optionId: option7!.id,
+    },
+  });
+
+  const response6Assessment3 = await prisma.response.create({
+    data: {
+      questionId: question1Section2.id,
+      assessmentId: assessment3.id,
+      optionId: option8!.id,
+    },
+  });
+
+  const response7Assessment3 = await prisma.response.create({
+    data: {
+      questionId: question2Section2.id,
+      assessmentId: assessment3.id,
+      optionId: option5!.id,
+    },
+  });
+
+  const response8Assessment3 = await prisma.response.create({
+    data: {
+      questionId: question3Section2.id,
+      assessmentId: assessment3.id,
+      optionId: option1!.id,
+    },
+  });
+
+  const response9Assessment3 = await prisma.response.create({
+    data: {
+      questionId: question5Section2.id,
+      assessmentId: assessment3.id,
+      optionId: option2!.id,
+    },
+  });
+
+  const response10Assessment3 = await prisma.response.create({
+    data: {
+      questionId: question6Section2.id,
+      assessmentId: assessment3.id,
+      optionId: option10!.id,
+    },
+  });
+
+  const response11Assessment3 = await prisma.response.create({
+    data: {
+      questionId: question7Section2.id,
+      assessmentId: assessment3.id,
+      optionId: option8!.id,
+    },
+  });
+
+  const response12Assessment3 = await prisma.response.create({
+    data: {
+      questionId: question8Section2.id,
+      assessmentId: assessment3.id,
+      optionId: option6!.id,
+    },
+  });
+
+  const response13Assessment3 = await prisma.response.create({
+    data: {
+      questionId: question9Section2.id,
+      assessmentId: assessment3.id,
+      optionId: option3!.id,
+    },
+  });
+
+  // Assessment 4
+
+  const response1Assessment4 = await prisma.response.create({
+    data: {
+      questionId: question1Section1.id,
+      assessmentId: assessment4.id,
+      optionId: option3!.id,
+    },
+  });
+
+  const response2Assessment4 = await prisma.response.create({
+    data: {
+      questionId: question2Section1.id,
+      assessmentId: assessment4.id,
+      optionId: option2!.id,
+    },
+  });
+
+  const response3Assessment4 = await prisma.response.create({
+    data: {
+      questionId: question3Section1.id,
+      assessmentId: assessment4.id,
+      optionId: option3!.id,
+    },
+  });
+
+  const response4Assessment4 = await prisma.response.create({
+    data: {
+      questionId: question4Section1.id,
+      assessmentId: assessment4.id,
+      optionId: option6!.id,
+    },
+  });
+
+  const response5Assessment4 = await prisma.response.create({
+    data: {
+      questionId: question5Section1.id,
+      assessmentId: assessment4.id,
+      optionId: option7!.id,
+    },
+  });
+
+  const response6Assessment4 = await prisma.response.create({
+    data: {
+      questionId: question1Section2.id,
+      assessmentId: assessment4.id,
+      optionId: option8!.id,
+    },
+  });
+
+  const response7Assessment4 = await prisma.response.create({
+    data: {
+      questionId: question2Section2.id,
+      assessmentId: assessment4.id,
+      optionId: option5!.id,
+    },
+  });
+
+  const response8Assessment4 = await prisma.response.create({
+    data: {
+      questionId: question3Section2.id,
+      assessmentId: assessment4.id,
+      optionId: option1!.id,
+    },
+  });
+
+  const response9Assessment4 = await prisma.response.create({
+    data: {
+      questionId: question5Section2.id,
+      assessmentId: assessment4.id,
+      optionId: option2!.id,
+    },
+  });
+
+  const response10Assessment4 = await prisma.response.create({
+    data: {
+      questionId: question6Section2.id,
+      assessmentId: assessment4.id,
+      optionId: option2!.id,
+    },
+  });
+
+  const response11Assessment4 = await prisma.response.create({
+    data: {
+      questionId: question7Section2.id,
+      assessmentId: assessment4.id,
+      optionId: option1!.id,
+    },
+  });
+
+  const response12Assessment4 = await prisma.response.create({
+    data: {
+      questionId: question8Section2.id,
+      assessmentId: assessment4.id,
+      optionId: option1!.id,
+    },
+  });
+
+  const response13Assessment4 = await prisma.response.create({
+    data: {
+      questionId: question9Section2.id,
+      assessmentId: assessment4.id,
+      optionId: option1!.id,
+    },
+  });
+
+   // Assessment 5
+
+   const response1Assessment5 = await prisma.response.create({
+    data: {
+      questionId: question1Section1.id,
+      assessmentId: assessment5.id,
+      optionId: option1!.id,
+    },
+  });
+
+  const response2Assessment5 = await prisma.response.create({
+    data: {
+      questionId: question2Section1.id,
+      assessmentId: assessment5.id,
+      optionId: option2!.id,
+    },
+  });
+
+  const response3Assessment5 = await prisma.response.create({
+    data: {
+      questionId: question3Section1.id,
+      assessmentId: assessment5.id,
+      optionId: option3!.id,
+    },
+  });
+
+  const response4Assessment5 = await prisma.response.create({
+    data: {
+      questionId: question4Section1.id,
+      assessmentId: assessment5.id,
+      optionId: option6!.id,
+    },
+  });
+
+  const response5Assessment5 = await prisma.response.create({
+    data: {
+      questionId: question5Section1.id,
+      assessmentId: assessment5.id,
+      optionId: option7!.id,
+    },
+  });
+
+  const response6Assessment5 = await prisma.response.create({
+    data: {
+      questionId: question1Section2.id,
+      assessmentId: assessment4.id,
+      optionId: option8!.id,
+    },
+  });
+
+  const response7Assessment5 = await prisma.response.create({
+    data: {
+      questionId: question2Section2.id,
+      assessmentId: assessment5.id,
+      optionId: option3!.id,
+    },
+  });
+
+  const response8Assessment5 = await prisma.response.create({
+    data: {
+      questionId: question3Section2.id,
+      assessmentId: assessment5.id,
+      optionId: option3!.id,
+    },
+  });
+
+  const response9Assessment5 = await prisma.response.create({
+    data: {
+      questionId: question5Section2.id,
+      assessmentId: assessment5.id,
+      optionId: option7!.id,
+    },
+  });
+
+  const response10Assessment5 = await prisma.response.create({
+    data: {
+      questionId: question6Section2.id,
+      assessmentId: assessment5.id,
+      optionId: option5!.id,
+    },
+  });
+
+  const response11Assessment5 = await prisma.response.create({
+    data: {
+      questionId: question7Section2.id,
+      assessmentId: assessment5.id,
+      optionId: option5!.id,
+    },
+  });
+
+  const response12Assessment5 = await prisma.response.create({
+    data: {
+      questionId: question8Section2.id,
+      assessmentId: assessment5.id,
+      optionId: option5!.id,
+    },
+  });
+
+  const response13Assessment5 = await prisma.response.create({
+    data: {
+      questionId: question9Section2.id,
+      assessmentId: assessment5.id,
+      optionId: option5!.id,
+    },
+  });
 
   // Create Doctor Validations
   const doctorValidation1 = await prisma.doctorValidation.create({

@@ -298,7 +298,11 @@ export const getAssessmentResult = async (req: Request, res: Response) => {
                         option: true,
                       },
                     },
-                    optionTemplate: true,
+                    optionTemplate: {
+                      include: {
+                        option:true
+                      }
+                    },
                   },
                 },
               },
@@ -338,7 +342,8 @@ export const getAssessmentResult = async (req: Request, res: Response) => {
     const sectionScores = questionnaire.sections.map((section) => {
       const sectionResponses = section.question.flatMap((q) => q.response);
       const totalPossibleScore = section.question.reduce((acc, question) => {
-        return acc + (question.optionTemplate.scaleType === 'NUMERIC_SCALE' ? 10 : 5);
+        const optionCount = question.optionTemplate.option.length;
+        return acc + optionCount;
       }, 0);
       const totalScore = sectionResponses.reduce((acc, response) => acc + response.option.scaleValue, 0);
       const sectionScore = totalScore;
@@ -365,7 +370,7 @@ export const getAssessmentResult = async (req: Request, res: Response) => {
 
     const totalPossibleScore = questionnaire.sections.reduce((acc, section) => {
       return acc + section.question.reduce((acc, question) => {
-        return acc + (question.optionTemplate.scaleType === 'NUMERIC_SCALE' ? 10 : 5);
+        return acc + (question.optionTemplate.option.length);
       }, 0);
     }, 0);
     const totalScore = assessment.response.reduce((acc, response) => acc + response.option.scaleValue, 0);

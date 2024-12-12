@@ -303,4 +303,118 @@ export const getAllAssessmentByPatientId = async (req: Request, res: Response) =
   };
 
 
+export const getUserAssessmentScoresOverTime = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  try {
+
+    const patientRecord = await prisma.patientRecord.findFirst({
+      where: { patientId : userId },
+    });
+
+    if (!patientRecord) {
+      return res.status(404).json({ message: 'Patient record not found for the user' });
+    }
+
+    const patientRecordId = patientRecord.id;
+
+    // Fetch all assessments for the user
+    const assessments = await prisma.assessment.findMany({
+      where: { patientRecordId },
+      include: {
+        questionnaire: {
+          include: {
+            sections: {
+              include: {
+                question: {
+                  include: {
+                    response: {
+                      include: {
+                        option: true,
+                      },
+                    },
+                    optionTemplate: {
+                      include: {
+                        option: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        response: {
+          include: {
+            question: true,
+            option: true,
+          },
+        },
+      },
+    });
+
+    if (!assessments.length) {
+      return res.status(404).json({ message: 'No assessments found for the user' });
+    }
+
+    // Calculate scores for each assessment
+    const assessmentScores = assessments.map((assessment) => {
+      const { questionnaire } = assessment;
+      const totalQuestions = questionnaire.sections.reduce((acc, section) => acc + section.question.length, 0);
+      const answeredQuestions = assessment.response.length;
+
+      let questionnaireStatus = 'Assigned';
+      if (answeredQuestions > 0 && answeredQuestions < totalQuestions) {
+        questionnaireStatus = 'In Progress';
+      } else if (answeredQuestions === totalQuestions) {
+        questionnaireStatus = 'Completed';
+      }
+
+      const sectionScores = questionnaire.sections.map((section) => {
+        const sectionResponses = section.question.flatMap((q) => q.response);
+        const totalPossibleScore = questionnaire.sections.reduce((acc, section) => {
+          return acc + section.question.reduce((acc, question) => {
+            return acc + (question.optionTemplate.option.length);
+          }, 0);
+        }, 0);
+        const totalScore = sectionResponses.reduce((acc, response) => acc + response.option.scaleValue, 0);
+        const sectionScore = totalScore;
+
+        return {
+          sectionName: section.name,
+          sectionScore: sectionScore,
+          sectionTotalScore: totalPossibleScore,
+        };
+      });
+
+      const totalPossibleScore = questionnaire.sections.reduce((acc, section) => {
+        return acc + section.question.reduce((acc, question) => {
+          return acc +(question.optionTemplate.option.length);
+        }, 0);
+      }, 0);
+      const totalScore = assessment.response.reduce((acc, response) => acc + response.option.scaleValue, 0);
+      const totalScorePercentage = (totalScore / totalPossibleScore) * 100;
+
+      return {
+        assessmentId: assessment.id,
+        questionnaireName: questionnaire.title,
+        assignedDate: assessment.createdDatetime,
+        totalScore: totalScorePercentage.toFixed(2),
+        sectionScores,
+      };
+    });
+
+    return res.status(200).json({
+      data: assessmentScores,
+    });
+  } catch (error: any) {
+    console.error('Error fetching user assessment scores:', error.message);
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: error.message,
+    });
+  }
+};
+
+
   
