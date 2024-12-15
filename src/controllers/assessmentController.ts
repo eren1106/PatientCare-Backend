@@ -360,29 +360,22 @@ export const getUserAssessmentScoresOverTime = async (req: Request, res: Respons
     // Calculate scores for each assessment
     const assessmentScores = assessments.map((assessment) => {
       const { questionnaire } = assessment;
-      const totalQuestions = questionnaire.sections.reduce((acc, section) => acc + section.question.length, 0);
-      const answeredQuestions = assessment.response.length;
-
-      let questionnaireStatus = 'Assigned';
-      if (answeredQuestions > 0 && answeredQuestions < totalQuestions) {
-        questionnaireStatus = 'In Progress';
-      } else if (answeredQuestions === totalQuestions) {
-        questionnaireStatus = 'Completed';
-      }
 
       const sectionScores = questionnaire.sections.map((section) => {
-        const sectionResponses = section.question.flatMap((q) => q.response);
-        const totalPossibleScore = questionnaire.sections.reduce((acc, section) => {
-          return acc + section.question.reduce((acc, question) => {
-            return acc + (question.optionTemplate.option.length);
-          }, 0);
+        const sectionResponses = section.question
+        .flatMap(q => q.response)
+        .filter(response => response.assessmentId === assessment.id);
+        const totalPossibleScore = section.question.reduce((acc, question) => {
+          const optionCount = question.optionTemplate.option.length;
+          return acc + optionCount;
         }, 0);
-        const totalScore = sectionResponses.reduce((acc, response) => acc + response.option.scaleValue, 0);
-        const sectionScore = totalScore;
+        const totalScore = sectionResponses.reduce((acc, response) => 
+          acc + response.option.scaleValue, 0);
+    
 
         return {
           sectionName: section.name,
-          sectionScore: sectionScore,
+          sectionScore: totalScore,
           sectionTotalScore: totalPossibleScore,
         };
       });
