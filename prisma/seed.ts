@@ -1186,7 +1186,7 @@ async function main() {
 
   // Create Daily Patient Exercises
   const currentDate = new Date();
-  for (let i = 0; i <= 10; i++) {
+  for (let i = 1; i <= 10; i++) {
     const date = new Date(currentDate);
     date.setDate(currentDate.getDate() - i);
 
@@ -1222,7 +1222,7 @@ async function main() {
         patientId: userDemo.id,
         patientExerciseId: patientExercise4.id,
         createdDatetime: date,
-        isCompleted: true,
+        isCompleted: Math.random() < 0.5,
       },
     });
 
@@ -1231,7 +1231,7 @@ async function main() {
         patientId: userDemo.id,
         patientExerciseId: patientExercise5.id,
         createdDatetime: date,
-        isCompleted: false,
+        isCompleted: Math.random() < 0.5,
       },
     });
 
@@ -1240,10 +1240,37 @@ async function main() {
         patientId: userDemo.id,
         patientExerciseId: patientExercise6.id,
         createdDatetime: date,
-        isCompleted: false,
+        isCompleted: Math.random() < 0.5,
       },
     });
   }
+
+  await prisma.dailyPatientExercise.create({
+    data: {
+      patientId: userDemo.id,
+      patientExerciseId: patientExercise4.id,
+      createdDatetime: new Date(),
+      isCompleted: true,
+    },
+  });
+
+  await prisma.dailyPatientExercise.create({
+    data: {
+      patientId: userDemo.id,
+      patientExerciseId: patientExercise5.id,
+      createdDatetime: new Date(),
+      isCompleted: false,
+    },
+  });
+
+  await prisma.dailyPatientExercise.create({
+    data: {
+      patientId: userDemo.id,
+      patientExerciseId: patientExercise6.id,
+      createdDatetime: new Date(),
+      isCompleted: false,
+    },
+  });
 
   console.log('Database has been seeded.');
 }
