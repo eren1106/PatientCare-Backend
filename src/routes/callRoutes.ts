@@ -5,7 +5,7 @@ import { createCallHistory } from '../controllers/chatController';
 const router = Router();
 
 // TODO: uncomment it
-// router.get('/token/:id', generateCallToken);
+router.get('/token/:id', generateCallToken);
 /**
  * @swagger
  * /api/call/token/{id}:
