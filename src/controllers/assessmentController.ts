@@ -185,11 +185,13 @@ export const getAllAssessmentByPatientId = async (req: Request, res: Response) =
           }
         })
       );
-  
-      return res.status(200).json({
-        message: 'Responses processed successfully',
+
+      return apiResponse({
+        res,
         result,
-      });
+        message: 'Responses processed successfully',
+      })
+  
     } catch (error: any) {
       console.error('Error processing responses:', error.message);
       return res.status(500).json({
@@ -295,10 +297,11 @@ export const getAllAssessmentByPatientId = async (req: Request, res: Response) =
         result: exerciseSuggestion,
       });
     } catch (error: any) {
-      return res.status(500).json({
-        message: 'Internal server error',
-        error: error.message,
-      });
+      errorResponse({
+        res,
+        error: "Internal Server Error",
+        statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR
+      })
     }
   };
 
@@ -354,7 +357,12 @@ export const getUserAssessmentScoresOverTime = async (req: Request, res: Respons
     });
 
     if (!assessments.length) {
-      return res.status(404).json({ message: 'No assessments found for the user' });
+      return errorResponse({
+        res,
+        error: "No assessment found for the user",
+        statusCode: STATUS_CODES.NOT_FOUND
+      })
+      
     }
 
     // Calculate scores for each assessment
