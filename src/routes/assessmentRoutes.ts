@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { createOrUpdateAssessmentResponses, getAllAssessmentByPatientId, getAssessmentDetails, 
-    createExerciseSuggestion } from '../controllers/assessmentController';
+    createExerciseSuggestion, 
+    getUserAssessmentScoresOverTime} from '../controllers/assessmentController';
 
 const router = Router();
 
@@ -180,5 +181,31 @@ router.get('/:id/details', getAssessmentDetails);
 router.post('/exerciseSuggestion', createExerciseSuggestion);
 
 router.post('/response', createOrUpdateAssessmentResponses);
+
+/**
+ * @swagger
+ * /api/assessment/patientRecord/{userId}/scores:
+ *   get:
+ *     summary: Get user's assessment scores over time
+ *     description: Retrieve the user's assessment scores over time.
+ *     tags:
+ *       - Assessment
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the user
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved the user's assessment scores
+ *       404:
+ *         description: No assessments found for the user
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/patientRecord/:userId/scores', getUserAssessmentScoresOverTime);
+
 
 export { router as assessmentRoutes };

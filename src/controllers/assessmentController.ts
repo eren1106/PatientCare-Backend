@@ -185,11 +185,13 @@ export const getAllAssessmentByPatientId = async (req: Request, res: Response) =
           }
         })
       );
-  
-      return res.status(200).json({
-        message: 'Responses processed successfully',
+
+      return apiResponse({
+        res,
         result,
-      });
+        message: 'Responses processed successfully',
+      })
+  
     } catch (error: any) {
       console.error('Error processing responses:', error.message);
       return res.status(500).json({
@@ -284,10 +286,20 @@ export const getAllAssessmentByPatientId = async (req: Request, res: Response) =
           analysis: exerciseSuggestions.analysis,
           assessmentId: id,
           suggestion: {
-            create: exerciseSuggestions.suggestions.map((s: any) => ({
-              exerciseTitle: s.exerciseTitle,
-              exerciseId: s.exerciseId,
-            })),
+            create: await Promise.all(exerciseSuggestions.suggestions.map(async (s: any) => {
+              const exercise = await prisma.exercise.findFirst({
+                where: { title: s.exerciseTitle }
+              });
+      
+              if (!exercise) {
+                throw new Error(`Exercise not found with title: ${s.exerciseTitle}`);
+              }
+      
+              return {
+                exerciseTitle: s.exerciseTitle,
+                exerciseId: exercise.id,
+              };
+            }))
           },
         },
       });
@@ -295,12 +307,125 @@ export const getAllAssessmentByPatientId = async (req: Request, res: Response) =
         result: exerciseSuggestion,
       });
     } catch (error: any) {
-      return res.status(500).json({
-        message: 'Internal server error',
-        error: error.message,
-      });
+      errorResponse({
+        res,
+        error: "Internal Server Error",
+        statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR
+      })
     }
   };
+
+
+export const getUserAssessmentScoresOverTime = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  try {
+
+    const patientRecord = await prisma.patientRecord.findFirst({
+      where: { patientId : userId },
+    });
+
+    if (!patientRecord) {
+      return res.status(404).json({ message: 'Patient record not found for the user' });
+    }
+
+    const patientRecordId = patientRecord.id;
+
+    // Fetch all assessments for the user
+    const assessments = await prisma.assessment.findMany({
+      where: { patientRecordId },
+      include: {
+        questionnaire: {
+          include: {
+            sections: {
+              include: {
+                question: {
+                  include: {
+                    response: {
+                      include: {
+                        option: true,
+                      },
+                    },
+                    optionTemplate: {
+                      include: {
+                        option: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        response: {
+          include: {
+            question: true,
+            option: true,
+          },
+        },
+      },
+    });
+
+    if (!assessments.length) {
+      return errorResponse({
+        res,
+        error: "No assessment found for the user",
+        statusCode: STATUS_CODES.NOT_FOUND
+      })
+      
+    }
+
+    // Calculate scores for each assessment
+    const assessmentScores = assessments.map((assessment) => {
+      const { questionnaire } = assessment;
+
+      const sectionScores = questionnaire.sections.map((section) => {
+        const sectionResponses = section.question
+        .flatMap(q => q.response)
+        .filter(response => response.assessmentId === assessment.id);
+        const totalPossibleScore = section.question.reduce((acc, question) => {
+          const optionCount = question.optionTemplate.option.length;
+          return acc + optionCount;
+        }, 0);
+        const totalScore = sectionResponses.reduce((acc, response) => 
+          acc + response.option.scaleValue, 0);
+    
+
+        return {
+          sectionName: section.name,
+          sectionScore: totalScore,
+          sectionTotalScore: totalPossibleScore,
+        };
+      });
+
+      const totalPossibleScore = questionnaire.sections.reduce((acc, section) => {
+        return acc + section.question.reduce((acc, question) => {
+          return acc +(question.optionTemplate.option.length);
+        }, 0);
+      }, 0);
+      const totalScore = assessment.response.reduce((acc, response) => acc + response.option.scaleValue, 0);
+      const totalScorePercentage = (totalScore / totalPossibleScore) * 100;
+
+      return {
+        assessmentId: assessment.id,
+        questionnaireName: questionnaire.title,
+        assignedDate: assessment.createdDatetime,
+        totalScore: totalScorePercentage.toFixed(2),
+        sectionScores,
+      };
+    });
+
+    return res.status(200).json({
+      data: assessmentScores,
+    });
+  } catch (error: any) {
+    console.error('Error fetching user assessment scores:', error.message);
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: error.message,
+    });
+  }
+};
 
 
   

@@ -148,7 +148,7 @@ model ExerciseSuggestion {
   analysis     String
   assessmentId String
 
-  assessment Assessment   @relation("AssessmentExerciseSuggestion", fields: [assessmentId], references: [id])
+  assessment Assessment   @relation("AssessmentExerciseSuggestion", fields: [assessmentId], references: [id], onDelete: Cascade)
   suggestion Suggestion[] @relation("Suggestion")
 }
 
@@ -158,7 +158,7 @@ model Suggestion {
   exerciseId           String
   exerciseSuggestionId String
 
-  exerciseSuggest ExerciseSuggestion @relation("Suggestion", fields: [exerciseSuggestionId], references: [id])
+  exerciseSuggest ExerciseSuggestion @relation("Suggestion", fields: [exerciseSuggestionId], references: [id], onDelete: Cascade)
 }
 
 model Assessment {
@@ -222,7 +222,7 @@ model Response {
 
   question   Question   @relation(fields: [questionId], references: [id])
   option     Option     @relation("QuestionAnswer", fields: [optionId], references: [id])
-  assessment Assessment @relation("AssessmentResponse", fields: [assessmentId], references: [id])
+  assessment Assessment @relation("AssessmentResponse", fields: [assessmentId], references: [id], onDelete: Cascade)
 }
 
 model DoctorValidation {
