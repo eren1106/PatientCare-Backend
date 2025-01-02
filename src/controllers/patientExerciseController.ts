@@ -3,7 +3,7 @@ import { apiResponse, errorResponse } from '../utils/api-response.util';
 import prisma from '../lib/prisma';
 import { STATUS_CODES } from '../constants';
 import { sendNotification } from '../services/notifications.service';
-import { startOfMonth, endOfMonth, eachDayOfInterval, format } from 'date-fns';
+import { startOfMonth, endOfMonth, eachDayOfInterval, format, isSameMonth } from 'date-fns';
 
 export const getPatientExercises = async (req: Request, res: Response) => {
   const { patientId } = req.params;
@@ -15,6 +15,9 @@ export const getPatientExercises = async (req: Request, res: Response) => {
       },
       include: {
         exercise: true,
+      },
+      orderBy: {
+        createdDatetime: 'desc'
       }
     });
     return apiResponse({
@@ -204,13 +207,14 @@ export const getTodayPatientExercises = async (req: Request, res: Response) => {
 };
 
 export const getTodayPatientExerciseById = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { patientId, id } = req.params;
 
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Set time to the start of the day
     const dailyPatientExercise = await prisma.dailyPatientExercise.findFirst({
       where: {
+        patientId: patientId,
         patientExerciseId: id,
         createdDatetime: {
           gte: today
@@ -277,7 +281,7 @@ export const deletePatientExerciseById = async (req: Request, res: Response) => 
       userId: deletedPatientExercise.patientId,
       title: "One of your assigned exercise has been deleted",
       message: `Your assigned exercise (${deletedPatientExercise.exercise.title}) has been deleted`,
-      redirectUrl: `/exercises/${deletedPatientExercise.id}`
+      redirectUrl: `/exercises`
     });
 
     return apiResponse({
@@ -326,7 +330,8 @@ export const getExerciseCompletionSummaryByPatientId = async (req: Request, res:
   try {
     // Get the start and end of the current month
     const start = startOfMonth(new Date());
-    const end = endOfMonth(new Date());
+    const end = isSameMonth(new Date(), start) ? new Date() : endOfMonth(new Date());
+
 
     // Fetch all daily exercises within the current month for the specified patient
     const dailyExercises = await prisma.dailyPatientExercise.findMany({

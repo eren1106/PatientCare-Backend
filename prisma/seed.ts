@@ -127,13 +127,13 @@ async function main() {
 
   const userDemo = await prisma.user.create({
     data: {
-      username: 'zilii',
+      username: 'eren_kuek',
       email: 'erenkuek1106@gmail.com',
       password: hashedPassword,
       signinMethod: 'EMAILPASSWORD',
-      profileImageUrl: 'https://atd-blog.s3.us-east-2.amazonaws.com/wp-content/uploads/2022/04/16142821/cool-profile-pictures-for-girls-9.webp',
+      profileImageUrl: 'https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?size=338&ext=jpg&ga=GA1.1.2008272138.1722816000&semt=ais_hybrid',
       role: 'PATIENT',
-      fullname: 'Kuek Zi Lii',
+      fullname: 'Eren Kuek',
       age: 22,
       gender: Gender.MALE,
       ic: "021212025555",
@@ -1641,7 +1641,7 @@ async function main() {
 
   // Create Daily Patient Exercises
   const currentDate = new Date();
-  for (let i = 0; i <= 10; i++) {
+  for (let i = 1; i <= 10; i++) {
     const date = new Date(currentDate);
     date.setDate(currentDate.getDate() - i);
 
@@ -1675,30 +1675,57 @@ async function main() {
     await prisma.dailyPatientExercise.create({
       data: {
         patientId: userDemo.id,
-        patientExerciseId: patientExercise1.id,
+        patientExerciseId: patientExercise4.id,
         createdDatetime: date,
-        isCompleted: true,
+        isCompleted: Math.random() < 0.5,
       },
     });
 
     await prisma.dailyPatientExercise.create({
       data: {
         patientId: userDemo.id,
-        patientExerciseId: patientExercise2.id,
+        patientExerciseId: patientExercise5.id,
         createdDatetime: date,
-        isCompleted: false,
+        isCompleted: Math.random() < 0.5,
       },
     });
 
     await prisma.dailyPatientExercise.create({
       data: {
         patientId: userDemo.id,
-        patientExerciseId: patientExercise3.id,
+        patientExerciseId: patientExercise6.id,
         createdDatetime: date,
-        isCompleted: false,
+        isCompleted: Math.random() < 0.5,
       },
     });
   }
+
+  await prisma.dailyPatientExercise.create({
+    data: {
+      patientId: userDemo.id,
+      patientExerciseId: patientExercise4.id,
+      createdDatetime: new Date(),
+      isCompleted: true,
+    },
+  });
+
+  await prisma.dailyPatientExercise.create({
+    data: {
+      patientId: userDemo.id,
+      patientExerciseId: patientExercise5.id,
+      createdDatetime: new Date(),
+      isCompleted: false,
+    },
+  });
+
+  await prisma.dailyPatientExercise.create({
+    data: {
+      patientId: userDemo.id,
+      patientExerciseId: patientExercise6.id,
+      createdDatetime: new Date(),
+      isCompleted: false,
+    },
+  });
 
   console.log('Database has been seeded.');
 }

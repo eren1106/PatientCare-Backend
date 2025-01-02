@@ -81,7 +81,14 @@ export const register = async (req: Request, res: Response) => {
     },
   });
 
-  if (existingUser) return errorResponse({
+  if(existingUser && existingUser.isDelete) {
+    await prisma.user.delete({
+      where: {
+        id: existingUser.id
+      }
+    });
+  }
+  else if (existingUser) return errorResponse({
     res,
     error: "User already exists!",
     statusCode: STATUS_CODES.CONFLICT
