@@ -286,10 +286,20 @@ export const getAllAssessmentByPatientId = async (req: Request, res: Response) =
           analysis: exerciseSuggestions.analysis,
           assessmentId: id,
           suggestion: {
-            create: exerciseSuggestions.suggestions.map((s: any) => ({
-              exerciseTitle: s.exerciseTitle,
-              exerciseId: s.exerciseId,
-            })),
+            create: await Promise.all(exerciseSuggestions.suggestions.map(async (s: any) => {
+              const exercise = await prisma.exercise.findFirst({
+                where: { title: s.exerciseTitle }
+              });
+      
+              if (!exercise) {
+                throw new Error(`Exercise not found with title: ${s.exerciseTitle}`);
+              }
+      
+              return {
+                exerciseTitle: s.exerciseTitle,
+                exerciseId: exercise.id,
+              };
+            }))
           },
         },
       });
