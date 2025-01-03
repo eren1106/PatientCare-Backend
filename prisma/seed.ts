@@ -1420,8 +1420,8 @@ async function main() {
     data: {
       exerciseCategoryId: exerciseCategory1.id,
       title: 'Air cycle',
-      description: '',
-      content: '',
+      description: "Air cycle is a low-impact exercise that mimics cycling motion while lying down",
+      content: 'Air cycle is a low-impact cardiovascular exercise performed while lying on your back. It involves moving your legs in a cycling motion through the air, which helps improve leg strength, flexibility and circulation while being gentle on the joints.',
       duration: 30,
       difficulty: ExerciseDifficulty.EASY,
       thumbnailUrl: getYouTubeThumbnail("https://youtu.be/YBeAH0lS9wE"),
@@ -1446,8 +1446,8 @@ async function main() {
     data: {
       exerciseCategoryId: exerciseCategory2.id,
       title: 'Seat up',
-      description: '',
-      content: "",
+      description: "Seat up is a core strengthening exercise that targets the abdominal muscles",
+      content: "Seat up exercise involves lying on your back and lifting your upper body toward your knees while keeping your lower back pressed against the floor. This movement strengthens the abdominal muscles and improves core stability.",
       duration: 40,
       difficulty: ExerciseDifficulty.MEDIUM,
       thumbnailUrl: getYouTubeThumbnail('https://youtu.be/YDEfl_ae_no'),
