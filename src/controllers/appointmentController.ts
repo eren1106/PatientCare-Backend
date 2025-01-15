@@ -54,8 +54,11 @@ export const getAppointmentById = async (req: Request, res: Response) => {
 export const createAppointment = async (req: Request, res: Response) => {
   const { title, description, date, startTime, endTime, doctorId, patientId } = req.body;
 
-  const convertedStartTime = copyDay(startTime, date);
-  const convertedEndTime = copyDay(endTime, date);
+  const appointmentDate = new Date(date);
+  appointmentDate.setHours(12, 0, 0, 0); // Set time to 12:00:00.000 PM so prevent timezone issue
+  
+  const convertedStartTime = copyDay(startTime, appointmentDate);
+  const convertedEndTime = copyDay(endTime, appointmentDate);
 
   try {
     // Check if there's any appointment that overlaps with the provided time for the same doctor
@@ -87,7 +90,7 @@ export const createAppointment = async (req: Request, res: Response) => {
       data: {
         title,
         description,
-        date: new Date(date),
+        date: appointmentDate,
         startTime: convertedStartTime,
         endTime: convertedEndTime,
         doctorId,
@@ -116,9 +119,12 @@ export const createAppointment = async (req: Request, res: Response) => {
 export const updateAppointment = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { title, description, date, startTime, endTime, doctorId, patientId } = req.body;
-
-  const convertedStartTime = copyDay(startTime, date);
-  const convertedEndTime = copyDay(endTime, date);
+  
+  const appointmentDate = new Date(date);
+  appointmentDate.setHours(12, 0, 0, 0); // Set time to 12:00:00.000 PM so prevent timezone issue
+  
+  const convertedStartTime = copyDay(startTime, appointmentDate);
+  const convertedEndTime = copyDay(endTime, appointmentDate);
 
   try {
     // Check if there's any appointment that overlaps with the provided time for the same doctor
@@ -151,7 +157,7 @@ export const updateAppointment = async (req: Request, res: Response) => {
       data: {
         title,
         description,
-        date: new Date(date),
+        date: appointmentDate,
         startTime: convertedStartTime,
         endTime: convertedEndTime,
         doctorId,
