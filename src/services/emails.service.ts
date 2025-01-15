@@ -49,7 +49,7 @@ const generateEmailTemplate = ({
                     <!-- Footer -->
                     <tr>
                         <td style="background-color: #f8f9fa; padding: 24px; text-align: center; font-size: 14px;">
-                            <p style="margin: 0; color: #666666;">This email was sent from PatientCare, a healthcare communication platform.</p>
+                            <p style="margin: 0; color: #666666;">This email was sent from PatientCare, a digital platform for patient assessment and rehabilitation.</p>
                             <p style="margin: 8px 0 0 0; color: #666666;">Please do not reply directly to this email.</p>
                         </td>
                     </tr>
