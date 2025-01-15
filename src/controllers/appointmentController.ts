@@ -2,7 +2,6 @@ import prisma from "../lib/prisma";
 import { apiResponse, errorResponse } from "../utils/api-response.util";
 import { Request, Response } from 'express';
 import { copyDay, formatDate, formatTime } from "../utils/utils";
-import { io } from "..";
 import { sendNotification } from "../services/notifications.service";
 import { AppointmentStatus } from "@prisma/client";
 
