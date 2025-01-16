@@ -1,4 +1,4 @@
-import { ExerciseDifficulty, Gender } from "@prisma/client";
+import { AppointmentStatus, ExerciseDifficulty, Gender } from "@prisma/client";
 import bcrypt from 'bcrypt';
 
 export const getYouTubeThumbnail = (videoUrl: string): string | null => {
@@ -93,7 +93,7 @@ async function main() {
     },
   });
 
-  const user2 = await prisma.user.create({
+  const userDoctor = await prisma.user.create({
     data: {
       username: 'reiner_braun',
       email: 'reiner@gmail.com',
@@ -143,70 +143,70 @@ async function main() {
 
   const message = await prisma.message.createMany({
     data: [
-      // Messages between user2 and user1
+      // Messages between userDoctor and user1
       {
         message: 'Hey, how are you?',
-        fromUserId: user2.id,
+        fromUserId: userDoctor.id,
         toUserId: user1.id,
       },
       {
         message: 'I am good! How about you?',
         fromUserId: user1.id,
-        toUserId: user2.id,
+        toUserId: userDoctor.id,
       },
       {
         message: 'Just working on a new project.',
-        fromUserId: user2.id,
+        fromUserId: userDoctor.id,
         toUserId: user1.id,
       },
       {
         message: 'That sounds interesting!',
         fromUserId: user1.id,
-        toUserId: user2.id,
+        toUserId: userDoctor.id,
       },
 
-      // Messages between user2 and user3
+      // Messages between userDoctor and user3
       {
         message: 'Hey, user3, are you available this week?',
-        fromUserId: user2.id,
+        fromUserId: userDoctor.id,
         toUserId: user3.id,
       },
       {
         message: 'I might be free on Friday, what’s up?',
         fromUserId: user3.id,
-        toUserId: user2.id,
+        toUserId: userDoctor.id,
       },
       {
         message: 'I wanted to discuss a project idea with you.',
-        fromUserId: user2.id,
+        fromUserId: userDoctor.id,
         toUserId: user3.id,
       },
       {
         message: 'Sure, let’s meet on Friday then.',
         fromUserId: user3.id,
-        toUserId: user2.id,
+        toUserId: userDoctor.id,
       },
 
-      // Messages between user2 and user4
+      // Messages between userDoctor and user4
       {
         message: 'Hi Zi Lii, do you have time to chat?',
-        fromUserId: user2.id,
+        fromUserId: userDoctor.id,
         toUserId: userDemo.id,
       },
       {
         message: 'Yes, what do you want to talk about?',
         fromUserId: userDemo.id,
-        toUserId: user2.id,
+        toUserId: userDoctor.id,
       },
       {
         message: 'It’s about a collaboration opportunity.',
-        fromUserId: user2.id,
+        fromUserId: userDoctor.id,
         toUserId: userDemo.id,
       },
       {
         message: 'I’m interested! Let’s discuss more.',
         fromUserId: userDemo.id,
-        toUserId: user2.id,
+        toUserId: userDoctor.id,
       },
     ],
   });
@@ -214,7 +214,7 @@ async function main() {
   const calls = await prisma.call.createMany({
     data: [
       {
-        toUserId: user2.id,
+        toUserId: userDoctor.id,
         fromUserId: user1.id,
         status: 'ACCEPTED',
         createdDatetime: new Date('2023-05-01T10:00:00Z'),
@@ -236,7 +236,7 @@ async function main() {
       },
       {
         toUserId: user1.id,
-        fromUserId: user2.id,
+        fromUserId: userDoctor.id,
         status: 'ACCEPTED',
         createdDatetime: new Date('2023-05-04T16:45:00Z'),
         duration: 600,
@@ -263,7 +263,7 @@ async function main() {
       description: 'Please place a mark on the line that best represents your experience during the last week attributable to your shoulder problem.',
       index: 'SPADI',
       type: 'Shoulder',
-      authorId: user2.id,
+      authorId: userDoctor.id,
     },
   });
 
@@ -396,7 +396,7 @@ async function main() {
       description: 'Originally published in 1998 in The Journal of Orthopaedic and Sports Physical Therapy, the Knee injury and Osteoarthritis Outcome Score (KOOS) assesses patient pain (9 items), other symptoms (7 items), function in daily living (17 items), function in sport and recreation (5 items), and knee related quality of life (4 items). Scores range from 0 to 100 with a score of 0 indicating the worst possible knee symptoms and 100 indicating no knee symptoms. The KOOS is a patient reported joint-specific score, which may be useful for assessing changes in knee pathology over time, with or without treatment.',
       index: 'KOOS',
       type: 'Knee',
-      authorId: user2.id,
+      authorId: userDoctor.id,
     },
   });
 
@@ -730,7 +730,7 @@ async function main() {
   // Create Patient Records
   const patientRecord1 = await prisma.patientRecord.create({
     data: {
-      doctorId: user2.id,
+      doctorId: userDoctor.id,
       patientId: user1.id,
       weight: 50,
       height: 1.5,
@@ -739,7 +739,7 @@ async function main() {
   });
   const patientRecord2 = await prisma.patientRecord.create({
     data: {
-      doctorId: user2.id,
+      doctorId: userDoctor.id,
       patientId: userDemo.id,
       weight: 50,
       height: 1.5,
@@ -774,7 +774,7 @@ async function main() {
   // Create Assessments
   const assessment1 = await prisma.assessment.create({
     data: {
-      doctorId: user2.id,
+      doctorId: userDoctor.id,
       questionnaireId: questionnaire1.id,
       patientRecordId: patientRecord1.id,
       createdDatetime: new Date('2024-05-01T10:00:00Z'),
@@ -783,7 +783,7 @@ async function main() {
 
   const assessment2 = await prisma.assessment.create({
     data: {
-      doctorId: user2.id,
+      doctorId: userDoctor.id,
       questionnaireId: questionnaire2.id,
       patientRecordId: patientRecord1.id,
       createdDatetime: new Date('2024-06-01T10:00:00Z'),
@@ -793,7 +793,7 @@ async function main() {
 
   const assessment3 = await prisma.assessment.create({
     data: {
-      doctorId: user2.id,
+      doctorId: userDoctor.id,
       questionnaireId: questionnaire1.id,
       patientRecordId: patientRecord1.id,
       createdDatetime: new Date('2024-09-01T10:00:00Z'),
@@ -803,7 +803,7 @@ async function main() {
 
   const assessment4 = await prisma.assessment.create({
     data: {
-      doctorId: user2.id,
+      doctorId: userDoctor.id,
       questionnaireId: questionnaire1.id,
       patientRecordId: patientRecord1.id,
       createdDatetime: new Date('2024-11-01T10:00:00Z'),
@@ -812,7 +812,7 @@ async function main() {
 
   const assessment5 = await prisma.assessment.create({
     data: {
-      doctorId: user2.id,
+      doctorId: userDoctor.id,
       questionnaireId: questionnaire1.id,
       patientRecordId: patientRecord1.id,
       createdDatetime: new Date('2024-07-01T10:00:00Z'),
@@ -1317,7 +1317,7 @@ async function main() {
   // Create Doctor Validations
   const doctorValidation1 = await prisma.doctorValidation.create({
     data: {
-      doctorId: user2.id,
+      doctorId: userDoctor.id,
       registrationNumber: 'DOC123456',
     },
   });
@@ -1724,6 +1724,59 @@ async function main() {
       patientExerciseId: patientExercise6.id,
       createdDatetime: new Date(),
       isCompleted: false,
+    },
+  });
+
+  // APPOINTMENTS
+  await prisma.appointment.create({
+    data: {
+      patientId: userDemo.id,
+      doctorId: userDoctor.id,
+      title: 'Initial Consultation',
+      description: 'First appointment for consultation',
+      date: new Date('2024-01-20'),
+      startTime: new Date('2024-01-20T09:00:00Z'),
+      endTime: new Date('2024-01-20T10:00:00Z'),
+      status: AppointmentStatus.SCHEDULED,
+    },
+  });
+
+  await prisma.appointment.create({
+    data: {
+      patientId: userDemo.id,
+      doctorId: userDoctor.id,
+      title: 'Follow-up Consultation',
+      description: 'Follow-up appointment for consultation',
+      date: new Date('2024-01-21'),
+      startTime: new Date('2024-01-21T09:00:00Z'),
+      endTime: new Date('2024-01-21T10:00:00Z'),
+      status: AppointmentStatus.CONFIRMED,
+    },
+  });
+
+  await prisma.appointment.create({
+    data: {
+      patientId: user1.id,
+      doctorId: userDoctor.id,
+      title: 'Knee Condition check-up',
+      description: 'Knee Condition check-up',
+      date: new Date('2024-01-14'),
+      startTime: new Date('2024-01-14T09:00:00Z'),
+      endTime: new Date('2024-01-14T10:00:00Z'),
+      status: AppointmentStatus.CONFIRMED,
+    },
+  });
+
+  await prisma.appointment.create({
+    data: {
+      patientId: user1.id,
+      doctorId: userDoctor.id,
+      title: 'Follow up',
+      description: 'Follow up appointment',
+      date: new Date('2024-01-15'),
+      startTime: new Date('2024-01-15T09:00:00Z'),
+      endTime: new Date('2024-01-15T10:00:00Z'),
+      status: AppointmentStatus.SCHEDULED,
     },
   });
 
