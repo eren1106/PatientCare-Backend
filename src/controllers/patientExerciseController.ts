@@ -330,7 +330,7 @@ export const getExerciseCompletionSummaryByPatientId = async (req: Request, res:
   try {
     // Get the start and end of the current month
     const start = startOfMonth(new Date());
-    const end = isSameMonth(new Date(), start) ? new Date() : endOfMonth(new Date());
+    const end = endOfMonth(new Date());
 
 
     // Fetch all daily exercises within the current month for the specified patient
