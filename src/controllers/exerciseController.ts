@@ -18,7 +18,7 @@ export const getExercises = async (req: Request, res: Response) => {
         }
         : {},
         orderBy: {
-          createdDatetime: 'asc'
+          createdDatetime: 'desc'
         }
     });
     return apiResponse({
